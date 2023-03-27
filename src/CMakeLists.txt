@@ -7,9 +7,12 @@ target_include_directories(
     nox 
     PUBLIC
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
+    "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
     PRIVATE
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
+
+list_append_global(NOX_INSTALLATION_TARGETS nox)
 
 # --------------------------------------------------
 # Specify nox compile properties
@@ -27,6 +30,23 @@ endif()
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(nox PUBLIC NOX_SHARED)
 endif()
+
+# --------------------------------------------------
+# Set nox properties
+# --------------------------------------------------
+if(NOT DEFINED CMAKE_DEBUG_POSTFIX)
+  set(CMAKE_DEBUG_POSTFIX "d")
+endif()
+
+set_target_properties(
+    nox
+    PROPERTIES
+    VERSION "${NOX_VERSION}"
+    SOVERSION "${NOX_VERSION_MAJOR}.${NOX_VERSION_MINOR}"
+    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+)
+
+set_target_properties(nox PROPERTIES FOLDER "nox")
 
 # --------------------------------------------------
 # Specify OS specific definitions

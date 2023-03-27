@@ -45,3 +45,9 @@ macro(create_project_source_tree TARGET)
         endforeach()
     endif()
 endmacro()
+
+function(list_append_global LIST ITEM)
+    set(ITEMS ${ITEM} ${ARGN})
+    set(${LIST} "${${LIST}}" ${ITEMS} CACHE INTERNAL "")
+endfunction()
+
