@@ -1,2 +1,5 @@
 build/
 .vs/
+
+cmake/nox_config.cmake
+cmake/nox_config_version.cmake

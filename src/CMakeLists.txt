@@ -47,6 +47,7 @@ set_target_properties(
 )
 
 set_target_properties(nox PROPERTIES FOLDER "nox")
+set_target_properties(nox PROPERTIES EXPORT_COMPILE_COMMANDS ON)
 
 # --------------------------------------------------
 # Specify OS specific definitions
