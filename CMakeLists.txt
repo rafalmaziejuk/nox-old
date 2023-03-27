@@ -29,6 +29,7 @@ endif()
 
 option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 option(NOX_INSTALL "Generate installation target." ${NOX_MAIN_PROJECT})
+option(NOX_BUILD_EXAMPLES "Build examples." OFF)
 
 # --------------------------------------------------
 # Specify build types
@@ -47,6 +48,9 @@ endif()
 # --------------------------------------------------
 add_subdirectory(src)
 
+if(NOX_BUILD_EXAMPLES)
+    add_subdirectory(examples)
+endif()
 # --------------------------------------------------
 # Create generated files
 # --------------------------------------------------
