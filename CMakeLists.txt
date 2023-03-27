@@ -1,9 +1,12 @@
 cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 
 include(cmake/utilities.cmake)
-
 nox_extract_version()
+
 project(nox VERSION ${NOX_VERSION})
+
+include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
 
 # --------------------------------------------------
 # Set global properties/variables
@@ -18,7 +21,14 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
 # --------------------------------------------------
 # Specify options
 # --------------------------------------------------
+set(NOX_INSTALLATION_TARGETS "" CACHE INTERNAL "")
+set(NOX_MAIN_PROJECT OFF)
+if(CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
+    set(NOX_MAIN_PROJECT ON)
+endif()
+
 option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
+option(NOX_INSTALL "Generate installation target." ${NOX_MAIN_PROJECT})
 
 # --------------------------------------------------
 # Specify build types
@@ -36,3 +46,59 @@ endif()
 # Add subdirectories
 # --------------------------------------------------
 add_subdirectory(src)
+
+# --------------------------------------------------
+# Create generated files
+# --------------------------------------------------
+set(NOX_CONFIG_PATH "${CMAKE_INSTALL_LIBDIR}/cmake/nox")
+
+configure_package_config_file(
+    "${PROJECT_SOURCE_DIR}/cmake/nox-config.cmake.in"
+    "${PROJECT_BINARY_DIR}/nox-config.cmake"
+    INSTALL_DESTINATION "${NOX_CONFIG_PATH}"
+    NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+write_basic_package_version_file(
+    "${PROJECT_BINARY_DIR}/nox-config-version.cmake"
+    COMPATIBILITY SameMajorVersion
+)
+
+configure_file(cmake/nox.pc.in nox.pc @ONLY)
+
+# --------------------------------------------------
+# Install
+# --------------------------------------------------
+if(NOX_INSTALL)
+    install(
+        TARGETS ${NOX_INSTALLATION_TARGETS}
+        EXPORT nox-targets
+        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    )
+
+    install(
+        EXPORT nox-targets
+        FILE nox-targets.cmake
+        NAMESPACE nox::
+        DESTINATION "${NOX_CONFIG_PATH}"
+    )
+
+    install(
+        DIRECTORY "${PROJECT_SOURCE_DIR}/include"
+        DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
+        FILES_MATCHING PATTERN "*.h"
+    )
+
+    install(
+        FILES "${PROJECT_BINARY_DIR}/nox-config.cmake"
+              "${PROJECT_BINARY_DIR}/nox-config-version.cmake"
+        DESTINATION "${NOX_CONFIG_PATH}"
+    )
+
+    install(
+        FILES "${PROJECT_BINARY_DIR}/nox.pc"
+        DESTINATION "${CMAKE_INSTALL_LIBDIR}/pkgconfig"
+    )
+endif()
