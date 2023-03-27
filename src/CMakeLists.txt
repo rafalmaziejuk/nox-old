@@ -12,8 +12,6 @@ target_include_directories(
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
 
-list_append_global(NOX_INSTALLATION_TARGETS nox)
-
 # --------------------------------------------------
 # Specify nox compile properties
 # --------------------------------------------------
@@ -34,6 +32,7 @@ endif()
 target_precompile_headers(
     nox
     PRIVATE
+    [["utilities/logging/log_categories.h"]]
     <algorithm>
     <cstdint>
     <memory>
@@ -70,10 +69,32 @@ if(WIN32)
 endif()
 
 # --------------------------------------------------
+# Link nox core libraries
+# --------------------------------------------------
+set(NOX_DEPENDENCIES_DIR ${PROJECT_SOURCE_DIR}/third_party)
+
+add_subdirectory(${NOX_DEPENDENCIES_DIR}/spdlog spdlog)
+set_target_properties(
+    spdlog
+    PROPERTIES 
+    FOLDER "nox/third_party/spdlog"
+)
+
+target_link_libraries(
+    nox 
+    PRIVATE
+    spdlog
+)
+list_append_global(NOX_INSTALLATION_TARGETS nox spdlog)
+
+# --------------------------------------------------
+# Add subdirectories with sources
+# --------------------------------------------------
+add_subdirectory(utilities)
+
+# --------------------------------------------------
 # Add public headers to nox sources (for IDE)
 # --------------------------------------------------
-target_sources(nox PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
-
 file(GLOB_RECURSE NOX_PUBLIC_HEADERS ${PROJECT_SOURCE_DIR}/include/nox/*.h)
 target_sources(nox PRIVATE ${NOX_PUBLIC_HEADERS})
 
