@@ -31,6 +31,19 @@ if(BUILD_SHARED_LIBS)
     target_compile_definitions(nox PUBLIC NOX_SHARED)
 endif()
 
+target_precompile_headers(
+    nox
+    PRIVATE
+    <algorithm>
+    <cstdint>
+    <memory>
+    <string>
+    <string_view>
+    <unordered_map>
+    <utility>
+    <vector>
+)
+
 # --------------------------------------------------
 # Set nox properties
 # --------------------------------------------------
