@@ -5,7 +5,7 @@
 #define NOX_DECLARE_LOG_CATEGORY_EXTERN(categoryName, defaultVerbosity)                              \
     extern struct LogCategory##categoryName : public NOX::LogCategory {                              \
         LogCategory##categoryName() : LogCategory(#categoryName, NOX::Verbosity::defaultVerbosity) { \
-            NOX::Log::get().registerLogger(*this);                                                   \
+            NOX::Log::get().registerCategory(*this);                                                 \
         }                                                                                            \
     } categoryName;
 

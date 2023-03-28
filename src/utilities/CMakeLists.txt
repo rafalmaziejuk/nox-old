@@ -1,4 +1,5 @@
 set(NOX_UTILITIES_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/assertion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/dummy.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/string_helper.h
 )

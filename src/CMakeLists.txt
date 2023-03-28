@@ -32,7 +32,7 @@ endif()
 target_precompile_headers(
     nox
     PRIVATE
-    [["utilities/logging/log_categories.h"]]
+    [["utilities/assertion.h"]]
     <algorithm>
     <cstdint>
     <memory>
@@ -66,6 +66,10 @@ set_target_properties(nox PROPERTIES EXPORT_COMPILE_COMMANDS ON)
 # --------------------------------------------------
 if(WIN32)
     target_compile_definitions(nox PUBLIC NOX_WIN32)
+endif()
+
+if(UNIX)
+    target_compile_definitions(nox PUBLIC NOX_UNIX)
 endif()
 
 # --------------------------------------------------
