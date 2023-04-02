@@ -1,13 +1,15 @@
 #include "utilities/string_helper.h"
-#include "utilities/logging/log.h"
+#include "utilities/logger.h"
+
+NOX_DEFINE_LOG_CATEGORY(DEBUG);
 
 namespace NOX {
 
-Log::Log() : m_consoleSink{std::make_shared<spdlog::sinks::stdout_color_sink_mt>()} {
+Logger::Logger() : m_consoleSink{std::make_shared<spdlog::sinks::stdout_color_sink_mt>()} {
     m_consoleSink->set_pattern("[%T]%^[%n][%l] %v%$");
 }
 
-void Log::registerCategory(LogCategory &logCategory) {
+void Logger::registerCategory(LogCategory &logCategory) {
     spdlog::level::level_enum level{};
     switch (logCategory.defaultVerbosity) {
     case Verbosity::TRACE:

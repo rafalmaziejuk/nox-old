@@ -1,7 +1,22 @@
 #pragma once
 
+#include <nox/core/singleton.h>
+
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
+
+#define NOX_DECLARE_LOG_CATEGORY_EXTERN(categoryName, defaultVerbosity)                              \
+    extern struct LogCategory##categoryName : public NOX::LogCategory {                              \
+        LogCategory##categoryName() : LogCategory(#categoryName, NOX::Verbosity::defaultVerbosity) { \
+            NOX::Logger::instance().registerCategory(*this);                                         \
+        }                                                                                            \
+    } categoryName;
+
+#define NOX_DEFINE_LOG_CATEGORY(categoryName) \
+    LogCategory##categoryName categoryName{};
+
+#define NOX_LOG(categoryName, verbosity, ...) \
+    NOX::Logger::instance().log<NOX::Verbosity::verbosity>(categoryName, __VA_ARGS__)
 
 namespace NOX {
 
@@ -22,9 +37,9 @@ struct LogCategory {
     Verbosity defaultVerbosity;
 };
 
-class Log {
+class NOX_EXPORT Logger : public Singleton<Logger> {
   public:
-    Log();
+    Logger();
 
     void registerCategory(LogCategory &logCategory);
 
@@ -57,14 +72,11 @@ class Log {
         }
     }
 
-    static Log &get() {
-        static Log instance;
-        return instance;
-    }
-
   private:
     std::shared_ptr<spdlog::sinks::stdout_color_sink_mt> m_consoleSink{nullptr};
     std::unordered_map<std::string, std::unique_ptr<spdlog::logger>> m_loggers{};
 };
 
 } // namespace NOX
+
+NOX_DECLARE_LOG_CATEGORY_EXTERN(DEBUG, ERROR);

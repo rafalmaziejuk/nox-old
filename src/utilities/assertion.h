@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utilities/logging/log_categories.h"
+#include "utilities/logger.h"
 
 // clang-format off
 #if !defined(NOX_DEBUG_BREAK) && defined(NOX_DEBUG)
