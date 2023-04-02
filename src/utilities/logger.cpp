@@ -1,5 +1,4 @@
 #include "utilities/logger.h"
-#include "utilities/utilities.h"
 
 NOX_DEFINE_LOG_CATEGORY(DEBUG);
 

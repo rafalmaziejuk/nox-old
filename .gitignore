@@ -5,3 +5,4 @@ build/
 cmake/nox_config.cmake
 cmake/nox_config_version.cmake
 include/nox/export.h
+src/renderer/opengl/nox_opengl_export.h
