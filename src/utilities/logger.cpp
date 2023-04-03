@@ -1,5 +1,5 @@
-#include "utilities/string_helper.h"
 #include "utilities/logger.h"
+#include "utilities/utilities.h"
 
 NOX_DEFINE_LOG_CATEGORY(DEBUG);
 
@@ -32,7 +32,7 @@ void Logger::registerCategory(LogCategory &logCategory) {
         break;
     }
 
-    StringHelper::toLower(logCategory.categoryName);
+    Utilities::toLower(logCategory.categoryName);
     m_loggers[logCategory.categoryName] = std::make_unique<spdlog::logger>(logCategory.categoryName, m_consoleSink);
     m_loggers[logCategory.categoryName]->set_level(level);
 }
