@@ -21,7 +21,7 @@
             NOX_DEBUG_BREAK();                                             \
         }
 #else
-    #define NOX_ASSERT_IF(expression, ...) (void)0
+    #define NOX_ASSERT_IF(expression, ...) (void)(expression)
 #endif
 
 #if !defined(NOX_ABORT_IF) && defined(NOX_DEBUG)
