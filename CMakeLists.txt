@@ -96,7 +96,7 @@ if(NOX_INSTALL)
     )
 
     install(
-        DIRECTORY "${PROJECT_SOURCE_DIR}/include"
+        DIRECTORY "${PROJECT_SOURCE_DIR}/include/nox"
         DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
         FILES_MATCHING PATTERN "*.h"
     )
