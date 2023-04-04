@@ -69,6 +69,7 @@ target_precompile_headers(
     nox
     PRIVATE
     [["utilities/assertion.h"]]
+    [["utilities/utilities.h"]]
     <algorithm>
     <cstdint>
     <memory>
@@ -91,6 +92,12 @@ generate_export_header(
 # --------------------------------------------------
 set(NOX_DEPENDENCIES_DIR ${PROJECT_SOURCE_DIR}/third_party)
 
+if(NOX_PLATFORM_WINDOWS)
+    set(PLATFORM_DIR_SUFFIX "windows/")
+else()
+    message(FATAL_ERROR "Sources for this platform are not supported")
+endif()
+
 # --------------------------------------------------
 # Link libraries
 # --------------------------------------------------
@@ -111,6 +118,8 @@ list_append_global(NOX_INSTALLATION_TARGETS nox spdlog)
 # --------------------------------------------------
 # Add subdirectories with sources
 # --------------------------------------------------
+add_subdirectory(plugins)
+add_subdirectory(renderer)
 add_subdirectory(utilities)
 
 # --------------------------------------------------

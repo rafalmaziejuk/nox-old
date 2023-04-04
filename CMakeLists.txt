@@ -32,6 +32,7 @@ endif()
 option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 option(NOX_INSTALL "Generate installation target." ${NOX_MAIN_PROJECT})
 option(NOX_BUILD_EXAMPLES "Build examples." OFF)
+option(NOX_BUILD_RENDERER_OPENGL "Build OpenGL renderer." ON)
 
 cmake_dependent_option(NOX_PLATFORM_WINDOWS "Target platform Windows." ON "WIN32" OFF)
 cmake_dependent_option(NOX_PLATFORM_LINUX "Target platform Linux." ON "UNIX" OFF)
