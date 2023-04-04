@@ -7,7 +7,6 @@ target_include_directories(
     nox 
     PUBLIC
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
-    "$<BUILD_INTERFACE:${PROJECT_BINARY_DIR}/include>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
     PRIVATE
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
@@ -37,11 +36,18 @@ if(NOX_PLATFORM_LINUX)
     target_compile_definitions(nox PRIVATE NOX_UNIX)
 endif()
 
+if(NOT BUILD_SHARED_LIBS)
+    target_compile_definitions(nox PRIVATE NOX_STATIC)
+endif()
+
 # --------------------------------------------------
 # Set properties
 # --------------------------------------------------
-if(NOT DEFINED CMAKE_DEBUG_POSTFIX)
-  set(CMAKE_DEBUG_POSTFIX "d")
+if(BUILD_SHARED_LIBS)
+    set(NOX_DEBUG_POSTFIX "-d")
+else()
+    set(NOX_DEBUG_POSTFIX "-s-d")
+    set(NOX_RELEASE_POSTFIX "-s")
 endif()
 
 set_target_properties(
@@ -49,7 +55,8 @@ set_target_properties(
     PROPERTIES
     VERSION "${NOX_VERSION}"
     SOVERSION "${NOX_VERSION_MAJOR}.${NOX_VERSION_MINOR}"
-    DEBUG_POSTFIX "${CMAKE_DEBUG_POSTFIX}"
+    DEBUG_POSTFIX "${NOX_DEBUG_POSTFIX}"
+    RELEASE_POSTFIX "${NOX_RELEASE_POSTFIX}"
 )
 
 set_target_properties(nox PROPERTIES FOLDER "nox")
@@ -75,7 +82,7 @@ target_precompile_headers(
 generate_export_header(
     nox
     EXPORT_MACRO_NAME NOX_EXPORT
-    EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/nox/export.h
+    EXPORT_FILE_NAME ${PROJECT_SOURCE_DIR}/include/nox/export.h
     STATIC_DEFINE NOX_STATIC
 )
 
