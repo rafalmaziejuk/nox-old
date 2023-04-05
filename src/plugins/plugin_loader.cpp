@@ -13,4 +13,13 @@ const Plugin *PluginLoader::loadPlugin(std::string_view pluginName) {
     }
 }
 
+void PluginLoader::unloadPlugin(const Plugin *pluginToUnload) {
+    auto pluginsIterator = std::find_if(m_plugins.begin(), m_plugins.end(), [pluginToUnload](const auto &plugin) {
+        return (pluginToUnload == plugin.get());
+    });
+    NOX_ASSERT_IF(pluginsIterator == m_plugins.end());
+
+    m_plugins.erase(pluginsIterator);
+}
+
 } // namespace NOX
