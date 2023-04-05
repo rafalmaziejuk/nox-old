@@ -9,12 +9,12 @@ namespace NOX {
 class Plugin : public NonCopyable {
   public:
     explicit Plugin(std::string_view pluginName);
+    Plugin(std::string_view pluginName, std::string_view extension);
     virtual ~Plugin() = default;
 
     virtual void *loadProcedure(std::string_view procedureName) const = 0;
 
   protected:
-    std::string createPhysicalPluginName(const std::string &pluginName, const std::string &extension);
     const std::string &getPluginName() const { return m_pluginName; }
 
   private:

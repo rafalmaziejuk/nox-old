@@ -21,14 +21,21 @@
 
 namespace NOX {
 
-StaticPlugin::StaticPlugin(std::string_view pluginName) : Plugin{pluginName} {}
+StaticPlugin::StaticPlugin(std::string_view pluginName) : Plugin{pluginName} {
+    NOX_LOG(PLUGINS, DEBUG, "Loaded {{{0}}} static plugin", physicalPluginName);
+}
+
+StaticPlugin::~StaticPlugin() {
+    NOX_LOG(PLUGINS, DEBUG, "Unloaded {{{0}}} static plugin", getPluginName());
+}
 
 void *StaticPlugin::loadProcedure(std::string_view procedureName) const {
+    NOX_LOG(PLUGINS, TRACE, "Loaded {{{0}}} procedure from {{{1}}} static plugin", procedureName, getPluginName());
     if (getPluginName() == Utilities::toLower(GLPlugin::pluginName)) {
         NOX_LOAD_OPENGL_PLUGIN_PROCEDURE(procedureName);
     }
 
-    NOX_ASSERT_IF(true, "Unable to load \"{0}\" procedure", procedureName);
+    NOX_ASSERT_IF(true, "Unable to load {{{0}}} procedure from {{{1}}} static plugin", procedureName, getPluginName());
     return nullptr;
 }
 

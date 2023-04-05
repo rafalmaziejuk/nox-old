@@ -1,6 +1,7 @@
 #include "utilities/logger.h"
 
 NOX_DEFINE_LOG_CATEGORY(DEBUG);
+NOX_DEFINE_LOG_CATEGORY(PLUGINS);
 
 namespace NOX {
 

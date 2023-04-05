@@ -4,10 +4,10 @@ namespace NOX {
 
 Plugin::Plugin(std::string_view pluginName) : m_pluginName{Utilities::toLower(pluginName.data())} {}
 
-std::string Plugin::createPhysicalPluginName(const std::string &pluginName, const std::string &extension) {
+Plugin::Plugin(std::string_view pluginName, std::string_view extension) : m_pluginName{Utilities::toLower(pluginName.data())} {
     constexpr auto prefix = "nox-";
     constexpr auto postfix = (Utilities::getBuildConfiguration() == Utilities::BuildConfiguration::DEBUG) ? "-d" : "";
-    return prefix + pluginName + postfix + extension;
+    m_pluginName = prefix + m_pluginName + postfix + extension.data();
 }
 
 } // namespace NOX
