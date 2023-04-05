@@ -19,6 +19,7 @@ void PluginLoader::unloadPlugin(const Plugin *pluginToUnload) {
     });
     NOX_ASSERT_IF(pluginsIterator == m_plugins.end());
 
+    pluginsIterator->reset();
     m_plugins.erase(pluginsIterator);
 }
 

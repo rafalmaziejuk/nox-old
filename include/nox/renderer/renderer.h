@@ -15,6 +15,7 @@ class NOX_EXPORT Renderer : public NonCopyable {
     virtual ~Renderer();
 
     [[nodiscard]] static std::unique_ptr<Renderer, RendererDeleter> create(std::string_view rendererName);
+    static void unload(std::unique_ptr<Renderer, RendererDeleter> &renderer);
 
   protected:
     Renderer();
@@ -29,14 +30,9 @@ class RendererDeleter {
     using RendererDeallocateFunction = void (*)(void *);
 
   public:
-    RendererDeleter() = default;
-    RendererDeleter(RendererDeallocateFunction deallocateFunction) : m_deallocateFunction{deallocateFunction} {}
+    explicit RendererDeleter(RendererDeallocateFunction deallocateFunction) : m_deallocateFunction{deallocateFunction} {}
     void operator()(Renderer *renderer) {
-        if (m_deallocateFunction != nullptr) {
-            m_deallocateFunction(renderer);
-        } else {
-            delete renderer;
-        }
+        m_deallocateFunction(renderer);
     }
 
   private:
