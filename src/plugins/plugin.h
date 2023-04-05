@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/core/non_copyable.h>
+#include <nox/non_copyable.h>
 
 #include <string_view>
 
@@ -13,9 +13,8 @@ class Plugin : public NonCopyable {
 
     virtual void *loadProcedure(std::string_view procedureName) const = 0;
 
-    std::string createPhysicalPluginName(const std::string &pluginName, const std::string &extension);
-
   protected:
+    std::string createPhysicalPluginName(const std::string &pluginName, const std::string &extension);
     const std::string &getPluginName() const { return m_pluginName; }
 
   private:

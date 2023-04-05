@@ -6,6 +6,16 @@
 
 namespace NOX {
 
+struct Renderer::Impl {
+    const Plugin *rendererPlugin{nullptr};
+};
+
+Renderer::Renderer() : m_impl{std::make_unique<Impl>()} {}
+
+Renderer::~Renderer() {
+    PluginLoader::instance().unloadPlugin(m_impl->rendererPlugin);
+}
+
 std::unique_ptr<Renderer, RendererDeleter> Renderer::create(std::string_view rendererName) {
     NOX_DECLARE_PLUGIN_FUNCTION(AllocateRendererFunction, void *, void);
     NOX_DECLARE_PLUGIN_FUNCTION(DeallocateRendererFunction, void, void *);
@@ -17,6 +27,8 @@ std::unique_ptr<Renderer, RendererDeleter> Renderer::create(std::string_view ren
     auto *deallocateRendererFunction = reinterpret_cast<DeallocateRendererFunction>(deallocateProcedure);
 
     auto *renderer = reinterpret_cast<Renderer *>(allocateRendererFunction());
+    renderer->m_impl->rendererPlugin = plugin;
+
     return {renderer, RendererDeleter{deallocateRendererFunction}};
 }
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/core/singleton.h>
+#include "utilities/singleton.h"
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>

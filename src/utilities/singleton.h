@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/core/non_copyable.h>
+#include <nox/non_copyable.h>
 
 namespace NOX {
 
