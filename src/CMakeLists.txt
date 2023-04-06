@@ -19,10 +19,8 @@ target_compile_features(nox PRIVATE cxx_std_17)
 
 if(MSVC)
     target_compile_options(nox PRIVATE /W4 /WX)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /DNOX_DEBUG")
 else()
     target_compile_options(nox PRIVATE -Wall)
-    set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -DNOX_DEBUG")
 endif()
 
 # --------------------------------------------------
@@ -68,8 +66,7 @@ set_target_properties(nox PROPERTIES EXPORT_COMPILE_COMMANDS ON)
 target_precompile_headers(
     nox
     PRIVATE
-    [["utilities/assertion.h"]]
-    [["utilities/utilities.h"]]
+    [["core/core.h"]]
     <algorithm>
     <cstdint>
     <memory>
@@ -118,6 +115,7 @@ list_append_global(NOX_INSTALLATION_TARGETS nox spdlog)
 # --------------------------------------------------
 # Add subdirectories with sources
 # --------------------------------------------------
+add_subdirectory(core)
 add_subdirectory(plugins)
 add_subdirectory(renderer)
 add_subdirectory(utilities)
