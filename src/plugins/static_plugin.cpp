@@ -22,7 +22,7 @@
 namespace NOX {
 
 StaticPlugin::StaticPlugin(std::string_view pluginName) : Plugin{pluginName} {
-    NOX_LOG(PLUGINS, DEBUG, "Loaded {{{0}}} static plugin", physicalPluginName);
+    NOX_LOG(PLUGINS, DEBUG, "Loaded {{{0}}} static plugin", getPluginName());
 }
 
 StaticPlugin::~StaticPlugin() {

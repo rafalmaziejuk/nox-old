@@ -11,7 +11,7 @@ namespace NOX {
 class GLRenderer final : public Renderer {
   public:
     GLRenderer();
-    ~GLRenderer() override;
+    ~GLRenderer();
 };
 
 } // namespace NOX
