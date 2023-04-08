@@ -1,0 +1,6 @@
+set(NOX_CORE_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/core.h
+)
+
+target_sources(nox PRIVATE ${NOX_CORE_SOURCES})
