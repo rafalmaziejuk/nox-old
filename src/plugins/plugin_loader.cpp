@@ -16,7 +16,7 @@ void PluginLoader::unloadPlugin(const Plugin *pluginToUnload) {
     auto pluginsIterator = std::find_if(m_plugins.begin(), m_plugins.end(), [pluginToUnload](const auto &plugin) {
         return (pluginToUnload == plugin.get());
     });
-    NOX_ASSERT_IF(pluginsIterator == m_plugins.end());
+    NOX_ASSERT(pluginsIterator == m_plugins.end());
 
     pluginsIterator->reset();
     m_plugins.erase(pluginsIterator);

@@ -1,7 +1,6 @@
 set(NOX_UTILITIES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/assertion.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/logger.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/logger.h
     ${CMAKE_CURRENT_SOURCE_DIR}/singleton.h
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h

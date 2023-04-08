@@ -15,7 +15,7 @@ target_include_directories(
 # --------------------------------------------------
 # Specify compile options
 # --------------------------------------------------
-target_compile_features(nox PRIVATE cxx_std_17)
+target_compile_features(nox PUBLIC cxx_std_17)
 
 if(MSVC)
     target_compile_options(nox PRIVATE /W4 /WX)
@@ -26,6 +26,8 @@ endif()
 # --------------------------------------------------
 # Specify compile definitions
 # --------------------------------------------------
+target_compile_definitions(nox PUBLIC $<$<CONFIG:Debug>:NOX_DEBUG>)
+
 if(NOX_PLATFORM_WINDOWS)
     target_compile_definitions(nox PRIVATE NOX_WIN32)
 endif()
@@ -67,6 +69,8 @@ target_precompile_headers(
     nox
     PRIVATE
     [["core/core.h"]]
+    [["utilities/assertion.h"]]
+    [["utilities/utilities.h"]]
     <algorithm>
     <cstdint>
     <memory>

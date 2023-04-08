@@ -1,15 +1,13 @@
 #include "renderer/opengl/gl_renderer.h"
 
-NOX_DEFINE_LOG_CATEGORY(OPENGL);
-
 namespace NOX {
 
 GLRenderer::GLRenderer() {
-    NOX_LOG(OPENGL, INFO, "GLRenderer ctor");
+    NOX_LOG_INFO(OPENGL, "GLRenderer ctor");
 }
 
 GLRenderer::~GLRenderer() {
-    NOX_LOG(OPENGL, INFO, "GLRenderer dtor");
+    NOX_LOG_INFO(OPENGL, "GLRenderer dtor");
 }
 
 } // namespace NOX
