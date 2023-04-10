@@ -6,14 +6,14 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 
 #define NOX_LOG_IMPL(verbosity, category, message, ...) \
-    Logger::instance().getLogger().verbosity("[" #category "] " message, __VA_ARGS__)
+    Logger::instance().getLogger().verbosity("[" #category "] " message, ##__VA_ARGS__)
 
-#define NOX_LOG_TRACE(category, message, ...) NOX_LOG_IMPL(trace, category, message, __VA_ARGS__)
-#define NOX_LOG_DEBUG(category, message, ...) NOX_LOG_IMPL(debug, category, message, __VA_ARGS__)
-#define NOX_LOG_INFO(category, message, ...) NOX_LOG_IMPL(info, category, message, __VA_ARGS__)
-#define NOX_LOG_WARN(category, message, ...) NOX_LOG_IMPL(warn, category, message, __VA_ARGS__)
-#define NOX_LOG_ERROR(category, message, ...) NOX_LOG_IMPL(error, category, message, __VA_ARGS__)
-#define NOX_LOG_CRITICAL(category, message, ...) NOX_LOG_IMPL(critical, category, message, __VA_ARGS__)
+#define NOX_LOG_TRACE(category, message, ...) NOX_LOG_IMPL(trace, category, message, ##__VA_ARGS__)
+#define NOX_LOG_DEBUG(category, message, ...) NOX_LOG_IMPL(debug, category, message, ##__VA_ARGS__)
+#define NOX_LOG_INFO(category, message, ...) NOX_LOG_IMPL(info, category, message, ##__VA_ARGS__)
+#define NOX_LOG_WARN(category, message, ...) NOX_LOG_IMPL(warn, category, message, ##__VA_ARGS__)
+#define NOX_LOG_ERROR(category, message, ...) NOX_LOG_IMPL(error, category, message, ##__VA_ARGS__)
+#define NOX_LOG_CRITICAL(category, message, ...) NOX_LOG_IMPL(critical, category, message, ##__VA_ARGS__)
 
 namespace NOX {
 
