@@ -22,11 +22,11 @@
 namespace NOX {
 
 StaticPlugin::StaticPlugin(std::string_view pluginName) : Plugin{pluginName} {
-    NOX_LOG_DEBUG(PLUGINS, "Loaded [{}] static plugin", getPluginName());
+    NOX_LOG_INFO(PLUGINS, "Loaded [{}] static plugin", getPluginName());
 }
 
 StaticPlugin::~StaticPlugin() {
-    NOX_LOG_DEBUG(PLUGINS, "Unloaded [{}] static plugin", getPluginName());
+    NOX_LOG_INFO(PLUGINS, "Unloaded [{}] static plugin", getPluginName());
 }
 
 void *StaticPlugin::loadProcedure(std::string_view procedureName) const {
