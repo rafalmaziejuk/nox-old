@@ -22,14 +22,13 @@ DynamicPlugin::DynamicPlugin(std::string_view pluginName) : Plugin{pluginName, "
     const auto abiCompatibilityIdentifier = getAbiCompatibilityIdentifierFunction();
     NOX_ASSERT_MSG(abiCompatibilityIdentifier != NOX_ABI_COMPATIBILITY_IDENTIFIER, "[{}] dynamic plugin ABI is not compatible", physicalPluginName);
 
-    NOX_LOG_DEBUG(PLUGINS, "Loaded [{}] dynamic plugin", physicalPluginName);
+    NOX_LOG_INFO(PLUGINS, "Loaded [{}] dynamic plugin", physicalPluginName);
 }
 
 DynamicPlugin::~DynamicPlugin() {
     auto result = FreeLibrary(m_impl->handle);
     NOX_ASSERT_MSG(result == 0, "Unable to unload [{}] dynamic plugin", getPluginName());
-
-    NOX_LOG_DEBUG(PLUGINS, "Unloaded [{}] dynamic plugin", getPluginName());
+    NOX_LOG_INFO(PLUGINS, "Unloaded [{}] dynamic plugin", getPluginName());
 }
 
 void *DynamicPlugin::loadProcedure(std::string_view procedureName) const {
