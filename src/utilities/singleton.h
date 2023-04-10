@@ -13,7 +13,7 @@ class NOX_EXPORT Singleton : public NonCopyable {
     }
 
   protected:
-    Singleton() {}
+    Singleton() = default;
 };
 
 } // namespace NOX

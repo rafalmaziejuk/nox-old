@@ -10,8 +10,8 @@ struct Vector2D {
 
     constexpr Vector2D() = default;
 
-    constexpr Vector2D(T x_, T y_) : x{x_},
-                                     y{y_} {}
+    constexpr Vector2D(T x, T y) : x{x},
+                                   y{y} {}
 
     template <typename U>
     explicit constexpr Vector2D(const Vector2D<U> &other) : Vector2D{other.x, other.y} {

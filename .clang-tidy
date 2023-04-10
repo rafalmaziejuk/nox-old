@@ -9,6 +9,7 @@ Checks: >
   -modernize-use-nodiscard,
   -modernize-macro-to-enum,
   -modernize-use-trailing-return-type,
+  -readability-identifier-length,
   -readability-isolate-declaration,
   -readability-uppercase-literal-suffix,
   -readability-redundant-access-specifiers,
