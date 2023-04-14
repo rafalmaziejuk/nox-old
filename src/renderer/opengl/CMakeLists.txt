@@ -87,6 +87,8 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.h
     ${CMAKE_CURRENT_SOURCE_DIR}/nox_opengl_export.h
 )
 

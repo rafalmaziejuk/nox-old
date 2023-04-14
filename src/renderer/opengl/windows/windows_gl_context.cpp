@@ -1,6 +1,8 @@
 #include "renderer/opengl/gl_context.h"
 #include "utilities/windows/windows_helper.h"
 
+#include <nox/window/window.h>
+
 #include <glad/wgl.h>
 
 namespace NOX {
@@ -88,6 +90,10 @@ GLContext::GLContext(const OpenGLRendererConfig &config) : m_impl{std::make_uniq
         m_config.minorVersion = minorVersion;
     }
 
+    wglDeleteContext(m_impl->handleRenderingContext);
+    m_impl->handleRenderingContext = nullptr;
+    m_impl->handleDeviceContext = nullptr;
+
     auto result = DestroyWindow(dummyWindowHandle);
     NOX_ASSERT_MSG(!result, "Unable to destroy dummy window");
     WindowsHelper::unregisterWindowClass(dummyWindowName);
@@ -114,6 +120,28 @@ void GLContext::setSwapInterval(bool value) {
     auto result = wglSwapIntervalEXT(static_cast<int32_t>(value));
     NOX_ASSERT_MSG(!result, "Unable to set swap interval for OpenGL swap chain");
     NOX_LOG_TRACE(OPENGL, "Swap interval set to {}", value);
+}
+
+void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
+    auto *windowHandle = static_cast<HWND>(window.getNativeHandle());
+    m_impl->handleDeviceContext = GetDC(windowHandle);
+    NOX_ASSERT(m_impl->handleDeviceContext == nullptr);
+
+    m_impl->setContextPixelFormat(descriptor);
+
+    constexpr auto attributePairsCount = 3u;
+    constexpr auto attributesArraySize = attributePairsCount * 2u + 1u;
+    std::array<int32_t, attributesArraySize> attributes{WGL_CONTEXT_MAJOR_VERSION_ARB, m_config.majorVersion,
+                                                        WGL_CONTEXT_MINOR_VERSION_ARB, m_config.minorVersion,
+                                                        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
+                                                        0};
+    m_impl->handleRenderingContext = wglCreateContextAttribsARB(m_impl->handleDeviceContext, nullptr, attributes.data());
+    makeCurrent();
+
+    NOX_LOG_INFO(OPENGL, "OpenGL context info");
+    NOX_LOG_INFO(OPENGL, "Vendor: {}", reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
+    NOX_LOG_INFO(OPENGL, "Device: {}", reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
+    NOX_LOG_INFO(OPENGL, "Version: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
 }
 
 } // namespace NOX

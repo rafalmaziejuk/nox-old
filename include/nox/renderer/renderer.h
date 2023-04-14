@@ -9,6 +9,11 @@
 
 namespace NOX {
 
+class SwapChain;
+struct SwapChainDescriptor;
+
+class Window;
+
 class Renderer;
 using RendererDeleter = std::function<void(Renderer *)>;
 
@@ -20,6 +25,8 @@ struct RendererDescriptor {
 class NOX_EXPORT Renderer : public NonCopyable {
   public:
     [[nodiscard]] static std::unique_ptr<Renderer, RendererDeleter> create(const RendererDescriptor &descriptor);
+
+    virtual std::shared_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
 };
 
 } // namespace NOX
