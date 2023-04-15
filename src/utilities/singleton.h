@@ -5,7 +5,7 @@
 namespace NOX {
 
 template <typename T>
-class NOX_EXPORT Singleton : public NonCopyable {
+class Singleton : public NonCopyable {
   public:
     static T &instance() {
         static T instance{};

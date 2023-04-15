@@ -6,4 +6,4 @@ set(NOX_UTILITIES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
 )
 
-target_sources(nox PRIVATE ${NOX_UTILITIES_SOURCES})
+target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_UTILITIES_SOURCES})

@@ -17,7 +17,7 @@
 
 namespace NOX {
 
-class NOX_EXPORT Logger : public Singleton<Logger> {
+class Logger : public Singleton<Logger> {
   public:
     Logger() {
         auto consoleSink{std::make_shared<spdlog::sinks::stdout_color_sink_mt>()};

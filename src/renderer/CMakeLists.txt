@@ -3,7 +3,7 @@ set(NOX_RENDERER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
 )
 
-target_sources(nox PRIVATE ${NOX_RENDERER_SOURCES})
+target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_RENDERER_SOURCES})
 
 if(NOX_BUILD_RENDERER_OPENGL)
     add_subdirectory(opengl)
