@@ -1,7 +1,7 @@
 #include <nox/window/event.h>
 #include <nox/window/window.h>
 
-#define FOREACH_EVENT_LISTENER(function, ...)                                    \
+#define FOREACH_EVENT_DISPATCHER(function, ...)                                  \
     for (const auto &eventDispatcher : m_impl->eventDispatchers) {               \
         if (eventDispatcher.function && eventDispatcher.function(__VA_ARGS__)) { \
             break;                                                               \
@@ -15,9 +15,12 @@ struct Window::Impl {
     std::vector<EventDispatcher> eventDispatchers;
 };
 
-Window::Window() : m_impl{std::make_unique<Impl>()} {}
+Window::Window() : m_impl{new Impl} {}
 
-Window::~Window() = default;
+Window::~Window() {
+    delete m_impl;
+    m_impl = nullptr;
+}
 
 bool Window::shouldClose() const {
     return m_impl->shouldClose;
@@ -33,12 +36,12 @@ void Window::pushBackEventDispatcher(const EventDispatcher &eventDispatcher) {
 
 void Window::onCloseEvent() const {
     m_impl->shouldClose = true;
-    FOREACH_EVENT_LISTENER(closeEventCallback);
+    FOREACH_EVENT_DISPATCHER(closeEventCallback);
 }
 
 void Window::onResizeEvent(uint32_t width, uint32_t height) const {
     const ResizeEvent event{{width, height}};
-    FOREACH_EVENT_LISTENER(resizeEventCallback, event);
+    FOREACH_EVENT_DISPATCHER(resizeEventCallback, event);
 }
 
 } // namespace NOX

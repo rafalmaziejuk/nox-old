@@ -43,7 +43,7 @@ class NOX_EXPORT Window : public NonCopyable {
 
   private:
     struct Impl;
-    std::unique_ptr<Impl> m_impl;
+    Impl *m_impl{nullptr};
 };
 
 } // namespace NOX
