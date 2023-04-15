@@ -103,18 +103,13 @@ endif()
 # Link libraries
 # --------------------------------------------------
 add_subdirectory(${NOX_DEPENDENCIES_DIR}/spdlog spdlog)
-set_target_properties(
-    spdlog
-    PROPERTIES 
-    FOLDER "nox/third_party/spdlog"
-)
 
 target_link_libraries(
     nox 
     PRIVATE
     spdlog
 )
-list_append_global(NOX_INSTALLATION_TARGETS nox spdlog)
+list_append_global(NOX_INSTALLATION_TARGETS nox)
 
 # --------------------------------------------------
 # Add subdirectories with sources
