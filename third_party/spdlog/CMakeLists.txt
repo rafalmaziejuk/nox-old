@@ -1,0 +1,12 @@
+find_library(
+    SPDLOG_LIBRARY 
+    NAMES spdlog
+    PATHS ${CMAKE_CURRENT_SOURCE_DIR}
+)
+add_library(spdlog STATIC IMPORTED GLOBAL)
+set_target_properties(
+    spdlog 
+    PROPERTIES 
+    IMPORTED_LOCATION ${SPDLOG_LIBRARY}
+    INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_SOURCE_DIR}/include
+)
