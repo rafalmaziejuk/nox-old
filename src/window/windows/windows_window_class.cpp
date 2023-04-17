@@ -8,7 +8,7 @@ WindowsWindowClass::WindowsWindowClass() {
 
     WNDCLASS attributes{};
     attributes.style = (CS_HREDRAW | CS_VREDRAW | CS_OWNDC);
-    attributes.lpfnWndProc = windowProc;
+    attributes.lpfnWndProc = windowProcedure;
     attributes.hInstance = GetModuleHandle(nullptr);
     attributes.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
     attributes.hCursor = LoadCursor(nullptr, IDC_ARROW);

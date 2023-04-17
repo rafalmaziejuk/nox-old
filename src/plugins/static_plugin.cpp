@@ -10,7 +10,8 @@
         return reinterpret_cast<void *>(pluginName::deallocateRenderer);    \
     }
 #else
-#define NOX_LOAD_RENDERER_PLUGIN_PROCEDURE_IMPL(pluginName, procedureName) (void)procedureName
+#define NOX_LOAD_RENDERER_PLUGIN_PROCEDURE_IMPL(pluginName, procedureName) \
+    NOX_UNUSED(procedureName)
 #endif
 
 #if defined(NOX_BUILD_RENDERER_OPENGL)
@@ -26,7 +27,7 @@ StaticPlugin::StaticPlugin(std::string_view pluginName) : Plugin{pluginName} {
 }
 
 StaticPlugin::~StaticPlugin() {
-    NOX_LOG_INFO(PLUGINS, "Unloaded [{}] static plugin", getPluginName());
+    NOX_LOG_TRACE(PLUGINS, "Unloaded [{}] static plugin", getPluginName());
 }
 
 void *StaticPlugin::loadProcedure(std::string_view procedureName) const {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "core/core.h"
 #include "utilities/logger.h"
 
 #if defined(NOX_DEBUG)
@@ -24,6 +25,6 @@
         NOX_DEBUG_BREAK();                                    \
     }
 #else
-#define NOX_ASSERT(expression) (void)(expression)
-#define NOX_ASSERT_MSG(expression, ...) NOX_ASSERT(expression)
+#define NOX_ASSERT(expression) NOX_UNUSED(expression)
+#define NOX_ASSERT_MSG(expression, ...) NOX_UNUSED(expression)
 #endif
