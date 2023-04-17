@@ -1,5 +1,6 @@
+#include "utilities/windows/windows_helper.h"
 #include "window/windows/windows_window.h"
-#include "window/windows/windows_window_helper.h"
+#include "window/windows/windows_window_procedure.inl"
 
 namespace NOX {
 
@@ -8,11 +9,23 @@ std::unique_ptr<Window> Window::create(const WindowDescriptor &descriptor) {
 }
 
 WindowsWindow::WindowsWindow(const WindowDescriptor &descriptor) : m_descriptor{descriptor} {
-    auto style = getWindowStyle(descriptor);
-    auto clientArea = getWindowClientArea(descriptor, style);
-    auto position = getWindowPosition(descriptor, clientArea);
-    auto size = getWindowSize(clientArea);
-    m_handle = CreateWindow(TEXT(WindowsWindowClass::className),
+    auto style = WindowsHelper::getWindowStyle(descriptor);
+    auto clientArea = WindowsHelper::getWindowClientArea(descriptor, style);
+    auto position = WindowsHelper::getWindowPosition(descriptor, clientArea);
+    auto size = WindowsHelper::getWindowSize(clientArea);
+
+    WNDCLASS attributes{};
+    attributes.style = (CS_HREDRAW | CS_VREDRAW | CS_OWNDC);
+    attributes.lpfnWndProc = windowProcedure;
+    attributes.hInstance = GetModuleHandle(nullptr);
+    attributes.hIcon = LoadIcon(nullptr, IDI_APPLICATION);
+    attributes.hCursor = LoadCursor(nullptr, IDC_ARROW);
+    attributes.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(WHITE_BRUSH));
+    attributes.lpszClassName = TEXT(windowClassName);
+    WindowsHelper::registerWindowClass(attributes);
+    populateWindowMessageHandlers();
+
+    m_handle = CreateWindow(TEXT(windowClassName),
                             TEXT(descriptor.title.c_str()),
                             style,
                             position.x,
@@ -32,7 +45,9 @@ WindowsWindow::WindowsWindow(const WindowDescriptor &descriptor) : m_descriptor{
 WindowsWindow::~WindowsWindow() {
     auto result = DestroyWindow(m_handle);
     NOX_ASSERT_MSG(!result, "Unable to destroy [{}] window", m_descriptor.title);
-    NOX_LOG_TRACE(WINDOW, "Destroyed window", m_descriptor.title);
+    NOX_LOG_TRACE(WINDOW, "Destroyed [{}] window", m_descriptor.title);
+
+    WindowsHelper::unregisterWindowClass(windowClassName);
 }
 
 void WindowsWindow::show() const {

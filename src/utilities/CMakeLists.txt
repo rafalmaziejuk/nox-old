@@ -7,3 +7,7 @@ set(NOX_UTILITIES_SOURCES
 )
 
 target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_UTILITIES_SOURCES})
+
+if(NOX_PLATFORM_WINDOWS)
+    add_subdirectory(windows)
+endif()

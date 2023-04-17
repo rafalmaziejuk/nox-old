@@ -1,7 +1,4 @@
-#include "window/windows/windows_window.h"
-#include "window/windows/windows_window_procedure.h"
-
-#define USER_DATA(handle) reinterpret_cast<NOX::WindowsWindow *>(GetWindowLongPtr(handle, GWLP_USERDATA))
+#define USER_DATA(handle) reinterpret_cast<WindowsWindow *>(GetWindowLongPtr(handle, GWLP_USERDATA))
 
 namespace NOX {
 
