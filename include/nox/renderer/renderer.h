@@ -14,6 +14,7 @@ using RendererDeleter = std::function<void(Renderer *)>;
 
 struct RendererDescriptor {
     RendererAPI api;
+    RendererConfig config;
 };
 
 class NOX_EXPORT Renderer : public NonCopyable {

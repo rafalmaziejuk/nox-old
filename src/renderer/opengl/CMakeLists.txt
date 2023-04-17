@@ -82,6 +82,7 @@ nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_OPENGL_LIB_NAME} glad)
 # --------------------------------------------------
 set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp
@@ -90,5 +91,9 @@ set(NOX_OPENGL_SOURCES
 )
 
 target_sources(${NOX_OPENGL_LIB_NAME} PRIVATE ${NOX_OPENGL_SOURCES})
+
+if(NOX_PLATFORM_WINDOWS)
+    add_subdirectory(windows)
+endif()
 
 nox_create_project_source_tree(${NOX_OPENGL_LIB_NAME})
