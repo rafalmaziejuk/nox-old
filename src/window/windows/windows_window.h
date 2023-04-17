@@ -17,6 +17,8 @@ class WindowsWindow final : public Window {
     void postCloseEvent();
     void postResizeEvent(uint32_t width, uint32_t height);
 
+    void *getNativeHandle() const override;
+
   private:
     static constexpr auto windowClassName = "__NOX_WINDOW_CLASS__";
     HWND m_handle{nullptr};

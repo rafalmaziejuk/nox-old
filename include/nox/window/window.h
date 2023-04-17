@@ -38,6 +38,8 @@ class NOX_EXPORT Window : public NonCopyable {
 
     virtual void processEvents() const = 0;
 
+    virtual void *getNativeHandle() const = 0;
+
   protected:
     void onCloseEvent() const;
     void onResizeEvent(uint32_t width, uint32_t height) const;

@@ -73,4 +73,8 @@ void WindowsWindow::postResizeEvent(uint32_t width, uint32_t height) {
     NOX_LOG_TRACE(WINDOW, "Resize event posted");
 }
 
+void *WindowsWindow::getNativeHandle() const {
+    return m_handle;
+}
+
 } // namespace NOX
