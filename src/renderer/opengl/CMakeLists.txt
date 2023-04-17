@@ -43,6 +43,20 @@ set_target_properties(
 # --------------------------------------------------
 # Create generated files
 # --------------------------------------------------
+target_precompile_headers(
+    nox-opengl
+    PRIVATE
+    [["utilities/assertion.h"]]
+    <algorithm>
+    <cstdint>
+    <memory>
+    <string>
+    <string_view>
+    <unordered_map>
+    <utility>
+    <vector>
+)
+
 generate_export_header(
     ${NOX_OPENGL_LIB_NAME}
     EXPORT_MACRO_NAME NOX_OPENGL_EXPORT
@@ -52,13 +66,16 @@ generate_export_header(
 # --------------------------------------------------
 # Link libraries
 # --------------------------------------------------
+add_subdirectory(${NOX_THIRD_PARTY_DIR}/glad glad)
+
 target_link_libraries(
     ${NOX_OPENGL_LIB_NAME}
     PRIVATE
     ${NOX_LIB_NAME}
+    glad
     OpenGL::GL
 )
-nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_OPENGL_LIB_NAME})
+nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_OPENGL_LIB_NAME} glad)
 
 # --------------------------------------------------
 # Add sources
@@ -73,3 +90,5 @@ set(NOX_OPENGL_SOURCES
 )
 
 target_sources(${NOX_OPENGL_LIB_NAME} PRIVATE ${NOX_OPENGL_SOURCES})
+
+nox_create_project_source_tree(${NOX_OPENGL_LIB_NAME})
