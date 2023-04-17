@@ -1,7 +1,5 @@
 #pragma once
 
-#include "window/windows/windows_window_class.h"
-
 #include <nox/window/window.h>
 
 #include <Windows.h>
@@ -20,8 +18,8 @@ class WindowsWindow final : public Window {
     void postResizeEvent(uint32_t width, uint32_t height);
 
   private:
+    static constexpr auto windowClassName = "__NOX_WINDOW_CLASS__";
     HWND m_handle{nullptr};
-    WindowsWindowClass m_windowClass{};
 
     WindowDescriptor m_descriptor;
 };

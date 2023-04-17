@@ -11,8 +11,8 @@
 namespace NOX {
 
 struct Window::Impl {
-    bool shouldClose{false};
     std::vector<EventDispatcher> eventDispatchers;
+    bool shouldClose{false};
 };
 
 Window::Window() : m_impl{new Impl} {}

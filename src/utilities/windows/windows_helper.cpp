@@ -1,8 +1,18 @@
-#include "window/windows/windows_window_helper.h"
+#include "utilities/windows/windows_helper.h"
 
 #include <nox/window/window.h>
 
-namespace NOX {
+namespace NOX::WindowsHelper {
+
+void registerWindowClass(const WNDCLASS &attributes) {
+    auto result = RegisterClass(&attributes);
+    NOX_ASSERT_MSG(!result, "Unable to register window class");
+}
+
+void unregisterWindowClass(std::string_view className) {
+    auto result = UnregisterClass(TEXT(className.data()), GetModuleHandle(nullptr));
+    NOX_ASSERT_MSG(!result, "Unable to unregister window class");
+}
 
 DWORD getWindowStyle(const WindowDescriptor &descriptor) {
     DWORD result{};
@@ -55,4 +65,4 @@ Vector2D<uint32_t> getWindowSize(RECT clientArea) {
     return {width, height};
 }
 
-} // namespace NOX
+} // namespace NOX::WindowsHelper
