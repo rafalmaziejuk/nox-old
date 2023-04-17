@@ -7,13 +7,13 @@ using namespace NOX;
 class SandboxApplication {
   public:
     SandboxApplication() {
-        WindowDescriptor descriptor{};
-        descriptor.title = "Sandbox Example";
-        descriptor.size = {800u, 600u};
-        descriptor.isVisible = true;
-        descriptor.isCentered = true;
-        descriptor.isResizable = true;
-        m_window = Window::create(descriptor);
+        WindowDescriptor windowDescriptor{};
+        windowDescriptor.title = "Sandbox Example";
+        windowDescriptor.size = {800u, 600u};
+        windowDescriptor.isVisible = true;
+        windowDescriptor.isCentered = true;
+        windowDescriptor.isResizable = true;
+        m_window = Window::create(windowDescriptor);
 
         EventDispatcher eventDispatcher;
         eventDispatcher.closeEventCallback = [this]() {
@@ -22,7 +22,9 @@ class SandboxApplication {
         };
         m_window->pushBackEventDispatcher(eventDispatcher);
 
-        m_renderer = Renderer::create("OpenGL");
+        RendererDescriptor rendererDescriptor;
+        rendererDescriptor.api = RendererAPI::OPENGL;
+        m_renderer = Renderer::create(rendererDescriptor);
     }
 
     void run() {
