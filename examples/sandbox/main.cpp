@@ -1,4 +1,5 @@
 #include <nox/renderer/renderer.h>
+#include <nox/renderer/swap_chain.h>
 #include <nox/window/event.h>
 #include <nox/window/window.h>
 
@@ -22,14 +23,23 @@ class SandboxApplication {
         };
         m_window->pushBackEventDispatcher(eventDispatcher);
 
+        OpenGLRendererConfig rendererConfig;
+        rendererConfig.majorVersion = 4;
+        rendererConfig.minorVersion = 6;
         RendererDescriptor rendererDescriptor;
         rendererDescriptor.api = RendererAPI::OPENGL;
+        rendererDescriptor.config = rendererConfig;
         m_renderer = Renderer::create(rendererDescriptor);
+
+        SwapChainDescriptor swapChainDescriptor{};
+        swapChainDescriptor.isVSync = true;
+        m_swapChain = m_renderer->createSwapChain(swapChainDescriptor, *m_window);
     }
 
     void run() {
         while (m_isRunning) {
             m_window->processEvents();
+            m_swapChain->swap();
         }
     }
 
@@ -37,6 +47,7 @@ class SandboxApplication {
     bool m_isRunning{true};
     std::unique_ptr<Window> m_window{nullptr};
     std::unique_ptr<Renderer, RendererDeleter> m_renderer{nullptr};
+    std::shared_ptr<SwapChain> m_swapChain{nullptr};
 };
 
 int main() {

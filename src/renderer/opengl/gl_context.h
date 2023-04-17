@@ -7,10 +7,14 @@
 
 namespace NOX {
 
+class Window;
+
 class GLContext : public NonCopyable {
   public:
     GLContext(const OpenGLRendererConfig &config);
     ~GLContext();
+
+    void createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window);
 
     void makeCurrent() const;
 
