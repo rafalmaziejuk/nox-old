@@ -15,7 +15,7 @@ constexpr std::array<std::pair<RendererAPI, const char *>, static_cast<size_t>(R
 } // namespace
 
 std::unique_ptr<Renderer, RendererDeleter> Renderer::create(const RendererDescriptor &descriptor) {
-    NOX_DECLARE_PLUGIN_FUNCTION(AllocateRendererFunction, void *, void);
+    NOX_DECLARE_PLUGIN_FUNCTION(AllocateRendererFunction, void *, const RendererDescriptor &);
     NOX_DECLARE_PLUGIN_FUNCTION(DeallocateRendererFunction, void, void *);
 
     const auto *rendererPluginName = rendererPluginNames[static_cast<size_t>(descriptor.api)].second;
@@ -25,7 +25,7 @@ std::unique_ptr<Renderer, RendererDeleter> Renderer::create(const RendererDescri
     auto *deallocateProcedure = plugin->loadProcedure(RendererPlugin::deallocateRendererProcedureName);
     auto *deallocateRendererFunction = reinterpret_cast<DeallocateRendererFunction>(deallocateProcedure);
 
-    auto *renderer = reinterpret_cast<Renderer *>(allocateRendererFunction());
+    auto *renderer = reinterpret_cast<Renderer *>(allocateRendererFunction(descriptor));
     auto deleter = [deallocateRendererFunction, plugin](Renderer *renderer) {
         deallocateRendererFunction(renderer);
         PluginLoader::instance().unloadPlugin(plugin);

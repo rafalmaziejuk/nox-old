@@ -4,8 +4,8 @@
 
 namespace NOX {
 
-Renderer *GLPlugin::allocateRenderer() {
-    return new GLRenderer;
+Renderer *GLPlugin::allocateRenderer(const RendererDescriptor &descriptor) {
+    return new GLRenderer{descriptor};
 }
 
 void GLPlugin::deallocateRenderer(void *renderer) {
@@ -13,15 +13,13 @@ void GLPlugin::deallocateRenderer(void *renderer) {
     delete rendererToDeallocate;
 }
 
-} // namespace NOX
-
 extern "C" {
-void *allocateRenderer() {
-    return new NOX::GLRenderer;
+void *allocateRenderer(const RendererDescriptor &descriptor) {
+    return new GLRenderer{descriptor};
 }
 
 void deallocateRenderer(void *renderer) {
-    auto *rendererToDeallocate = static_cast<NOX::GLRenderer *>(renderer);
+    auto *rendererToDeallocate = static_cast<GLRenderer *>(renderer);
     delete rendererToDeallocate;
 }
 
@@ -29,3 +27,5 @@ uint32_t getAbiCompatibilityIdentifier() {
     return NOX_ABI_COMPATIBILITY_IDENTIFIER;
 }
 }
+
+} // namespace NOX
