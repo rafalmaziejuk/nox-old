@@ -1,10 +1,8 @@
 #pragma once
 
-#include <nox/export.h>
-
 namespace NOX {
 
-class NOX_EXPORT NonCopyable {
+class NonCopyable {
   public:
     NonCopyable(const NonCopyable &) = delete;
     NonCopyable &operator=(const NonCopyable &) = delete;

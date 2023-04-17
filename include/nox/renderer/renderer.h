@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nox/export.h>
 #include <nox/non_copyable.h>
 
 #include <functional>
