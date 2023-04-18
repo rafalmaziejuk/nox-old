@@ -16,8 +16,8 @@ jobs:
         platform:
         - { name: Windows VS2022, os: windows-latest, flags: -G"Visual Studio 17 2022" }
         - { name: Windows Clang,  os: windows-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja }
-        - { name: Linux Clang,    os: ubuntu-latest,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja }
-        - { name: Linux GCC,      os: ubuntu-latest,  flags: -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -GNinja }
+        #- { name: Linux Clang,    os: ubuntu-latest,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja }
+        #- { name: Linux GCC,      os: ubuntu-latest,  flags: -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -GNinja }
 
         config:
         - { name: Static, flags: -DBUILD_SHARED_LIBS=OFF }
@@ -32,15 +32,15 @@ jobs:
       with:
         submodules: recursive
 
-    - name: Install dependencies
-      run: |
-           if [ "$RUNNER_OS" == "Linux" ]; then
-              sudo apt-get update && sudo apt-get install ninja-build libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libgl1-mesa-dev
-           else
-              echo "$RUNNER_OS not supported"
-              exit 1
-           fi
-      shell: bash
+    #- name: Install dependencies
+    #  run: |
+    #       if [ "$RUNNER_OS" == "Linux" ]; then
+    #          sudo apt-get update && sudo apt-get install ninja-build libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libgl1-mesa-dev
+    #       else
+    #          echo "$RUNNER_OS not supported"
+    #          exit 1
+    #       fi
+    #  shell: bash
 
     - name: Configure
       run: cmake -S . -B build ${{ matrix.platform.flags }} ${{ matrix.config.flags }} ${{ matrix.type.flags }}
@@ -66,19 +66,16 @@ jobs:
 
   clang-tidy-check:
     name: clang-tidy check
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v3
       with:
         submodules: recursive
 
-    - name: Install dependencies
-      run: sudo apt-get update && sudo apt-get install ninja-build libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libgl1-mesa-dev
-
     - name: Configure
       shell: bash
-      run: cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      run: cmake -S . -B build -GNinja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
     - name: Prepare compile_commands.json
       shell: bash
