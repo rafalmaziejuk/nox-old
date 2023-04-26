@@ -1,6 +1,7 @@
 # Directories
 .vs/
 build/
+output/
 
 # Files
 include/nox/export.h
