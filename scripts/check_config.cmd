@@ -1,0 +1,13 @@
+set GOTO_FAIL=0
+set IS_VISUAL_STUDIO_VERSION_CORRECT=0
+
+for %%v in (2015 2017 2019 2022) do (
+    if %VISUAL_STUDIO_VERSION%==%%v (
+        set IS_VISUAL_STUDIO_VERSION_CORRECT=1
+    )
+)
+if %IS_VISUAL_STUDIO_VERSION_CORRECT%==0 (
+    echo Incorrect VISUAL_STUDIO_VERSION=%VISUAL_STUDIO_VERSION%. Correct values are: 2015, 2017, 2019, 2022
+    set GOTO_FAIL=1
+    goto :eof
+)
