@@ -1,4 +1,5 @@
 #include "renderer/opengl/gl_context.h"
+#include "renderer/opengl/gl_helper.h"
 #include "utilities/windows/windows_helper.h"
 
 #include <nox/window/window.h>
@@ -76,6 +77,7 @@ GLContext::GLContext(const OpenGLRendererConfig &config) : m_impl{std::make_uniq
 
     gladLoaderLoadGL();
     NOX_ASSERT(!GLAD_GL_EXT_direct_state_access);
+    NOX_ASSERT(!GLAD_GL_KHR_debug);
 
     int32_t majorVersion{}, minorVersion{};
     glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
@@ -142,6 +144,12 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
     NOX_LOG_INFO(OPENGL, "Vendor: {}", reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
     NOX_LOG_INFO(OPENGL, "Device: {}", reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
     NOX_LOG_INFO(OPENGL, "Version: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
+
+    if constexpr (isDebugConfiguration) {
+        glEnable(GL_DEBUG_OUTPUT);
+        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+        glDebugMessageCallback(GLHelper::debugMessageCallback, nullptr);
+    }
 }
 
 } // namespace NOX
