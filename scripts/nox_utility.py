@@ -24,12 +24,14 @@ class CompilationRunner():
         config_type : str
      
     def __init__(self, output_dir_name : str):
+        self.configure_commands = []
+        self.build_commands = []
+        self.output_file_names = []
         self.output_dir_name = output_dir_name
 
         for c_compiler, cxx_compiler in zip(self.C_COMPILERS, self.CXX_COMPILERS):
             for build_type, config_type in self.CONFIGURATION_MATRIX:
                 config_postfix = f"{c_compiler}_{build_type.lower()}_{config_type.lower()}"
-                print(config_postfix)
                 build_dir_name = f"{output_dir_name}/build_{config_postfix}"
                 output_file_name = f"{output_dir_name}/{config_postfix}.txt"
                 build_shared_libs = self.__build_shared_libs(build_type)
@@ -40,14 +42,11 @@ class CompilationRunner():
                                          build_shared_libs,
                                          config_type)
                 configure_command = self.__prepare_configure_command(config)
-                self.configure_commands = []
                 self.configure_commands.append(configure_command)
 
                 build_command = self.__prepare_build_command(build_dir_name)
-                self.build_commands = []
                 self.build_commands.append(build_command)
 
-                self.output_file_names = []
                 self.output_file_names.append(output_file_name)
 
                 
@@ -61,6 +60,7 @@ class CompilationRunner():
         command.append(f".")
         command.append(f"-B")
         command.append(f"{config.build_dir_name}")
+        command.append(f"-G{self.GENERATOR}")
         command.append(f"-DCMAKE_C_COMPILER={config.c_compiler}")
         command.append(f"-DCMAKE_CXX_COMPILER={config.cxx_compiler}")
         command.append(f"-DCMAKE_CXX_FLAGS={self.CXX_FLAGS}")
