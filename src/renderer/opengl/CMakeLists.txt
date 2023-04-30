@@ -67,6 +67,11 @@ generate_export_header(
 # Link libraries
 # --------------------------------------------------
 add_subdirectory(${NOX_THIRD_PARTY_DIR}/glad glad)
+set_target_properties(
+    glad
+    PROPERTIES 
+    FOLDER ${NOX_THIRD_PARTY_FOLDER_NAME}/glad
+)
 
 target_link_libraries(
     ${NOX_OPENGL_LIB_NAME}
@@ -83,6 +88,8 @@ nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_OPENGL_LIB_NAME} glad)
 set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp
