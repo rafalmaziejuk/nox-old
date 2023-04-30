@@ -48,7 +48,7 @@ if %ERRORLEVEL% NEQ 0 (
     goto :FAIL
 )
 
-set BUILD_DIR=..\..\%BUILD_DIR%
+set BUILD_DIR=..\%BUILD_DIR%
 if not exist %BUILD_DIR% (
     mkdir %BUILD_DIR%
 )
