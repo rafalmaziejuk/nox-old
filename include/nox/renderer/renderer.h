@@ -6,6 +6,7 @@
 
 #include <functional>
 #include <memory>
+#include <string_view>
 
 namespace NOX {
 
@@ -13,6 +14,9 @@ class Buffer;
 struct BufferDescriptor;
 enum class Format;
 struct VertexFormat;
+
+class PipelineState;
+struct PipelineStateDescriptor;
 
 class Shader;
 struct ShaderDescriptor;
@@ -42,6 +46,8 @@ class NOX_EXPORT Renderer : public NonCopyable {
     [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<PipelineState> createPipelineState(const PipelineStateDescriptor &descriptor) = 0;
 };
 
 } // namespace NOX

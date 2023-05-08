@@ -14,6 +14,7 @@ struct GLState {
 
     uint32_t indexType;
     uint32_t currentlyBoundVertexArrayIndex;
+    uint32_t primitiveTopology;
 };
 
 } // namespace NOX
