@@ -9,7 +9,7 @@ class GLSwapChain;
 
 class GLRenderer final : public Renderer {
   public:
-    GLRenderer(const RendererDescriptor &descriptor);
+    explicit GLRenderer(const RendererDescriptor &descriptor);
 
     std::shared_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) override;
 

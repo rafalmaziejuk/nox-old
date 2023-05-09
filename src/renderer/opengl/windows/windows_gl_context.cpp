@@ -2,6 +2,7 @@
 #include "renderer/opengl/gl_helper.h"
 #include "window/windows/windows_window_helper.h"
 
+#include <nox/renderer/swap_chain_types.h>
 #include <nox/window/window.h>
 
 #include <glad/wgl.h>

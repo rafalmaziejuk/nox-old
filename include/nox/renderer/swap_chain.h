@@ -2,7 +2,7 @@
 
 #include <nox/export.h>
 #include <nox/non_copyable.h>
-#include <nox/renderer/common_types.h>
+#include <nox/renderer/swap_chain_types.h>
 
 namespace NOX {
 
@@ -14,6 +14,8 @@ struct SwapChainDescriptor {
 
 class NOX_EXPORT SwapChain : public NonCopyable {
   public:
+    virtual ~SwapChain();
+
     virtual void swap() const = 0;
 
     virtual void setVSync(bool value) = 0;
