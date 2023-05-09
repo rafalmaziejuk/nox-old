@@ -9,6 +9,11 @@
 
 namespace NOX {
 
+class Buffer;
+struct BufferDescriptor;
+enum class Format;
+struct VertexFormat;
+
 class SwapChain;
 struct SwapChainDescriptor;
 
@@ -29,6 +34,9 @@ class NOX_EXPORT Renderer : public NonCopyable {
     [[nodiscard]] static std::unique_ptr<Renderer, RendererDeleter> create(const RendererDescriptor &descriptor);
 
     [[nodiscard]] virtual std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &format) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) = 0;
 };
 
 } // namespace NOX

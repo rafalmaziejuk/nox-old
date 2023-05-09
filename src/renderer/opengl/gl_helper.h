@@ -1,5 +1,7 @@
 #pragma once
 
+#include <nox/renderer/buffer_types.h>
+
 #include <glad/gl.h>
 
 namespace NOX::GLHelper {
@@ -11,5 +13,8 @@ void GLAPIENTRY debugMessageCallback(GLenum source,
                                      GLsizei length,
                                      const GLchar *message,
                                      const void *userParam);
+
+GLbitfield mapBufferStorageFlags(uint8_t accessMethod);
+GLenum mapDataTypeEnum(uint8_t type, uint8_t size);
 
 } // namespace NOX::GLHelper

@@ -55,4 +55,58 @@ void GLAPIENTRY debugMessageCallback(GLenum source,
     }
 }
 
+GLbitfield mapBufferStorageFlags(uint8_t accessMethod) {
+    GLbitfield flags = 0u;
+
+    if (accessMethod & BufferAccessMethod::STATIC) {
+        flags |= 0u;
+    }
+    if (accessMethod & BufferAccessMethod::DYNAMIC) {
+        flags |= GL_DYNAMIC_STORAGE_BIT;
+    }
+
+    return flags;
+}
+
+GLenum mapDataTypeEnum(uint8_t type, uint8_t size) {
+    if (size == 1u) {
+        if (type == FormatDataType::UINT) {
+            return GL_UNSIGNED_BYTE;
+        }
+        if (type == FormatDataType::SINT) {
+            return GL_BYTE;
+        }
+    }
+    if (size == 2u) {
+        if (type == FormatDataType::UINT) {
+            return GL_UNSIGNED_SHORT;
+        }
+        if (type == FormatDataType::SINT) {
+            return GL_SHORT;
+        }
+        if (type == FormatDataType::FLOAT) {
+            return GL_HALF_FLOAT;
+        }
+    }
+    if (size == 4u) {
+        if (type == FormatDataType::UINT) {
+            return GL_UNSIGNED_INT;
+        }
+        if (type == FormatDataType::SINT) {
+            return GL_INT;
+        }
+        if (type == FormatDataType::FLOAT) {
+            return GL_FLOAT;
+        }
+    }
+    if (size == 8u) {
+        if (type == FormatDataType::FLOAT) {
+            return GL_DOUBLE;
+        }
+    }
+
+    NOX_ASSERT(true);
+    return 0u;
+}
+
 } // namespace NOX::GLHelper
