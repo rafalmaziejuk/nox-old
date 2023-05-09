@@ -133,4 +133,14 @@ GLbitfield mapShaderBit(ShaderType type) {
     }
 }
 
+uint32_t mapPrimitiveTopology(PrimitiveTopology topology) {
+    switch (topology) {
+    case PrimitiveTopology::TRIANGLE_LIST:
+        return GL_TRIANGLES;
+    default:
+        NOX_ASSERT(true);
+        return 0u;
+    }
+}
+
 } // namespace NOX::GLHelper

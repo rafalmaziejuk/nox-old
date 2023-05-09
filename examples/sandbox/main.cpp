@@ -1,4 +1,5 @@
 #include <nox/renderer/buffer.h>
+#include <nox/renderer/pipeline_state.h>
 #include <nox/renderer/renderer.h>
 #include <nox/renderer/shader.h>
 #include <nox/renderer/swap_chain.h>
@@ -73,6 +74,9 @@ class SandboxApplication {
         indexBufferDescriptor.data = indices;
         m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32_UINT);
 
+        PipelineStateDescriptor pipelineStateDescriptor{};
+        pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
+
         constexpr auto vertexShaderSource = R"(
             #version 460 core
 
@@ -92,7 +96,7 @@ class SandboxApplication {
         )";
         ShaderDescriptor vertexShaderDescriptor{};
         vertexShaderDescriptor.type = ShaderType::VERTEX;
-        auto vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, vertexShaderSource);
+        pipelineStateDescriptor.vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, vertexShaderSource);
 
         constexpr auto fragmentShaderSource = R"(
             #version 460 core
@@ -106,7 +110,9 @@ class SandboxApplication {
         )";
         ShaderDescriptor fragmentShaderDescriptor{};
         fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
-        auto fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, fragmentShaderSource);
+        pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, fragmentShaderSource);
+
+        m_pipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
     }
 
     void run() {
@@ -123,6 +129,7 @@ class SandboxApplication {
     std::unique_ptr<SwapChain> m_swapChain{nullptr};
     std::unique_ptr<Buffer> m_vertexBuffer{nullptr};
     std::unique_ptr<Buffer> m_indexBuffer{nullptr};
+    std::unique_ptr<PipelineState> m_pipelineState{nullptr};
 };
 
 int main() {

@@ -19,6 +19,8 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) override;
 
+    std::unique_ptr<PipelineState> createPipelineState(const PipelineStateDescriptor &descriptor) override;
+
   private:
     bool isVertexFormatUnique(const VertexFormat &format, uint32_t &index);
 

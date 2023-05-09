@@ -1,5 +1,7 @@
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_context.h"
+#include "renderer/opengl/gl_helper.h"
+#include "renderer/opengl/gl_pipeline_state.h"
 #include "renderer/opengl/gl_renderer.h"
 #include "renderer/opengl/gl_shader.h"
 #include "renderer/opengl/gl_state.h"
@@ -48,6 +50,12 @@ std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescripto
     shader->compileFromString(source);
 
     return shader;
+}
+
+std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineStateDescriptor &descriptor) {
+    m_state->primitiveTopology = GLHelper::mapPrimitiveTopology(descriptor.primitiveTopology);
+
+    return std::make_unique<GLPipelineState>(descriptor);
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {
