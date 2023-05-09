@@ -21,5 +21,6 @@ GLenum mapDataTypeEnum(uint8_t type, uint8_t size);
 GLenum mapShaderEnum(ShaderType type);
 GLbitfield mapShaderBit(ShaderType type);
 uint32_t mapPrimitiveTopology(PrimitiveTopology topology);
+GLbitfield mapClearFlags(uint8_t mask);
 
 } // namespace NOX::GLHelper

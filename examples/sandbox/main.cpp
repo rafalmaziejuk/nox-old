@@ -1,4 +1,5 @@
 #include <nox/renderer/buffer.h>
+#include <nox/renderer/command_list.h>
 #include <nox/renderer/pipeline_state.h>
 #include <nox/renderer/renderer.h>
 #include <nox/renderer/shader.h>
@@ -116,8 +117,23 @@ class SandboxApplication {
     }
 
     void run() {
+        CommandListDescriptor commandListDescriptor{};
+        auto commandList = m_renderer->createCommandList(commandListDescriptor);
+
+        commandList->bindVertexBuffer(*m_vertexBuffer);
+        commandList->bindIndexBuffer(*m_indexBuffer);
+        commandList->bindPipelineState(*m_pipelineState);
+
+        commandList->setViewport(m_window->getSize());
+        commandList->setClearColor({0.1f, 0.1f, 0.1f});
+
         while (m_isRunning) {
             m_window->processEvents();
+
+            commandList->clear(ClearFlag::COLOR);
+            commandList->drawIndexed(0u, 6u);
+            commandList->drawIndexed(7u, 14u);
+
             m_swapChain->swap();
         }
     }

@@ -5,8 +5,10 @@
 namespace NOX {
 
 class GLBuffer;
+class GLCommandList;
 class GLContext;
 struct GLState;
+class GLSwapChain;
 
 class GLRenderer final : public Renderer {
   public:
@@ -20,6 +22,8 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) override;
 
     std::unique_ptr<PipelineState> createPipelineState(const PipelineStateDescriptor &descriptor) override;
+
+    std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) override;
 
   private:
     bool isVertexFormatUnique(const VertexFormat &format, uint32_t &index);

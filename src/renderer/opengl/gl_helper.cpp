@@ -1,5 +1,7 @@
 #include "renderer/opengl/gl_helper.h"
 
+#include <nox/renderer/command_list_types.h>
+
 #define GL_ENUM_TO_CASE(enumName) \
     case enumName:                \
         return #enumName
@@ -141,6 +143,22 @@ uint32_t mapPrimitiveTopology(PrimitiveTopology topology) {
         NOX_ASSERT(true);
         return 0u;
     }
+}
+
+GLbitfield mapClearFlags(uint8_t clearFlag) {
+    GLbitfield flags = 0u;
+
+    if (clearFlag & ClearFlag::COLOR) {
+        flags |= GL_COLOR_BUFFER_BIT;
+    }
+    if (clearFlag & ClearFlag::DEPTH) {
+        flags |= GL_DEPTH_BUFFER_BIT;
+    }
+    if (clearFlag & ClearFlag::STENCIL) {
+        flags |= GL_STENCIL_BUFFER_BIT;
+    }
+
+    return flags;
 }
 
 } // namespace NOX::GLHelper
