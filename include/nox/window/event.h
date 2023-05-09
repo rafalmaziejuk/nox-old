@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/maths/vector2d.h>
+#include <nox/vector2d.h>
 
 namespace NOX {
 
