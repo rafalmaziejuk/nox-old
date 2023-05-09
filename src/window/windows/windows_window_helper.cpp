@@ -1,8 +1,8 @@
-#include "utilities/windows/windows_helper.h"
+#include "window/windows/windows_window_helper.h"
 
 #include <nox/window/window.h>
 
-namespace NOX::WindowsHelper {
+namespace NOX::WindowsWindowHelper {
 
 void registerWindowClass(const WNDCLASS &attributes) {
     auto result = RegisterClass(&attributes);
@@ -65,4 +65,4 @@ Vector2D<uint32_t> getWindowSize(RECT clientArea) {
     return {width, height};
 }
 
-} // namespace NOX::WindowsHelper
+} // namespace NOX::WindowsWindowHelper
