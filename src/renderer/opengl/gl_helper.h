@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nox/renderer/buffer_types.h>
+#include <nox/renderer/shader_types.h>
 
 #include <glad/gl.h>
 
@@ -16,5 +17,7 @@ void GLAPIENTRY debugMessageCallback(GLenum source,
 
 GLbitfield mapBufferStorageFlags(uint8_t accessMethod);
 GLenum mapDataTypeEnum(uint8_t type, uint8_t size);
+GLenum mapShaderEnum(ShaderType type);
+GLbitfield mapShaderBit(ShaderType type);
 
 } // namespace NOX::GLHelper

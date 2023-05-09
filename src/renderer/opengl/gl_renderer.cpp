@@ -1,6 +1,7 @@
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_context.h"
 #include "renderer/opengl/gl_renderer.h"
+#include "renderer/opengl/gl_shader.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_swap_chain.h"
 #include "renderer/opengl/gl_vertex_array.h"
@@ -40,6 +41,13 @@ std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &de
     buffer->setIndexType(format);
 
     return buffer;
+}
+
+std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) {
+    auto shader = std::make_unique<GLShader>(descriptor);
+    shader->compileFromString(source);
+
+    return shader;
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {

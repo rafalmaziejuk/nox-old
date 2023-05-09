@@ -1,5 +1,6 @@
 #include <nox/renderer/buffer.h>
 #include <nox/renderer/renderer.h>
+#include <nox/renderer/shader.h>
 #include <nox/renderer/swap_chain.h>
 #include <nox/window/event.h>
 #include <nox/window/window.h>
@@ -41,21 +42,19 @@ class SandboxApplication {
             uint8_t color[4];
         };
         Vertex vertices[]{
-            {{0.5f, 0.5f}, {255, 0, 0, 255}},   // 1st vertex: center-top, red
-            {{0.5f, -0.5f}, {0, 255, 0, 255}},  // 2nd vertex: right-bottom, green
-            {{-0.5f, -0.5f}, {0, 0, 255, 255}}, // 3rd vertex: left-bottom, blue
-            {{-0.5f, 0.5f}, {0, 255, 0, 255}},  // 3rd vertex: left-bottom, blue
-            {{0.25f, 0.25f}, {0, 0, 0, 255}},   // 1st vertex: center-top, red
-            {{0.25f, -0.25f}, {0, 0, 0, 255}},  // 2nd vertex: right-bottom, green
-            {{-0.25f, -0.25f}, {0, 0, 0, 255}}, // 3rd vertex: left-bottom, blue
-            {{-0.25f, 0.25f}, {0, 0, 0, 255}},  // 3rd vertex: left-bottom, blue
+            {{0.5f, 0.5f}, {255, 0, 0, 255}},
+            {{0.5f, -0.5f}, {0, 255, 0, 255}},
+            {{-0.5f, -0.5f}, {0, 0, 255, 255}},
+            {{-0.5f, 0.5f}, {0, 255, 0, 255}},
+            {{0.25f, 0.25f}, {0, 0, 0, 255}},
+            {{0.25f, -0.25f}, {0, 0, 0, 255}},
+            {{-0.25f, -0.25f}, {0, 0, 0, 255}},
+            {{-0.25f, 0.25f}, {0, 0, 0, 255}},
         };
-        uint32_t indices[] = {
-            // note that we start from 0!
-            0, 1, 3, // first Triangle
-            1, 2, 3, // second Triangle
-            4, 5, 7,
-            5, 6, 7};
+        uint32_t indices[]{0, 1, 3,
+                           1, 2, 3,
+                           4, 5, 7,
+                           5, 6, 7};
 
         VertexFormat vertexFormat;
         vertexFormat.attributes.reserve(2);
@@ -73,6 +72,41 @@ class SandboxApplication {
         indexBufferDescriptor.size = sizeof(indices);
         indexBufferDescriptor.data = indices;
         m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32_UINT);
+
+        constexpr auto vertexShaderSource = R"(
+            #version 460 core
+
+            layout(location = 0) in vec2 aPosition;
+            layout(location = 1) in vec3 aColor;
+
+            out gl_PerVertex {
+	            vec4 gl_Position;
+            };
+
+            out vec3 color;
+
+            void main() {
+                gl_Position = vec4(aPosition, 0.0, 1.0);
+                color = aColor;
+            }
+        )";
+        ShaderDescriptor vertexShaderDescriptor{};
+        vertexShaderDescriptor.type = ShaderType::VERTEX;
+        auto vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, vertexShaderSource);
+
+        constexpr auto fragmentShaderSource = R"(
+            #version 460 core
+
+            in vec3 color;
+            out vec4 fragmentColor;
+
+            void main() {
+                fragmentColor = vec4(color, 1.0);
+            }
+        )";
+        ShaderDescriptor fragmentShaderDescriptor{};
+        fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
+        auto fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, fragmentShaderSource);
     }
 
     void run() {

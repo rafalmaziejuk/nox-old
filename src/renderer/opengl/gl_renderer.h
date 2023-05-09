@@ -17,6 +17,8 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &format) override;
     std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) override;
 
+    std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) override;
+
   private:
     bool isVertexFormatUnique(const VertexFormat &format, uint32_t &index);
 

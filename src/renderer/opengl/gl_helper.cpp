@@ -109,4 +109,28 @@ GLenum mapDataTypeEnum(uint8_t type, uint8_t size) {
     return 0u;
 }
 
+GLenum mapShaderEnum(ShaderType type) {
+    switch (type) {
+    case ShaderType::VERTEX:
+        return GL_VERTEX_SHADER;
+    case ShaderType::FRAGMENT:
+        return GL_FRAGMENT_SHADER;
+    default:
+        NOX_ASSERT(true);
+        return 0u;
+    }
+}
+
+GLbitfield mapShaderBit(ShaderType type) {
+    switch (type) {
+    case ShaderType::VERTEX:
+        return GL_VERTEX_SHADER_BIT;
+    case ShaderType::FRAGMENT:
+        return GL_FRAGMENT_SHADER_BIT;
+    default:
+        NOX_ASSERT(true);
+        return 0u;
+    }
+}
+
 } // namespace NOX::GLHelper
