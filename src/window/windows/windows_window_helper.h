@@ -11,7 +11,7 @@ namespace NOX {
 
 struct WindowDescriptor;
 
-namespace WindowsHelper {
+namespace WindowsWindowHelper {
 
 NOX_EXPORT void registerWindowClass(const WNDCLASS &attributes);
 NOX_EXPORT void unregisterWindowClass(std::string_view className);
@@ -21,6 +21,6 @@ RECT getWindowClientArea(const WindowDescriptor &descriptor, DWORD style);
 Vector2D<int32_t> getWindowPosition(const WindowDescriptor &descriptor, RECT clientArea);
 Vector2D<uint32_t> getWindowSize(RECT clientArea);
 
-} // namespace WindowsHelper
+} // namespace WindowsWindowHelper
 
 } // namespace NOX

@@ -1,6 +1,6 @@
 #include "renderer/opengl/gl_context.h"
 #include "renderer/opengl/gl_helper.h"
-#include "utilities/windows/windows_helper.h"
+#include "window/windows/windows_window_helper.h"
 
 #include <nox/window/window.h>
 
@@ -45,7 +45,7 @@ GLContext::GLContext(const OpenGLRendererConfig &config) : m_impl{std::make_uniq
     attributes.hInstance = GetModuleHandle(nullptr);
     attributes.lpfnWndProc = dummyWindowProcedure;
     attributes.lpszClassName = TEXT(dummyWindowName);
-    WindowsHelper::registerWindowClass(attributes);
+    WindowsWindowHelper::registerWindowClass(attributes);
 
     HWND dummyWindowHandle = CreateWindow(TEXT(dummyWindowName),
                                           TEXT(dummyWindowName),
@@ -98,7 +98,7 @@ GLContext::GLContext(const OpenGLRendererConfig &config) : m_impl{std::make_uniq
 
     auto result = DestroyWindow(dummyWindowHandle);
     NOX_ASSERT_MSG(!result, "Unable to destroy dummy window");
-    WindowsHelper::unregisterWindowClass(dummyWindowName);
+    WindowsWindowHelper::unregisterWindowClass(dummyWindowName);
 }
 
 GLContext::~GLContext() {
