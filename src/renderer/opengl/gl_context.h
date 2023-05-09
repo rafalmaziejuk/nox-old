@@ -1,17 +1,18 @@
 #pragma once
 
 #include <nox/non_copyable.h>
-#include <nox/renderer/common_types.h>
+#include <nox/renderer/renderer_types.h>
 
 #include <memory>
 
 namespace NOX {
 
+struct PixelFormatDescriptor;
 class Window;
 
 class GLContext : public NonCopyable {
   public:
-    GLContext(const OpenGLRendererConfig &config);
+    explicit GLContext(const OpenGLRendererConfig &config);
     ~GLContext();
 
     void createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window);

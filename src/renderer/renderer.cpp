@@ -14,6 +14,8 @@ constexpr std::array<std::pair<RendererAPI, const char *>, static_cast<size_t>(R
 
 } // namespace
 
+Renderer::~Renderer() = default;
+
 std::unique_ptr<Renderer, RendererDeleter> Renderer::create(const RendererDescriptor &descriptor) {
     NOX_DECLARE_PLUGIN_FUNCTION(AllocateRendererFunction, void *, const RendererDescriptor &);
     NOX_DECLARE_PLUGIN_FUNCTION(DeallocateRendererFunction, void, void *);
