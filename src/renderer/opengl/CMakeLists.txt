@@ -89,6 +89,8 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_buffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_buffer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.h

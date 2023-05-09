@@ -1,4 +1,5 @@
 #include "renderer/opengl/gl_buffer.h"
+#include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_context.h"
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
@@ -56,6 +57,10 @@ std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineSta
     m_state->primitiveTopology = GLHelper::mapPrimitiveTopology(descriptor.primitiveTopology);
 
     return std::make_unique<GLPipelineState>(descriptor);
+}
+
+std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDescriptor &descriptor) {
+    return std::make_unique<GLCommandList>(descriptor, m_state);
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {

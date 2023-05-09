@@ -15,6 +15,9 @@ struct BufferDescriptor;
 enum class Format;
 struct VertexFormat;
 
+class CommandList;
+struct CommandListDescriptor;
+
 class PipelineState;
 struct PipelineStateDescriptor;
 
@@ -48,6 +51,8 @@ class NOX_EXPORT Renderer : public NonCopyable {
     [[nodiscard]] virtual std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<PipelineState> createPipelineState(const PipelineStateDescriptor &descriptor) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) = 0;
 };
 
 } // namespace NOX
