@@ -14,6 +14,9 @@ struct BufferDescriptor;
 enum class Format;
 struct VertexFormat;
 
+class Shader;
+struct ShaderDescriptor;
+
 class SwapChain;
 struct SwapChainDescriptor;
 
@@ -37,6 +40,8 @@ class NOX_EXPORT Renderer : public NonCopyable {
 
     [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &format) = 0;
     [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) = 0;
 };
 
 } // namespace NOX
