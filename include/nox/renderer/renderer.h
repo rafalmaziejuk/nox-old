@@ -28,7 +28,7 @@ class NOX_EXPORT Renderer : public NonCopyable {
 
     [[nodiscard]] static std::unique_ptr<Renderer, RendererDeleter> create(const RendererDescriptor &descriptor);
 
-    virtual std::shared_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
+    [[nodiscard]] virtual std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
 };
 
 } // namespace NOX
