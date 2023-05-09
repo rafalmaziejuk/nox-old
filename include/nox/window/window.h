@@ -40,6 +40,8 @@ class NOX_EXPORT Window : public NonCopyable {
 
     virtual void *getNativeHandle() const = 0;
 
+    virtual Vector2D<uint32_t> getSize() const = 0;
+
   protected:
     void onCloseEvent() const;
     void onResizeEvent(uint32_t width, uint32_t height) const;

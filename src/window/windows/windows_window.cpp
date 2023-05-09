@@ -1,5 +1,5 @@
-#include "window/windows/windows_window_helper.h"
 #include "window/windows/windows_window.h"
+#include "window/windows/windows_window_helper.h"
 #include "window/windows/windows_window_procedure.inl"
 
 namespace NOX {
@@ -75,6 +75,10 @@ void WindowsWindow::postResizeEvent(uint32_t width, uint32_t height) {
 
 void *WindowsWindow::getNativeHandle() const {
     return m_handle;
+}
+
+Vector2D<uint32_t> WindowsWindow::getSize() const {
+    return m_descriptor.size;
 }
 
 } // namespace NOX
