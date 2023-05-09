@@ -1,5 +1,8 @@
 set(NOX_RENDERER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/buffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/swap_chain.cpp
 )

@@ -87,15 +87,21 @@ nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_OPENGL_LIB_NAME} glad)
 # --------------------------------------------------
 set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_buffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_buffer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_object.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.h
     ${CMAKE_CURRENT_SOURCE_DIR}/nox_opengl_export.h
 )
 
