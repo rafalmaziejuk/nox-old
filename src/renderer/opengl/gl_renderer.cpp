@@ -4,18 +4,14 @@
 
 namespace NOX {
 
-GLRenderer::GLRenderer(const RendererDescriptor &descriptor) : m_descriptor{descriptor} {
-    auto config = m_descriptor.config.get<OpenGLRendererConfig>();
+GLRenderer::GLRenderer(const RendererDescriptor &descriptor) {
+    auto config = descriptor.config.get<OpenGLRendererConfig>();
     m_context = std::make_shared<GLContext>(config);
 }
 
-std::shared_ptr<SwapChain> GLRenderer::createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) {
-    NOX_ASSERT_MSG(m_swapChain != nullptr, "Only one swap chain per renderer is currently supported");
-
+std::unique_ptr<SwapChain> GLRenderer::createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) {
     m_context->createExtendedContext(descriptor.pixelFormatDescriptor, window);
-    m_swapChain = std::make_shared<GLSwapChain>(descriptor, m_context);
-
-    return m_swapChain;
+    return std::make_unique<GLSwapChain>(descriptor, m_context);
 }
 
 } // namespace NOX

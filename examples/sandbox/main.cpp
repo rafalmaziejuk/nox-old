@@ -47,7 +47,7 @@ class SandboxApplication {
     bool m_isRunning{true};
     std::unique_ptr<Window> m_window{nullptr};
     std::unique_ptr<Renderer, RendererDeleter> m_renderer{nullptr};
-    std::shared_ptr<SwapChain> m_swapChain{nullptr};
+    std::unique_ptr<SwapChain> m_swapChain{nullptr};
 };
 
 int main() {
