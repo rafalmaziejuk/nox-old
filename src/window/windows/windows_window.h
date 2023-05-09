@@ -19,6 +19,8 @@ class WindowsWindow final : public Window {
 
     void *getNativeHandle() const override;
 
+    Vector2D<uint32_t> getSize() const override;
+
   private:
     static constexpr auto windowClassName = "__NOX_WINDOW_CLASS__";
     HWND m_handle{nullptr};
