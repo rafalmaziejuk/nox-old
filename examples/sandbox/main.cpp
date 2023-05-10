@@ -125,7 +125,7 @@ class SandboxApplication {
         commandList->bindPipelineState(*m_pipelineState);
 
         commandList->setViewport(m_window->getSize());
-        commandList->setClearColor({0.1f, 0.1f, 0.1f});
+        commandList->setClearColor({0.1f, 0.1f, 0.1f, 1.0f});
 
         while (m_isRunning) {
             m_window->processEvents();

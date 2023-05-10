@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/vector2d.h>
+#include <nox/vec.h>
 
 #include <Windows.h>
 

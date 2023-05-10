@@ -2,7 +2,7 @@
 
 #include <nox/export.h>
 #include <nox/non_copyable.h>
-#include <nox/vector2d.h>
+#include <nox/vec.h>
 
 #include <memory>
 #include <string>

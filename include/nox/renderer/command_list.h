@@ -2,7 +2,7 @@
 
 #include <nox/export.h>
 #include <nox/non_copyable.h>
-#include <nox/vector3d.h>
+#include <nox/vec.h>
 #include <nox/renderer/command_list_types.h>
 
 #include <cstdint>
@@ -24,7 +24,7 @@ class NOX_EXPORT CommandList : public NonCopyable {
     virtual void bindPipelineState(const PipelineState &pipeline) = 0;
 
     virtual void setViewport(const Viewport &viewport) = 0;
-    virtual void setClearColor(const Vector3D<float> &color = {}) = 0;
+    virtual void setClearColor(const Vector4D<float> &color = {}) = 0;
     virtual void setClearDepth(float depth = 1.0f) = 0;
     virtual void setClearStencil(uint32_t stencil = 0u) = 0;
 

@@ -39,8 +39,8 @@ void GLCommandList::setViewport(const Viewport &viewport) {
     glDepthRangef(viewport.nearClip, viewport.farClip);
 }
 
-void GLCommandList::setClearColor(const Vector3D<float> &color) {
-    glClearColor(color.x, color.y, color.z, 1.0f);
+void GLCommandList::setClearColor(const Vector4D<float> &color) {
+    glClearColor(color.r(), color.g(), color.b(), color.a());
 }
 
 void GLCommandList::setClearDepth(float depth) {

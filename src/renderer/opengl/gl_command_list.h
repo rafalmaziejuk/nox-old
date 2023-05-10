@@ -18,7 +18,7 @@ class GLCommandList final : public CommandList {
     void bindPipelineState(const PipelineState &pipeline) override;
 
     void setViewport(const Viewport &viewport) override;
-    void setClearColor(const Vector3D<float> &color) override;
+    void setClearColor(const Vector4D<float> &color) override;
     void setClearDepth(float depth) override;
     void setClearStencil(uint32_t stencil) override;
 
