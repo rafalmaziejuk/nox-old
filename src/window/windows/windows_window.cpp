@@ -28,16 +28,16 @@ WindowsWindow::WindowsWindow(const WindowDescriptor &descriptor) : m_descriptor{
     m_handle = CreateWindow(TEXT(windowClassName),
                             TEXT(descriptor.title.c_str()),
                             style,
-                            position.x,
-                            position.y,
-                            size.x,
-                            size.y,
+                            position.x(),
+                            position.y(),
+                            size.x(),
+                            size.y(),
                             nullptr,
                             nullptr,
                             GetModuleHandle(nullptr),
                             nullptr);
     NOX_ASSERT_MSG(m_handle == nullptr, "Unable to create [{}] window", descriptor.title);
-    NOX_LOG_INFO(WINDOW, "Created window (title: [{}], size: [{} x {}], position: [{} x {}])", descriptor.title, size.x, size.y, position.x, position.y);
+    NOX_LOG_INFO(WINDOW, "Created window (title: [{}], size: [{} x {}], position: [{} x {}])", descriptor.title, size.x(), size.y(), position.x(), position.y());
 
     SetWindowLongPtr(m_handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 }

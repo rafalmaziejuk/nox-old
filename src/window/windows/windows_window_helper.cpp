@@ -37,8 +37,8 @@ RECT getWindowClientArea(const WindowDescriptor &descriptor, DWORD style) {
     RECT rectangle;
     rectangle.left = 0;
     rectangle.top = 0;
-    rectangle.right = static_cast<LONG>(descriptor.size.x);
-    rectangle.bottom = static_cast<LONG>(descriptor.size.y);
+    rectangle.right = static_cast<LONG>(descriptor.size.x());
+    rectangle.bottom = static_cast<LONG>(descriptor.size.y());
 
     auto result = AdjustWindowRect(&rectangle, style, FALSE);
     NOX_ASSERT(!result);
@@ -51,8 +51,8 @@ Vector2D<int32_t> getWindowPosition(const WindowDescriptor &descriptor, RECT cli
         return descriptor.position;
     }
 
-    auto x = static_cast<int32_t>(GetSystemMetrics(SM_CXSCREEN) / 2 - descriptor.size.x / 2);
-    auto y = static_cast<int32_t>(GetSystemMetrics(SM_CYSCREEN) / 2 - descriptor.size.y / 2);
+    auto x = static_cast<int32_t>(GetSystemMetrics(SM_CXSCREEN) / 2 - descriptor.size.x() / 2);
+    auto y = static_cast<int32_t>(GetSystemMetrics(SM_CYSCREEN) / 2 - descriptor.size.y() / 2);
     x += static_cast<int32_t>(clientArea.left);
     y += static_cast<int32_t>(clientArea.top);
 
