@@ -2,6 +2,8 @@
 #include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_render_pass.h"
+#include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
@@ -52,7 +54,37 @@ void GLCommandList::setClearStencil(uint32_t stencil) {
 }
 
 void GLCommandList::clear(uint8_t flags) {
-    glClear(GLHelper::mapClearFlags(flags));
+    glClear(GLHelper::mapClearFlagBits(flags));
+}
+
+void GLCommandList::clearColor(const Vector4D<float> &color, uint8_t index) {
+    NOX_ASSERT(m_state->currentlyBoundRenderTarget == nullptr);
+    m_state->currentlyBoundRenderTarget->clear(color, index);
+}
+
+void GLCommandList::clearColor(const Vector4D<int32_t> &color, uint8_t index) {
+    NOX_ASSERT(m_state->currentlyBoundRenderTarget == nullptr);
+    m_state->currentlyBoundRenderTarget->clear(color, index);
+}
+
+void GLCommandList::clearColor(const Vector4D<uint32_t> &color, uint8_t index) {
+    NOX_ASSERT(m_state->currentlyBoundRenderTarget == nullptr);
+    m_state->currentlyBoundRenderTarget->clear(color, index);
+}
+
+void GLCommandList::clearDepth(float depth) {
+    NOX_ASSERT(m_state->currentlyBoundRenderTarget == nullptr);
+    m_state->currentlyBoundRenderTarget->clear(depth);
+}
+
+void GLCommandList::clearStencil(uint32_t stencil) {
+    NOX_ASSERT(m_state->currentlyBoundRenderTarget == nullptr);
+    m_state->currentlyBoundRenderTarget->clear(stencil);
+}
+
+void GLCommandList::clearDepthStencil(float depth, uint32_t stencil) {
+    NOX_ASSERT(m_state->currentlyBoundRenderTarget == nullptr);
+    m_state->currentlyBoundRenderTarget->clear(depth, stencil);
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
@@ -63,6 +95,20 @@ void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
     auto mode = m_state->primitiveTopology;
     glDrawElements(mode, vertexCount, static_cast<GLenum>(m_state->indexType), nullptr);
+}
+
+void GLCommandList::beginRenderPass(const RenderPass &renderPass) {
+    const auto &glRenderPass = static_cast<const GLRenderPass &>(renderPass);
+    const auto *glPipelineState = glRenderPass.getPipelineState();
+    const auto *glRenderTarget = glPipelineState->getRenderTarget();
+
+    glPipelineState->bind();
+    glRenderTarget->bind();
+    m_state->currentlyBoundRenderTarget = glRenderTarget;
+}
+
+void GLCommandList::endRenderPass() {
+    m_state->currentlyBoundRenderTarget = nullptr;
 }
 
 } // namespace NOX

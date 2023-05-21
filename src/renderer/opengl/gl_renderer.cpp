@@ -3,10 +3,13 @@
 #include "renderer/opengl/gl_context.h"
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_render_pass.h"
+#include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_renderer.h"
 #include "renderer/opengl/gl_shader.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_swap_chain.h"
+#include "renderer/opengl/gl_texture.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
 namespace NOX {
@@ -54,13 +57,28 @@ std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescripto
 }
 
 std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineStateDescriptor &descriptor) {
-    m_state->primitiveTopology = GLHelper::mapPrimitiveTopology(descriptor.primitiveTopology);
+    m_state->primitiveTopology = GLHelper::mapPrimitiveTopologyEnum(descriptor.primitiveTopology);
 
     return std::make_unique<GLPipelineState>(descriptor);
 }
 
 std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDescriptor &descriptor) {
     return std::make_unique<GLCommandList>(descriptor, m_state);
+}
+
+std::unique_ptr<Texture> GLRenderer::createTexture(const TextureDescriptor &descriptor) {
+    return std::make_unique<GLTexture>(descriptor);
+}
+
+std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetDescriptor &descriptor) {
+    return std::make_unique<GLRenderTarget>(descriptor);
+}
+
+std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {
+    auto renderPass = std::make_unique<GLRenderPass>(descriptor);
+    NOX_ASSERT(!renderPass->validate());
+
+    return renderPass;
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {

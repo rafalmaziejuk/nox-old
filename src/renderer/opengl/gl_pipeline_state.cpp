@@ -1,10 +1,11 @@
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_program.h"
 
 namespace NOX {
 
-GLPipelineState::GLPipelineState(const PipelineStateDescriptor &descriptor) {
+GLPipelineState::GLPipelineState(const PipelineStateDescriptor &descriptor) : m_renderTarget{descriptor.renderTarget} {
     GLProgram program{};
     auto vertexShaderBit = program.attachShader(descriptor.vertexShader.get());
     auto fragmentShaderBit = program.attachShader(descriptor.fragmentShader.get());
@@ -17,6 +18,10 @@ GLPipelineState::GLPipelineState(const PipelineStateDescriptor &descriptor) {
 
 GLPipelineState::~GLPipelineState() {
     glDeleteProgramPipelines(1, &m_handle);
+}
+
+const GLRenderTargetBase *GLPipelineState::getRenderTarget() const {
+    return static_cast<const GLRenderTargetBase *>(m_renderTarget.get());
 }
 
 void GLPipelineState::bind() const {

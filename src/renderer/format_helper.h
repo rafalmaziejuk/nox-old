@@ -3,16 +3,30 @@
 #include <nox/export.h>
 #include <nox/renderer/format.h>
 
-namespace NOX::FormatHelper {
+namespace NOX {
+
+enum class FormatDataType : uint8_t {
+    NONE,
+    UINT,
+    SINT,
+    FLOAT
+};
 
 struct FormatDescriptor {
     Format format;
+    FormatDataType dataType;
     uint8_t componentCount;
     uint8_t dataTypeSize;
-    uint8_t dataType;
     bool isNormalized;
+    bool isColor;
+    bool hasDepth;
+    bool hasStencil;
 };
+
+namespace FormatHelper {
 
 NOX_EXPORT FormatDescriptor getFormatDescriptor(Format format);
 
-} // namespace NOX::FormatHelper
+} // namespace FormatHelper
+
+} // namespace NOX
