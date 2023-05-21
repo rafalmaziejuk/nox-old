@@ -2,8 +2,6 @@
 
 #include <nox/renderer/swap_chain.h>
 
-#include <memory>
-
 namespace NOX {
 
 class GLContext;

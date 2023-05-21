@@ -33,6 +33,9 @@ class GLCommandList final : public CommandList {
     void draw(uint32_t firstVertexIndex, uint32_t vertexCount) override;
     void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) override;
 
+    void beginRenderPass(const RenderPass &renderPass) override;
+    void endRenderPass() override;
+
   private:
     std::shared_ptr<GLState> m_state{nullptr};
 };

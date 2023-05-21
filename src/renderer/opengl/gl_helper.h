@@ -22,7 +22,7 @@ GLbitfield mapBufferStorageFlags(uint8_t accessMethod);
 GLenum mapDataTypeEnum(FormatDataType type, uint8_t size);
 GLenum mapShaderEnum(ShaderType type);
 GLbitfield mapShaderBit(ShaderType type);
-uint32_t mapPrimitiveTopology(PrimitiveTopology topology);
-GLbitfield mapClearFlags(uint8_t clearFlag);
+GLenum mapPrimitiveTopologyEnum(PrimitiveTopology topology);
+GLbitfield mapClearFlagBits(uint8_t clearFlag);
 
 } // namespace NOX::GLHelper

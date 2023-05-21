@@ -14,8 +14,7 @@ GLProgram::~GLProgram() {
 }
 
 uint32_t GLProgram::attachShader(const Shader *shader) {
-    const auto *glShader = dynamic_cast<const GLShader *>(shader);
-    NOX_ASSERT(glShader == nullptr);
+    const auto *glShader = downcast<GLShader>(*shader);
 
     glAttachShader(m_handle, glShader->getHandle());
     m_attachedShaderHandles.push_back(glShader->getHandle());
