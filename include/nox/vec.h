@@ -24,6 +24,21 @@ struct Vector {
         static_assert(componentCount == 4u);
     }
 
+    template <typename U>
+    constexpr Vector(const Vector<U, 2> &other) : values{{static_cast<Type>(other.x()),
+                                                          static_cast<Type>(other.y())}} {}
+
+    template <typename U>
+    constexpr Vector(const Vector<U, 3> &other) : values{{static_cast<Type>(other.x()),
+                                                          static_cast<Type>(other.y()),
+                                                          static_cast<Type>(other.z())}} {}
+
+    template <typename U>
+    constexpr Vector(const Vector<U, 4> &other) : values{{static_cast<Type>(other.x()),
+                                                          static_cast<Type>(other.y()),
+                                                          static_cast<Type>(other.z()),
+                                                          static_cast<Type>(other.w())}} {}
+
     bool operator==(const Vector<Type, componentCount> &other) const { return (values == other.values); }
     bool operator!=(const Vector<Type, componentCount> &other) const { return (values != other.values); }
 

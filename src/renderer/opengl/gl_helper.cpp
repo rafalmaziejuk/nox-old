@@ -2,8 +2,8 @@
 
 #include <nox/renderer/command_list_types.h>
 
-#define GL_ENUM_TO_CASE(enumName) \
-    case enumName:                \
+#define GL_DEBUG_ENUM_TO_CASE(enumName) \
+    case enumName:                      \
         return #enumName
 
 namespace NOX::GLHelper {
@@ -12,20 +12,20 @@ namespace {
 
 const char *glDebugEnumToString(GLenum value) {
     switch (value) {
-        GL_ENUM_TO_CASE(GL_DEBUG_SOURCE_API);
-        GL_ENUM_TO_CASE(GL_DEBUG_SOURCE_WINDOW_SYSTEM);
-        GL_ENUM_TO_CASE(GL_DEBUG_SOURCE_SHADER_COMPILER);
-        GL_ENUM_TO_CASE(GL_DEBUG_SOURCE_THIRD_PARTY);
-        GL_ENUM_TO_CASE(GL_DEBUG_SOURCE_APPLICATION);
-        GL_ENUM_TO_CASE(GL_DEBUG_SOURCE_OTHER);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_SOURCE_API);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_SOURCE_WINDOW_SYSTEM);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_SOURCE_SHADER_COMPILER);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_SOURCE_THIRD_PARTY);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_SOURCE_APPLICATION);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_SOURCE_OTHER);
 
-        GL_ENUM_TO_CASE(GL_DEBUG_TYPE_ERROR);
-        GL_ENUM_TO_CASE(GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR);
-        GL_ENUM_TO_CASE(GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR);
-        GL_ENUM_TO_CASE(GL_DEBUG_TYPE_PORTABILITY);
-        GL_ENUM_TO_CASE(GL_DEBUG_TYPE_PERFORMANCE);
-        GL_ENUM_TO_CASE(GL_DEBUG_TYPE_MARKER);
-        GL_ENUM_TO_CASE(GL_DEBUG_TYPE_OTHER);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_TYPE_ERROR);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_TYPE_PORTABILITY);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_TYPE_PERFORMANCE);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_TYPE_MARKER);
+        GL_DEBUG_ENUM_TO_CASE(GL_DEBUG_TYPE_OTHER);
 
     default:
         NOX_ASSERT(true);
@@ -70,7 +70,7 @@ GLbitfield mapBufferStorageFlags(uint8_t accessMethod) {
     return flags;
 }
 
-GLenum mapDataTypeEnum(uint8_t type, uint8_t size) {
+GLenum mapDataTypeEnum(FormatDataType type, uint8_t size) {
     if (size == 1u) {
         if (type == FormatDataType::UINT) {
             return GL_UNSIGNED_BYTE;
@@ -135,7 +135,7 @@ GLbitfield mapShaderBit(ShaderType type) {
     }
 }
 
-uint32_t mapPrimitiveTopology(PrimitiveTopology topology) {
+GLenum mapPrimitiveTopologyEnum(PrimitiveTopology topology) {
     switch (topology) {
     case PrimitiveTopology::TRIANGLE_LIST:
         return GL_TRIANGLES;
@@ -145,7 +145,7 @@ uint32_t mapPrimitiveTopology(PrimitiveTopology topology) {
     }
 }
 
-GLbitfield mapClearFlags(uint8_t clearFlag) {
+GLbitfield mapClearFlagBits(uint8_t clearFlag) {
     GLbitfield flags = 0u;
 
     if (clearFlag & ClearFlag::COLOR) {

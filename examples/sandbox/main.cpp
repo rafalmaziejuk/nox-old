@@ -1,9 +1,12 @@
 #include <nox/renderer/buffer.h>
 #include <nox/renderer/command_list.h>
 #include <nox/renderer/pipeline_state.h>
+#include <nox/renderer/render_pass.h>
+#include <nox/renderer/render_target.h>
 #include <nox/renderer/renderer.h>
 #include <nox/renderer/shader.h>
 #include <nox/renderer/swap_chain.h>
+#include <nox/renderer/texture.h>
 #include <nox/window/event.h>
 #include <nox/window/window.h>
 
@@ -38,30 +41,73 @@ class SandboxApplication {
         SwapChainDescriptor swapChainDescriptor{};
         swapChainDescriptor.isVSync = true;
         m_swapChain = m_renderer->createSwapChain(swapChainDescriptor, *m_window);
+    }
 
+    void initialize() {
+        initializeBuffers();
+        createTriangleRenderPass();
+        createFullscreenRenderPass();
+    }
+
+    void run() {
+        CommandListDescriptor commandListDescriptor{};
+        auto commandList = m_renderer->createCommandList(commandListDescriptor);
+        commandList->setViewport(m_window->getSize());
+
+        while (m_isRunning) {
+            m_window->processEvents();
+
+            commandList->beginRenderPass(*m_triangleRenderPass);
+            {
+                commandList->bindVertexBuffer(*m_vertexBuffer);
+                commandList->bindIndexBuffer(*m_indexBuffer);
+
+                commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
+                commandList->drawIndexed(0u, 6u);
+                commandList->drawIndexed(7u, 14u);
+            }
+            commandList->endRenderPass();
+
+            commandList->beginRenderPass(*m_fullscreenRenderPass);
+            {
+                commandList->bindVertexBuffer(*m_fullscreenVertexBuffer);
+                commandList->bindIndexBuffer(*m_fullscreenIndexBuffer);
+
+                commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
+                commandList->drawIndexed(0u, 6u);
+            }
+            commandList->endRenderPass();
+
+            m_swapChain->swap();
+        }
+    }
+
+  private:
+    void initializeBuffers() {
         struct Vertex {
             float position[2];
             uint8_t color[4];
         };
-        Vertex vertices[]{
+        constexpr Vertex vertices[]{
             {{0.5f, 0.5f}, {255, 0, 0, 255}},
             {{0.5f, -0.5f}, {0, 255, 0, 255}},
             {{-0.5f, -0.5f}, {0, 0, 255, 255}},
             {{-0.5f, 0.5f}, {0, 255, 0, 255}},
-            {{0.25f, 0.25f}, {0, 0, 0, 255}},
-            {{0.25f, -0.25f}, {0, 0, 0, 255}},
-            {{-0.25f, -0.25f}, {0, 0, 0, 255}},
-            {{-0.25f, 0.25f}, {0, 0, 0, 255}},
+            {{0.25f, 0.25f}, {255, 0, 0, 255}},
+            {{0.25f, -0.25f}, {255, 0, 0, 255}},
+            {{-0.25f, -0.25f}, {255, 0, 0, 255}},
+            {{-0.25f, 0.25f}, {255, 0, 0, 255}},
         };
-        uint32_t indices[]{0, 1, 3,
-                           1, 2, 3,
-                           4, 5, 7,
-                           5, 6, 7};
+        constexpr uint32_t indices[]{0, 1, 3,
+                                     1, 2, 3,
+                                     4, 5, 7,
+                                     5, 6, 7};
 
         VertexFormat vertexFormat;
-        vertexFormat.attributes.reserve(2);
-        vertexFormat.attributes.push_back({"aPosition", Format::RG32_FLOAT});
-        vertexFormat.attributes.push_back({"aColor", Format::RGBA8_UINT_NORM});
+        vertexFormat.attributes = {
+            {"aPosition", Format::RG32F},
+            {"aColor", Format::RGBA8_UNORM},
+        };
 
         BufferDescriptor vertexBufferDescriptor{};
         vertexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
@@ -73,9 +119,53 @@ class SandboxApplication {
         indexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
         indexBufferDescriptor.size = sizeof(indices);
         indexBufferDescriptor.data = indices;
-        m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32_UINT);
+        m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
+
+        struct FullscreenVertex {
+            float position[2];
+            float textureCoordinates[2];
+        };
+        constexpr FullscreenVertex vertices1[] = {{{-1.0f, -1.0f}, {0.0f, 0.0f}}, // bottom left
+                                                  {{1.0f, -1.0f}, {1.0f, 0.0f}},  // bottom right
+                                                  {{1.0f, 1.0f}, {1.0f, 1.0f}},   // top right
+                                                  {{-1.0f, 1.0f}, {0.0f, 1.0f}}}; // top left
+        constexpr uint32_t indices1[] = {0u, 1u, 2u,
+                                         2u, 3u, 0u};
+
+        VertexFormat fullscreenVertexFormat;
+        fullscreenVertexFormat.attributes = {
+            {"aPosition", Format::RG32F},
+            {"aTextureCoordinates", Format::RG32F},
+        };
+
+        BufferDescriptor fullscreenVertexBufferDescriptor{};
+        fullscreenVertexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
+        fullscreenVertexBufferDescriptor.size = sizeof(vertices1);
+        fullscreenVertexBufferDescriptor.data = vertices1;
+        m_fullscreenVertexBuffer = m_renderer->createVertexBuffer(fullscreenVertexBufferDescriptor, fullscreenVertexFormat);
+
+        BufferDescriptor fullscreenIndexBufferDescriptor{};
+        fullscreenIndexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
+        fullscreenIndexBufferDescriptor.size = sizeof(indices1);
+        fullscreenIndexBufferDescriptor.data = indices1;
+        m_fullscreenIndexBuffer = m_renderer->createIndexBuffer(fullscreenIndexBufferDescriptor, Format::R32UI);
+    }
+
+    void createTriangleRenderPass() {
+        TextureDescriptor textureDescriptor{};
+        textureDescriptor.type = TextureType::TEXTURE2D;
+        textureDescriptor.format = Format::RGBA32F;
+        textureDescriptor.size = {m_window->getSize().x(), m_window->getSize().y(), 0u};
+        m_triangleTexture = m_renderer->createTexture(textureDescriptor);
+
+        RenderTargetDescriptor renderTargetDescriptor{};
+        renderTargetDescriptor.attachments.colorAttachments = {
+            {m_triangleTexture},
+        };
+        renderTargetDescriptor.resolution = m_window->getSize();
 
         PipelineStateDescriptor pipelineStateDescriptor{};
+        pipelineStateDescriptor.renderTarget = m_renderer->createRenderTarget(renderTargetDescriptor);
         pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
         constexpr auto vertexShaderSource = R"(
@@ -113,43 +203,75 @@ class SandboxApplication {
         fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
         pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, fragmentShaderSource);
 
-        m_pipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
+        RenderPassDescriptor renderPassDescriptor{};
+        renderPassDescriptor.pipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
+        m_triangleRenderPass = m_renderer->createRenderPass(renderPassDescriptor);
     }
 
-    void run() {
-        CommandListDescriptor commandListDescriptor{};
-        auto commandList = m_renderer->createCommandList(commandListDescriptor);
+    void createFullscreenRenderPass() {
+        PipelineStateDescriptor pipelineStateDescriptor{};
+        pipelineStateDescriptor.renderTarget = m_swapChain->getRenderTarget();
+        pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
-        commandList->bindVertexBuffer(*m_vertexBuffer);
-        commandList->bindIndexBuffer(*m_indexBuffer);
-        commandList->bindPipelineState(*m_pipelineState);
+        constexpr auto vertexShaderSource = R"(
+            #version 460 core
 
-        commandList->setViewport(m_window->getSize());
-        commandList->setClearColor({0.1f, 0.1f, 0.1f, 1.0f});
+            out gl_PerVertex {
+	            vec4 gl_Position;
+            };
 
-        while (m_isRunning) {
-            m_window->processEvents();
+		    layout (location = 0) in vec2 aPosition;
+		    layout (location = 1) in vec2 aTextureCoordinates;
 
-            commandList->clear(ClearFlag::COLOR);
-            commandList->drawIndexed(0u, 6u);
-            commandList->drawIndexed(7u, 14u);
+		    out vec2 textureCoordinates;
 
-            m_swapChain->swap();
-        }
+		    void main() {
+			    gl_Position = vec4(aPosition, 0.0, 1.0); 
+			    textureCoordinates = aTextureCoordinates;
+		    }
+        )";
+        ShaderDescriptor vertexShaderDescriptor{};
+        vertexShaderDescriptor.type = ShaderType::VERTEX;
+        pipelineStateDescriptor.vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, vertexShaderSource);
+
+        constexpr auto fragmentShaderSource = R"(
+            #version 460 core
+
+            layout(binding = 0) uniform sampler2D fullscreenTexture;
+
+            in vec2 textureCoordinates;
+            out vec4 fragmentColor;
+
+            void main() {
+                fragmentColor = texture(fullscreenTexture, textureCoordinates);
+            }
+        )";
+        ShaderDescriptor fragmentShaderDescriptor{};
+        fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
+        pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, fragmentShaderSource);
+
+        RenderPassDescriptor renderPassDescriptor{};
+        renderPassDescriptor.pipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
+        m_fullscreenRenderPass = m_renderer->createRenderPass(renderPassDescriptor);
     }
 
   private:
     bool m_isRunning{true};
     std::unique_ptr<Window> m_window{nullptr};
     std::unique_ptr<Renderer, RendererDeleter> m_renderer{nullptr};
-    std::unique_ptr<SwapChain> m_swapChain{nullptr};
+    std::shared_ptr<SwapChain> m_swapChain{nullptr};
     std::unique_ptr<Buffer> m_vertexBuffer{nullptr};
     std::unique_ptr<Buffer> m_indexBuffer{nullptr};
-    std::unique_ptr<PipelineState> m_pipelineState{nullptr};
+    std::unique_ptr<Buffer> m_fullscreenVertexBuffer{nullptr};
+    std::unique_ptr<Buffer> m_fullscreenIndexBuffer{nullptr};
+    std::shared_ptr<Texture> m_triangleTexture{nullptr};
+    std::unique_ptr<RenderPass> m_triangleRenderPass{nullptr};
+    std::unique_ptr<RenderPass> m_fullscreenRenderPass{nullptr};
 };
 
 int main() {
     auto application = std::make_unique<SandboxApplication>();
+    application->initialize();
     application->run();
 
     return 0;

@@ -100,6 +100,10 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_target.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_target.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_shader.cpp
@@ -107,6 +111,8 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.h
     ${CMAKE_CURRENT_SOURCE_DIR}/nox_opengl_export.h

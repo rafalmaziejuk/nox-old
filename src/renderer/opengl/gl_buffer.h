@@ -1,15 +1,18 @@
 #pragma once
 
-#include "renderer/opengl/gl_object.h"
-
 #include <nox/renderer/buffer.h>
 
 namespace NOX {
 
-class GLBuffer : public Buffer, public GLObject {
+class GLBuffer : public Buffer {
   public:
     explicit GLBuffer(const BufferDescriptor &descriptor);
     ~GLBuffer() override;
+
+    uint32_t getHandle() const { return m_handle; }
+
+  private:
+    uint32_t m_handle{0u};
 };
 
 class GLVertexBuffer final : public GLBuffer {

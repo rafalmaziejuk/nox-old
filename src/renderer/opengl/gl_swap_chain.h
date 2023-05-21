@@ -2,15 +2,16 @@
 
 #include <nox/renderer/swap_chain.h>
 
-#include <memory>
-
 namespace NOX {
 
 class GLContext;
+class GLRenderTarget;
 
 class GLSwapChain final : public SwapChain {
   public:
-    GLSwapChain(const SwapChainDescriptor &descriptor, std::shared_ptr<GLContext> &context);
+    GLSwapChain(const SwapChainDescriptor &descriptor, std::shared_ptr<GLContext> context);
+
+    std::shared_ptr<RenderTarget> getRenderTarget() override;
 
     void swap() const override;
 
@@ -18,6 +19,7 @@ class GLSwapChain final : public SwapChain {
 
   private:
     std::shared_ptr<GLContext> m_context{nullptr};
+    std::shared_ptr<GLDefaultRenderTarget> m_renderTarget{nullptr};
 };
 
 } // namespace NOX

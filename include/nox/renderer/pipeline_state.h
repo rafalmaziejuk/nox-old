@@ -8,11 +8,13 @@
 
 namespace NOX {
 
+class RenderTarget;
 class Shader;
 
 struct PipelineStateDescriptor {
     std::unique_ptr<Shader> vertexShader;
     std::unique_ptr<Shader> fragmentShader;
+    std::shared_ptr<RenderTarget> renderTarget;
 
     PrimitiveTopology primitiveTopology;
 };
@@ -20,6 +22,8 @@ struct PipelineStateDescriptor {
 class NOX_EXPORT PipelineState {
   public:
     virtual ~PipelineState();
+
+    // virtual const RenderTarget &getRenderTarget() const = 0;
 };
 
 } // namespace NOX
