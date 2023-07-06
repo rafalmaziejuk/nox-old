@@ -4,143 +4,99 @@
 
 namespace NOX {
 
-struct FormatComponent {
-    enum {
-        R,
-        RG,
-        RGB,
-        RGBA,
-        OFFSET = 0,
-        MASK = 0b11
-    };
+enum class Format : uint8_t {
+    NONE,
 
-    static constexpr auto valueR = FormatComponent::R << FormatComponent::OFFSET;
-    static constexpr auto valueRG = FormatComponent::RG << FormatComponent::OFFSET;
-    static constexpr auto valueRGB = FormatComponent::RGB << FormatComponent::OFFSET;
-    static constexpr auto valueRGBA = FormatComponent::RGBA << FormatComponent::OFFSET;
-};
+    R8UI,
+    R16UI,
+    R32UI,
 
-struct FormatBitsPerComponent {
-    enum {
-        BITS8,
-        BITS16,
-        BITS32,
-        BITS64,
-        OFFSET = 2,
-        MASK = 0b11
-    };
+    RG8UI,
+    RG16UI,
+    RG32UI,
 
-    static constexpr auto valueBits8 = FormatBitsPerComponent::BITS8 << FormatBitsPerComponent::OFFSET;
-    static constexpr auto valueBits16 = FormatBitsPerComponent::BITS16 << FormatBitsPerComponent::OFFSET;
-    static constexpr auto valueBits32 = FormatBitsPerComponent::BITS32 << FormatBitsPerComponent::OFFSET;
-    static constexpr auto valueBits64 = FormatBitsPerComponent::BITS64 << FormatBitsPerComponent::OFFSET;
-};
+    RGB8UI,
+    RGB16UI,
+    RGB32UI,
 
-struct FormatDataType {
-    enum {
-        UINT,
-        SINT,
-        FLOAT,
-        OFFSET = 4,
-        MASK = 0b11
-    };
+    RGBA8UI,
+    RGBA16UI,
+    RGBA32UI,
 
-    static constexpr auto valueUInt = FormatDataType::UINT << FormatDataType::OFFSET;
-    static constexpr auto valueSInt = FormatDataType::SINT << FormatDataType::OFFSET;
-    static constexpr auto valueFloat = FormatDataType::FLOAT << FormatDataType::OFFSET;
-};
+    R8I,
+    R16I,
+    R32I,
 
-struct FormatDataTypeAttribute {
-    enum {
-        NONE,
-        NORMALIZED,
-        OFFSET = 6,
-        MASK = 0b1
-    };
+    RG8I,
+    RG16I,
+    RG32I,
 
-    static constexpr auto valueNormalized = FormatDataTypeAttribute::NORMALIZED << FormatDataTypeAttribute::OFFSET;
-};
+    RGB8I,
+    RGB16I,
+    RGB32I,
 
-enum class Format {
-    R8_UINT = FormatComponent::valueR | FormatBitsPerComponent::valueBits8 | FormatDataType::valueUInt,
-    R16_UINT = FormatComponent::valueR | FormatBitsPerComponent::valueBits16 | FormatDataType::valueUInt,
-    R32_UINT = FormatComponent::valueR | FormatBitsPerComponent::valueBits32 | FormatDataType::valueUInt,
+    RGBA8I,
+    RGBA16I,
+    RGBA32I,
 
-    RG8_UINT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits8 | FormatDataType::valueUInt,
-    RG16_UINT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits16 | FormatDataType::valueUInt,
-    RG32_UINT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits32 | FormatDataType::valueUInt,
+    R8_UNORM,
+    R16_UNORM,
+    R32_UNORM,
 
-    RGB8_UINT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits8 | FormatDataType::valueUInt,
-    RGB16_UINT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits16 | FormatDataType::valueUInt,
-    RGB32_UINT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits32 | FormatDataType::valueUInt,
+    RG8_UNORM,
+    RG16_UNORM,
+    RG32_UNORM,
 
-    RGBA8_UINT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits8 | FormatDataType::valueUInt,
-    RGBA16_UINT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits16 | FormatDataType::valueUInt,
-    RGBA32_UINT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits32 | FormatDataType::valueUInt,
+    RGB8_UNORM,
+    RGB16_UNORM,
+    RGB32_UNORM,
 
-    R8_SINT = FormatComponent::valueR | FormatBitsPerComponent::valueBits8 | FormatDataType::valueSInt,
-    R16_SINT = FormatComponent::valueR | FormatBitsPerComponent::valueBits16 | FormatDataType::valueSInt,
-    R32_SINT = FormatComponent::valueR | FormatBitsPerComponent::valueBits32 | FormatDataType::valueSInt,
+    RGBA8_UNORM,
+    RGBA16_UNORM,
+    RGBA32_UNORM,
 
-    RG8_SINT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits8 | FormatDataType::valueSInt,
-    RG16_SINT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits16 | FormatDataType::valueSInt,
-    RG32_SINT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits32 | FormatDataType::valueSInt,
+    R8_SNORM,
+    R16_SNORM,
+    R32_SNORM,
 
-    RGB8_SINT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits8 | FormatDataType::valueSInt,
-    RGB16_SINT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits16 | FormatDataType::valueSInt,
-    RGB32_SINT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits32 | FormatDataType::valueSInt,
+    RG8_SNORM,
+    RG16_SNORM,
+    RG32_SNORM,
 
-    RGBA8_SINT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits8 | FormatDataType::valueSInt,
-    RGBA16_SINT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits16 | FormatDataType::valueSInt,
-    RGBA32_SINT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits32 | FormatDataType::valueSInt,
+    RGB8_SNORM,
+    RGB16_SNORM,
+    RGB32_SNORM,
 
-    R8_UINT_NORM = R8_UINT | FormatDataTypeAttribute::valueNormalized,
-    R16_UINT_NORM = R16_UINT | FormatDataTypeAttribute::valueNormalized,
-    R32_UINT_NORM = R32_UINT | FormatDataTypeAttribute::valueNormalized,
+    RGBA8_SNORM,
+    RGBA16_SNORM,
+    RGBA32_SNORM,
 
-    RG8_UINT_NORM = RG8_UINT | FormatDataTypeAttribute::valueNormalized,
-    RG16_UINT_NORM = RG16_UINT | FormatDataTypeAttribute::valueNormalized,
-    RG32_UINT_NORM = RG32_UINT | FormatDataTypeAttribute::valueNormalized,
+    R16F,
+    R32F,
+    R64F,
 
-    RGB8_UINT_NORM = RGB8_UINT | FormatDataTypeAttribute::valueNormalized,
-    RGB16_UINT_NORM = RGB16_UINT | FormatDataTypeAttribute::valueNormalized,
-    RGB32_UINT_NORM = RGB32_UINT | FormatDataTypeAttribute::valueNormalized,
+    RG16F,
+    RG32F,
+    RG64F,
 
-    RGBA8_UINT_NORM = RGBA8_UINT | FormatDataTypeAttribute::valueNormalized,
-    RGBA16_UINT_NORM = RGBA16_UINT | FormatDataTypeAttribute::valueNormalized,
-    RGBA32_UINT_NORM = RGBA32_UINT | FormatDataTypeAttribute::valueNormalized,
+    RGB16F,
+    RGB32F,
+    RGB64F,
 
-    R8_SINT_NORM = R8_SINT | FormatDataTypeAttribute::valueNormalized,
-    R16_SINT_NORM = R16_SINT | FormatDataTypeAttribute::valueNormalized,
-    R32_SINT_NORM = R32_SINT | FormatDataTypeAttribute::valueNormalized,
+    RGBA16F,
+    RGBA32F,
+    RGBA64F,
 
-    RG8_SINT_NORM = RG8_SINT | FormatDataTypeAttribute::valueNormalized,
-    RG16_SINT_NORM = RG16_SINT | FormatDataTypeAttribute::valueNormalized,
-    RG32_SINT_NORM = RG32_SINT | FormatDataTypeAttribute::valueNormalized,
+    DEPTH16I,
+    DEPTH24I,
+    DEPTH32I,
+    DEPTH32F,
 
-    RGB8_SINT_NORM = RGB8_SINT | FormatDataTypeAttribute::valueNormalized,
-    RGB16_SINT_NORM = RGB16_SINT | FormatDataTypeAttribute::valueNormalized,
-    RGB32_SINT_NORM = RGB32_SINT | FormatDataTypeAttribute::valueNormalized,
+    STENCIL8UI,
 
-    RGBA8_SINT_NORM = RGBA8_SINT | FormatDataTypeAttribute::valueNormalized,
-    RGBA16_SINT_NORM = RGBA16_SINT | FormatDataTypeAttribute::valueNormalized,
-    RGBA32_SINT_NORM = RGBA32_SINT | FormatDataTypeAttribute::valueNormalized,
-
-    R16_FLOAT = FormatComponent::valueR | FormatBitsPerComponent::valueBits16 | FormatDataType::valueFloat,
-    R32_FLOAT = FormatComponent::valueR | FormatBitsPerComponent::valueBits32 | FormatDataType::valueFloat,
-    R64_FLOAT = FormatComponent::valueR | FormatBitsPerComponent::valueBits64 | FormatDataType::valueFloat,
-
-    RG16_FLOAT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits16 | FormatDataType::valueFloat,
-    RG32_FLOAT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits32 | FormatDataType::valueFloat,
-    RG64_FLOAT = FormatComponent::valueRG | FormatBitsPerComponent::valueBits64 | FormatDataType::valueFloat,
-
-    RGB16_FLOAT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits16 | FormatDataType::valueFloat,
-    RGB32_FLOAT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits32 | FormatDataType::valueFloat,
-    RGB64_FLOAT = FormatComponent::valueRGB | FormatBitsPerComponent::valueBits64 | FormatDataType::valueFloat,
-
-    RGBA16_FLOAT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits16 | FormatDataType::valueFloat,
-    RGBA32_FLOAT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits32 | FormatDataType::valueFloat,
-    RGBA64_FLOAT = FormatComponent::valueRGBA | FormatBitsPerComponent::valueBits64 | FormatDataType::valueFloat
+    DEPTH24I_STENCIL8UI,
+    DEPTH32F_STENCIL8UI,
+    MAX
 };
 
 } // namespace NOX

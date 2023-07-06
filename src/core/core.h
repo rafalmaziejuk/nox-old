@@ -13,3 +13,5 @@ inline constexpr auto isDebugConfiguration = false;
 #endif
 
 #define NOX_UNUSED(x) (void)(x)
+
+#define BIT(x) (1 << x)

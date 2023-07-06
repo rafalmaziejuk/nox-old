@@ -12,7 +12,7 @@ namespace NOX {
 
 class Buffer;
 struct BufferDescriptor;
-enum class Format;
+enum class Format : uint8_t;
 struct VertexFormat;
 
 class CommandList;
