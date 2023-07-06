@@ -1,17 +1,16 @@
 #pragma once
 
-#include "renderer/opengl/gl_object.h"
-
 #include <nox/renderer/shader.h>
 
 namespace NOX {
 
-class GLShader final : public Shader, public GLObject {
+class GLShader final : public Shader {
   public:
     explicit GLShader(const ShaderDescriptor &descriptor);
     ~GLShader() override;
 
-    ShaderType getType() const;
+    ShaderType getType() const { return m_type; }
+    uint32_t getHandle() const { return m_handle; }
 
     void compileFromString(std::string_view source);
 
@@ -20,7 +19,8 @@ class GLShader final : public Shader, public GLObject {
     bool checkCompileStatus(ShaderType type) const;
 
   private:
-    ShaderType m_type{0u};
+    uint32_t m_handle{0u};
+    ShaderType m_type;
 };
 
 } // namespace NOX

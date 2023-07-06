@@ -1,13 +1,11 @@
 #pragma once
 
-#include "renderer/opengl/gl_object.h"
-
 namespace NOX {
 
 class GLBuffer;
 struct VertexFormat;
 
-class GLVertexArray final : public GLObject {
+class GLVertexArray {
   public:
     GLVertexArray();
     ~GLVertexArray();
@@ -18,9 +16,8 @@ class GLVertexArray final : public GLObject {
     void bind() const;
 
   private:
-    using GLObject::getHandle;
-
     uint32_t m_currentBindingIndex{0u};
+    uint32_t m_handle{0u};
 };
 
 } // namespace NOX

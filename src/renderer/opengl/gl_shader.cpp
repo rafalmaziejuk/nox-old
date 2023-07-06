@@ -27,10 +27,6 @@ GLShader::~GLShader() {
     glDeleteShader(m_handle);
 }
 
-ShaderType GLShader::getType() const {
-    return m_type;
-}
-
 void GLShader::compileFromString(std::string_view source) {
     compile(source.data());
 }
