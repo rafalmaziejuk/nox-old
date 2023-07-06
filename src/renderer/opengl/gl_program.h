@@ -1,17 +1,17 @@
 #pragma once
 
-#include "renderer/opengl/gl_object.h"
-
 #include <vector>
 
 namespace NOX {
 
 class Shader;
 
-class GLProgram final : public GLObject {
+class GLProgram {
   public:
     GLProgram();
     ~GLProgram();
+
+    uint32_t getHandle() const { return m_handle; }
 
     uint32_t attachShader(const Shader *shader);
     void link();
@@ -21,7 +21,8 @@ class GLProgram final : public GLObject {
     bool checkLinkStatus();
 
   private:
-    std::vector<uint32_t> m_attachedShadersHandles;
+    std::vector<uint32_t> m_attachedShaderHandles;
+    uint32_t m_handle{0u};
 };
 
 } // namespace NOX

@@ -14,11 +14,11 @@ GLProgram::~GLProgram() {
 }
 
 uint32_t GLProgram::attachShader(const Shader *shader) {
-    const auto *shaderToBeAttached = static_cast<const GLShader *>(shader);
-    if (shaderToBeAttached != nullptr) {
-        glAttachShader(m_handle, shaderToBeAttached->getHandle());
-        m_attachedShadersHandles.push_back(shaderToBeAttached->getHandle());
-        return GLHelper::mapShaderBit(shaderToBeAttached->getType());
+    const auto *glShader = static_cast<const GLShader *>(shader);
+    if (glShader != nullptr) {
+        glAttachShader(m_handle, glShader->getHandle());
+        m_attachedShaderHandles.push_back(glShader->getHandle());
+        return GLHelper::mapShaderBit(glShader->getType());
     }
 
     return 0u;
@@ -34,10 +34,10 @@ void GLProgram::link() {
 }
 
 void GLProgram::detachShaders() {
-    for (const auto shaderHandle : m_attachedShadersHandles) {
+    for (const auto shaderHandle : m_attachedShaderHandles) {
         glDetachShader(m_handle, shaderHandle);
     }
-    m_attachedShadersHandles.clear();
+    m_attachedShaderHandles.clear();
 }
 
 bool GLProgram::checkLinkStatus() {
