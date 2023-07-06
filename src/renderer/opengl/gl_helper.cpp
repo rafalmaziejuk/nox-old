@@ -70,7 +70,7 @@ GLbitfield mapBufferStorageFlags(uint8_t accessMethod) {
     return flags;
 }
 
-GLenum mapDataTypeEnum(uint8_t type, uint8_t size) {
+GLenum mapDataTypeEnum(FormatDataType type, uint8_t size) {
     if (size == 1u) {
         if (type == FormatDataType::UINT) {
             return GL_UNSIGNED_BYTE;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/format_helper.h"
+
 #include <nox/renderer/buffer_types.h>
 #include <nox/renderer/pipeline_state_types.h>
 #include <nox/renderer/shader_types.h>
@@ -17,7 +19,7 @@ void GLAPIENTRY debugMessageCallback(GLenum source,
                                      const void *userParam);
 
 GLbitfield mapBufferStorageFlags(uint8_t accessMethod);
-GLenum mapDataTypeEnum(uint8_t type, uint8_t size);
+GLenum mapDataTypeEnum(FormatDataType type, uint8_t size);
 GLenum mapShaderEnum(ShaderType type);
 GLbitfield mapShaderBit(ShaderType type);
 uint32_t mapPrimitiveTopology(PrimitiveTopology topology);

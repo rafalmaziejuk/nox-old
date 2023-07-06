@@ -60,8 +60,8 @@ class SandboxApplication {
 
         VertexFormat vertexFormat;
         vertexFormat.attributes.reserve(2);
-        vertexFormat.attributes.push_back({"aPosition", Format::RG32_FLOAT});
-        vertexFormat.attributes.push_back({"aColor", Format::RGBA8_UINT_NORM});
+        vertexFormat.attributes.push_back({"aPosition", Format::RG32F});
+        vertexFormat.attributes.push_back({"aColor", Format::RGBA8_UNORM});
 
         BufferDescriptor vertexBufferDescriptor{};
         vertexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
@@ -73,7 +73,7 @@ class SandboxApplication {
         indexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
         indexBufferDescriptor.size = sizeof(indices);
         indexBufferDescriptor.data = indices;
-        m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32_UINT);
+        m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
 
         PipelineStateDescriptor pipelineStateDescriptor{};
         pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
