@@ -7,6 +7,7 @@
 #include "renderer/opengl/gl_shader.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_swap_chain.h"
+#include "renderer/opengl/gl_texture.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
 namespace NOX {
@@ -61,6 +62,10 @@ std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineSta
 
 std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDescriptor &descriptor) {
     return std::make_unique<GLCommandList>(descriptor, m_state);
+}
+
+std::unique_ptr<Texture> GLRenderer::createTexture(const TextureDescriptor &descriptor) {
+    return std::make_unique<GLTexture>(descriptor);
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {

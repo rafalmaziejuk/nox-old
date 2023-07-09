@@ -8,6 +8,7 @@ set(NOX_RENDERER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/swap_chain.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp
 )
 
 target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_RENDERER_SOURCES})
