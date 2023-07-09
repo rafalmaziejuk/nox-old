@@ -15,3 +15,11 @@ inline constexpr auto isDebugConfiguration = false;
 #define NOX_UNUSED(x) (void)(x)
 
 #define BIT(x) (1 << x)
+
+#define NOX_CASE_RETURN_VALUE(label, value) \
+    case label:                             \
+        return value
+
+#define NOX_CASE_RETURN_STRING(label, value) \
+    case label:                              \
+        return #value

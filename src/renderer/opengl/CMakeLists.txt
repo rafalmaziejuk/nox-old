@@ -107,6 +107,8 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swap_chain.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.h
     ${CMAKE_CURRENT_SOURCE_DIR}/nox_opengl_export.h
