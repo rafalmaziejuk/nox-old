@@ -4,7 +4,11 @@
 #include <nox/non_copyable.h>
 #include <nox/renderer/swap_chain_types.h>
 
+#include <memory>
+
 namespace NOX {
+
+class RenderTarget;
 
 struct SwapChainDescriptor {
     PixelFormatDescriptor pixelFormatDescriptor;
@@ -19,6 +23,8 @@ class NOX_EXPORT SwapChain : public NonCopyable {
     virtual void swap() const = 0;
 
     virtual void setVSync(bool value) = 0;
+
+    virtual std::shared_ptr<RenderTarget> getRenderTarget() = 0;
 };
 
 } // namespace NOX

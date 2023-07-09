@@ -2,6 +2,7 @@
 #include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
@@ -11,22 +12,22 @@ GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/,
                              std::shared_ptr<GLState> state) : m_state{std::move(state)} {}
 
 void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
-    const auto &vertexBuffer = static_cast<const GLVertexBuffer &>(buffer);
+    const auto &vertexBuffer = dynamic_cast<const GLVertexBuffer &>(buffer);
     auto vertexArrayIndex = vertexBuffer.getVertexArrayIndex();
     const auto &vertexArray = m_state->vertexArrays[vertexArrayIndex];
     vertexArray->bind();
-    m_state->currentlyBoundVertexArrayIndex = vertexArrayIndex;
+    m_state->currentVertexArrayIndex = vertexArrayIndex;
 }
 
 void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
-    const auto &indexBuffer = static_cast<const GLIndexBuffer &>(buffer);
-    const auto &vertexArray = m_state->vertexArrays[m_state->currentlyBoundVertexArrayIndex];
+    const auto &indexBuffer = dynamic_cast<const GLIndexBuffer &>(buffer);
+    const auto &vertexArray = m_state->vertexArrays[m_state->currentVertexArrayIndex];
     vertexArray->setIndexBuffer(indexBuffer);
     m_state->indexType = indexBuffer.getIndexType();
 }
 
 void GLCommandList::bindPipelineState(const PipelineState &pipeline) {
-    const auto &pipelineState = static_cast<const GLPipelineState &>(pipeline);
+    const auto &pipelineState = dynamic_cast<const GLPipelineState &>(pipeline);
     pipelineState.bind();
 }
 
@@ -53,6 +54,36 @@ void GLCommandList::setClearStencil(uint32_t stencil) {
 
 void GLCommandList::clear(uint8_t flags) {
     glClear(GLHelper::mapClearFlags(flags));
+}
+
+void GLCommandList::clearColor(const Vector4D<float> &color, uint8_t index) {
+    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
+    m_state->currentRenderTarget->clear(color, index);
+}
+
+void GLCommandList::clearColor(const Vector4D<int32_t> &color, uint8_t index) {
+    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
+    m_state->currentRenderTarget->clear(color, index);
+}
+
+void GLCommandList::clearColor(const Vector4D<uint32_t> &color, uint8_t index) {
+    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
+    m_state->currentRenderTarget->clear(color, index);
+}
+
+void GLCommandList::clearDepth(float depth) {
+    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
+    m_state->currentRenderTarget->clear(depth);
+}
+
+void GLCommandList::clearStencil(uint32_t stencil) {
+    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
+    m_state->currentRenderTarget->clear(stencil);
+}
+
+void GLCommandList::clearDepthStencil(float depth, uint32_t stencil) {
+    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
+    m_state->currentRenderTarget->clear(depth, stencil);
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {

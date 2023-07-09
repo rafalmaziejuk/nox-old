@@ -3,6 +3,7 @@
 #include "renderer/opengl/gl_context.h"
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_renderer.h"
 #include "renderer/opengl/gl_shader.h"
 #include "renderer/opengl/gl_state.h"
@@ -66,6 +67,10 @@ std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDesc
 
 std::unique_ptr<Texture> GLRenderer::createTexture(const TextureDescriptor &descriptor) {
     return std::make_unique<GLTexture>(descriptor);
+}
+
+std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetDescriptor &descriptor) {
+    return std::make_unique<GLRenderTarget>(descriptor);
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {
