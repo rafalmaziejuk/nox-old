@@ -6,7 +6,7 @@ namespace NOX {
 
 class GLTexture final : public Texture {
   public:
-    GLTexture(const TextureDescriptor &descriptor);
+    explicit GLTexture(const TextureDescriptor &descriptor);
     ~GLTexture() override;
 
     uint32_t getHandle() const { return m_handle; }

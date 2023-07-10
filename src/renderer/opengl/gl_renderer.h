@@ -28,6 +28,8 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<Texture> createTexture(const TextureDescriptor &descriptor) override;
 
+    std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) override;
+
   private:
     bool isVertexFormatUnique(const VertexFormat &format, uint32_t &index);
 

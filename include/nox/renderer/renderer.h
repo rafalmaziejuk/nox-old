@@ -21,6 +21,9 @@ struct CommandListDescriptor;
 class PipelineState;
 struct PipelineStateDescriptor;
 
+class RenderTarget;
+struct RenderTargetDescriptor;
+
 class Shader;
 struct ShaderDescriptor;
 
@@ -59,6 +62,8 @@ class NOX_EXPORT Renderer : public NonCopyable {
     [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Texture> createTexture(const TextureDescriptor &descriptor) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) = 0;
 };
 
 } // namespace NOX

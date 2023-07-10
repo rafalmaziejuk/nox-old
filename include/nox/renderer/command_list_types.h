@@ -2,6 +2,8 @@
 
 #include <nox/vec.h>
 
+#include <cstdint>
+
 namespace NOX {
 
 struct ClearFlag {

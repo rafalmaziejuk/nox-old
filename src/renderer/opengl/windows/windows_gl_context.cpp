@@ -12,6 +12,7 @@ namespace NOX {
 struct GLContext::Impl {
     void setContextPixelFormat(const PixelFormatDescriptor &descriptor) const {
         constexpr uint8_t defaultAlphaBits = 8u;
+        constexpr uint8_t defaultColorBits = 32u;
 
         PIXELFORMATDESCRIPTOR pixelFormatDescriptor{};
         pixelFormatDescriptor.nSize = sizeof(pixelFormatDescriptor);
@@ -19,7 +20,7 @@ struct GLContext::Impl {
         pixelFormatDescriptor.dwFlags = (PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_SWAP_EXCHANGE);
         pixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
         pixelFormatDescriptor.cColorBits = static_cast<BYTE>(descriptor.colorBits);
-        pixelFormatDescriptor.cAlphaBits = static_cast<BYTE>((descriptor.colorBits == PixelFormatDescriptor::defaultColorBits) ? defaultAlphaBits : 0u);
+        pixelFormatDescriptor.cAlphaBits = static_cast<BYTE>((descriptor.colorBits == defaultColorBits) ? defaultAlphaBits : 0u);
         pixelFormatDescriptor.cDepthBits = static_cast<BYTE>(descriptor.depthBits);
         pixelFormatDescriptor.cStencilBits = static_cast<BYTE>(descriptor.stencilBits);
 
