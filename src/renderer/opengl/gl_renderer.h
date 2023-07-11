@@ -30,6 +30,8 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) override;
 
+    std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) override;
+
   private:
     bool isVertexFormatUnique(const VertexFormat &format, uint32_t &index);
 

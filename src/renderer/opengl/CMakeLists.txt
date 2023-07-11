@@ -100,6 +100,8 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_target.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_target.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp

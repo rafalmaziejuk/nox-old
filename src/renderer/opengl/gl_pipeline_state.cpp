@@ -21,10 +21,7 @@ GLPipelineState::~GLPipelineState() {
 }
 
 const GLRenderTargetBase *GLPipelineState::getRenderTarget() const {
-    const auto *glRenderTarget = dynamic_cast<const GLRenderTargetBase *>(m_renderTarget.get());
-    NOX_ASSERT(glRenderTarget == nullptr);
-
-    return glRenderTarget;
+    return downcast<GLRenderTargetBase>(*m_renderTarget);
 }
 
 void GLPipelineState::bind() const {

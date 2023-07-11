@@ -131,7 +131,7 @@ GLbitfield mapShaderBit(ShaderType type) {
     }
 }
 
-uint32_t mapPrimitiveTopology(PrimitiveTopology topology) {
+GLenum mapPrimitiveTopologyEnum(PrimitiveTopology topology) {
     switch (topology) {
     case PrimitiveTopology::TRIANGLE_LIST:
         return GL_TRIANGLES;
@@ -141,7 +141,7 @@ uint32_t mapPrimitiveTopology(PrimitiveTopology topology) {
     }
 }
 
-GLbitfield mapClearFlags(uint8_t clearFlag) {
+GLbitfield mapClearFlagBits(uint8_t clearFlag) {
     GLbitfield flags = 0u;
 
     if (clearFlag & ClearFlag::COLOR) {

@@ -8,6 +8,7 @@ namespace NOX {
 
 class Buffer;
 class PipelineState;
+class RenderPass;
 class RenderTarget;
 
 struct CommandListDescriptor {};
@@ -53,6 +54,10 @@ class NOX_EXPORT CommandList {
     virtual void draw(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
 
     virtual void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
+
+    virtual void beginRenderPass(const RenderPass &renderPass) = 0;
+
+    virtual void endRenderPass() = 0;
 };
 
 } // namespace NOX

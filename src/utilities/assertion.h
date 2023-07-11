@@ -4,13 +4,6 @@
 #include "utilities/logger.h"
 
 #if defined(NOX_DEBUG)
-#if defined(NOX_WIN32)
-#define NOX_DEBUG_BREAK() __debugbreak()
-#elif defined(NOX_UNIX)
-#include <signal.h>
-#define NOX_DEBUG_BREAK() raise(SIGTRAP)
-#endif
-
 #define NOX_ASSERT_MSG(expression, message, ...)              \
     if (expression) {                                         \
         NOX_LOG_ERROR(ASSERT, "({}) {}", __LINE__, __FILE__); \

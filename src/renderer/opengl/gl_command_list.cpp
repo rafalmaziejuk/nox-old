@@ -2,6 +2,7 @@
 #include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_render_pass.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_vertex_array.h"
@@ -12,9 +13,7 @@ GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/,
                              std::shared_ptr<GLState> state) : m_state{std::move(state)} {}
 
 void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
-    const auto *glVertexBuffer = dynamic_cast<const GLVertexBuffer *>(&buffer);
-    NOX_ASSERT(glVertexBuffer == nullptr);
-
+    const auto *glVertexBuffer = downcast<GLVertexBuffer>(buffer);
     auto vertexArrayIndex = glVertexBuffer->getVertexArrayIndex();
     const auto &vertexArray = m_state->vertexArrays[vertexArrayIndex];
     vertexArray->bind();
@@ -22,18 +21,14 @@ void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
 }
 
 void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
-    const auto *glIndexBuffer = dynamic_cast<const GLIndexBuffer *>(&buffer);
-    NOX_ASSERT(glIndexBuffer == nullptr);
-
+    const auto *glIndexBuffer = downcast<GLIndexBuffer>(buffer);
     const auto &vertexArray = m_state->vertexArrays[m_state->currentVertexArrayIndex];
     vertexArray->setIndexBuffer(*glIndexBuffer);
     m_state->indexType = glIndexBuffer->getIndexType();
 }
 
 void GLCommandList::bindPipelineState(const PipelineState &pipeline) {
-    const auto *glPipelineState = dynamic_cast<const GLPipelineState *>(&pipeline);
-    NOX_ASSERT(glPipelineState == nullptr);
-
+    const auto *glPipelineState = downcast<GLPipelineState>(pipeline);
     glPipelineState->bind();
 }
 
@@ -59,7 +54,7 @@ void GLCommandList::setClearStencil(uint32_t stencil) {
 }
 
 void GLCommandList::clear(uint8_t flags) {
-    glClear(GLHelper::mapClearFlags(flags));
+    glClear(GLHelper::mapClearFlagBits(flags));
 }
 
 void GLCommandList::clearColor(const Vector4D<float> &color, uint8_t index) {
@@ -100,6 +95,19 @@ void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
     auto mode = m_state->primitiveTopology;
     glDrawElements(mode, vertexCount, static_cast<GLenum>(m_state->indexType), nullptr);
+}
+
+void GLCommandList::beginRenderPass(const RenderPass &renderPass) {
+    const auto *glRenderPass = downcast<GLRenderPass>(renderPass);
+    const auto *glPipelineState = glRenderPass->getPipelineState();
+    const auto *glRenderTarget = glPipelineState->getRenderTarget();
+    glPipelineState->bind();
+    glRenderTarget->bind();
+    m_state->currentRenderTarget = glRenderTarget;
+}
+
+void GLCommandList::endRenderPass() {
+    m_state->currentRenderTarget = nullptr;
 }
 
 } // namespace NOX

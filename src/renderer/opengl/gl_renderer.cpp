@@ -3,6 +3,7 @@
 #include "renderer/opengl/gl_context.h"
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_render_pass.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_renderer.h"
 #include "renderer/opengl/gl_shader.h"
@@ -56,8 +57,7 @@ std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescripto
 }
 
 std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineStateDescriptor &descriptor) {
-    m_state->primitiveTopology = GLHelper::mapPrimitiveTopology(descriptor.primitiveTopology);
-
+    m_state->primitiveTopology = GLHelper::mapPrimitiveTopologyEnum(descriptor.primitiveTopology);
     return std::make_unique<GLPipelineState>(descriptor);
 }
 
@@ -71,6 +71,12 @@ std::unique_ptr<Texture> GLRenderer::createTexture(const TextureDescriptor &desc
 
 std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetDescriptor &descriptor) {
     return std::make_unique<GLRenderTarget>(descriptor);
+}
+
+std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {
+    NOX_ASSERT(descriptor.pipelineState == nullptr);
+    NOX_ASSERT(downcast<GLPipelineState>(*descriptor.pipelineState)->getRenderTarget() == nullptr);
+    return std::make_unique<GLRenderPass>(descriptor);
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {
