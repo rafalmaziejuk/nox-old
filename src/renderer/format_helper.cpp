@@ -121,7 +121,7 @@ constexpr std::array<uint32_t, static_cast<size_t>(Format::MAX)> formatValues{{
 }};
 
 FormatDataType getDataType(Format format) {
-    auto value = formatValues[static_cast<size_t>(format)];
+    auto value = formatValues.at(static_cast<size_t>(format));
     if (value & FormatAttribute::UINT) {
         return FormatDataType::UINT;
     }
@@ -136,7 +136,7 @@ FormatDataType getDataType(Format format) {
 }
 
 uint8_t getComponentCount(Format format) {
-    auto value = formatValues[static_cast<size_t>(format)];
+    auto value = formatValues.at(static_cast<size_t>(format));
     if (value & FormatAttribute::R) {
         return 1u;
     }
@@ -154,7 +154,7 @@ uint8_t getComponentCount(Format format) {
 }
 
 uint8_t getDataTypeSize(Format format) {
-    auto value = formatValues[static_cast<size_t>(format)];
+    auto value = formatValues.at(static_cast<size_t>(format));
     if (value & FormatAttribute::BITS8) {
         return 1u;
     }
@@ -175,7 +175,7 @@ uint8_t getDataTypeSize(Format format) {
 }
 
 bool isDataTypeAttributeEnabled(Format format, uint32_t attribute) {
-    auto value = formatValues[static_cast<size_t>(format)];
+    auto value = formatValues.at(static_cast<size_t>(format));
     switch (value & attribute) {
     case FormatAttribute::NORMALIZED:
     case FormatAttribute::DEPTH:
@@ -189,7 +189,7 @@ bool isDataTypeAttributeEnabled(Format format, uint32_t attribute) {
 } // namespace
 
 FormatDescriptor getFormatDescriptor(Format format) {
-    FormatDescriptor descriptor;
+    FormatDescriptor descriptor{};
     descriptor.format = format;
     descriptor.dataType = getDataType(format);
     descriptor.componentCount = getComponentCount(format);

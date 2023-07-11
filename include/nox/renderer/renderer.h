@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/non_copyable.h>
 #include <nox/renderer/renderer_types.h>
 
 #include <functional>
@@ -43,10 +42,16 @@ struct RendererDescriptor {
     RendererConfig config;
 };
 
-class NOX_EXPORT Renderer : public NonCopyable {
+class NOX_EXPORT Renderer {
   public:
+    Renderer(const Renderer &) = delete;
+    Renderer &operator=(const Renderer &) = delete;
     virtual ~Renderer();
 
+  protected:
+    Renderer() = default;
+
+  public:
     [[nodiscard]] static std::unique_ptr<Renderer, RendererDeleter> create(const RendererDescriptor &descriptor);
 
     [[nodiscard]] virtual std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;

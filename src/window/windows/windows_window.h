@@ -8,7 +8,11 @@ namespace NOX {
 
 class WindowsWindow final : public Window {
   public:
-    WindowsWindow(const WindowDescriptor &descriptor);
+    WindowsWindow(const WindowsWindow &) = delete;
+    WindowsWindow &operator=(const WindowsWindow &) = delete;
+
+  public:
+    explicit WindowsWindow(const WindowDescriptor &descriptor);
     ~WindowsWindow() override;
 
     void show() const override;

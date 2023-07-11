@@ -20,7 +20,7 @@ std::unique_ptr<Renderer, RendererDeleter> Renderer::create(const RendererDescri
     NOX_DECLARE_PLUGIN_FUNCTION(AllocateRendererFunction, void *, const RendererDescriptor &);
     NOX_DECLARE_PLUGIN_FUNCTION(DeallocateRendererFunction, void, void *);
 
-    const auto *rendererPluginName = rendererPluginNames[static_cast<size_t>(descriptor.api)].second;
+    const auto *rendererPluginName = rendererPluginNames.at(static_cast<size_t>(descriptor.api)).second;
     const auto *plugin = PluginLoader::instance().loadPlugin(rendererPluginName);
     auto *allocateProcedure = plugin->loadProcedure(RendererPlugin::allocateRendererProcedureName);
     auto *allocateRendererFunction = reinterpret_cast<AllocateRendererFunction>(allocateProcedure);

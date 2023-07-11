@@ -2,11 +2,6 @@
 
 namespace NOX {
 
-namespace {
-using MessageHandler = LRESULT (*)(HWND, UINT, WPARAM, LPARAM);
-std::unordered_map<UINT, MessageHandler> messageHandlers;
-} // namespace
-
 LRESULT handleCloseMessage(HWND hwnd, UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM /*lParam*/) {
     if (auto *window = USER_DATA(hwnd)) {
         window->postCloseEvent();
@@ -23,13 +18,19 @@ LRESULT handleResizeMessage(HWND hwnd, UINT /*uMsg*/, WPARAM /*wParam*/, LPARAM 
     return 0;
 }
 
-void populateWindowMessageHandlers() {
-    messageHandlers[WM_CLOSE] = handleCloseMessage;
-    messageHandlers[WM_SIZE] = handleResizeMessage;
-}
+namespace {
+using MessageHandler = std::pair<UINT, LRESULT (*)(HWND, UINT, WPARAM, LPARAM)>;
+constexpr std::array<MessageHandler, 2> messageHandlers{{
+    {WM_CLOSE, handleCloseMessage},
+    {WM_SIZE, handleResizeMessage},
+}};
+} // namespace
 
 LRESULT CALLBACK windowProcedure(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-    auto handler = messageHandlers.find(uMsg);
+    auto handler = std::find_if(messageHandlers.begin(), messageHandlers.end(),
+                                [uMsg](const MessageHandler &handler) {
+                                    return (handler.first == uMsg);
+                                });
     if (handler != messageHandlers.end()) {
         return handler->second(hwnd, uMsg, wParam, lParam);
     }

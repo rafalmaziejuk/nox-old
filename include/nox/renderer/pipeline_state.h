@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/non_copyable.h>
 #include <nox/renderer/pipeline_state_types.h>
 
 #include <memory>
@@ -19,9 +18,14 @@ struct PipelineStateDescriptor {
     PrimitiveTopology primitiveTopology;
 };
 
-class NOX_EXPORT PipelineState : public NonCopyable {
+class NOX_EXPORT PipelineState {
   public:
+    PipelineState(const PipelineState &) = delete;
+    PipelineState &operator=(const PipelineState &) = delete;
     virtual ~PipelineState();
+
+  protected:
+    PipelineState() = default;
 };
 
 } // namespace NOX

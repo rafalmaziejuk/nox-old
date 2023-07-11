@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/non_copyable.h>
 #include <nox/vec.h>
 
 #include <memory>
@@ -22,11 +21,14 @@ struct WindowDescriptor {
     bool isCentered;
 };
 
-class NOX_EXPORT Window : public NonCopyable {
+class NOX_EXPORT Window {
   public:
     Window();
+    Window(const Window &) = delete;
+    Window &operator=(const Window &) = delete;
     virtual ~Window();
 
+  public:
     [[nodiscard]] static std::unique_ptr<Window> create(const WindowDescriptor &descriptor);
 
     bool shouldClose() const;

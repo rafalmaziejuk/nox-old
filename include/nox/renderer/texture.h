@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/non_copyable.h>
 #include <nox/vec.h>
 #include <nox/renderer/format.h>
 #include <nox/renderer/texture_types.h>
@@ -14,9 +13,14 @@ struct TextureDescriptor {
     Format format;
 };
 
-class NOX_EXPORT Texture : public NonCopyable {
+class NOX_EXPORT Texture {
   public:
+    Texture(const Texture &) = delete;
+    Texture &operator=(const Texture &) = delete;
     virtual ~Texture();
+
+  protected:
+    Texture() = default;
 };
 
 } // namespace NOX

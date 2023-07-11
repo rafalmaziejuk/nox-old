@@ -8,6 +8,10 @@ class Shader;
 
 class GLProgram {
   public:
+    GLProgram(const GLProgram &) = delete;
+    GLProgram &operator=(const GLProgram &) = delete;
+
+  public:
     GLProgram();
     ~GLProgram();
 

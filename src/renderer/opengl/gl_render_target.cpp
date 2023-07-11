@@ -143,8 +143,10 @@ uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttach
 }
 
 void GLRenderTarget::createColorAttachment(const Texture &texture, uint32_t attachmentPoint) {
-    const auto &glTexture = dynamic_cast<const GLTexture &>(texture);
-    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture.getHandle(), 0);
+    const auto &glTexture = dynamic_cast<const GLTexture *>(&texture);
+    NOX_ASSERT(glTexture == nullptr);
+
+    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture->getHandle(), 0);
 }
 
 void GLRenderTarget::createDepthStencilAttachment(Format format) {

@@ -8,6 +8,10 @@ namespace NOX {
 
 class DynamicPlugin final : public Plugin {
   public:
+    DynamicPlugin(const DynamicPlugin &) = delete;
+    DynamicPlugin &operator=(const DynamicPlugin &) = delete;
+
+  public:
     explicit DynamicPlugin(std::string_view pluginName);
     ~DynamicPlugin() override;
 

@@ -6,6 +6,10 @@ namespace NOX {
 
 class GLBuffer : public Buffer {
   public:
+    GLBuffer(const GLBuffer &) = delete;
+    GLBuffer &operator=(const GLBuffer &) = delete;
+
+  public:
     explicit GLBuffer(const BufferDescriptor &descriptor);
     ~GLBuffer() override;
 

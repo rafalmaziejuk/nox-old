@@ -1,16 +1,18 @@
 #pragma once
 
-#include <nox/non_copyable.h>
-
 #include <string_view>
 
 namespace NOX {
 
-class Plugin : public NonCopyable {
+class Plugin {
+  public:
+    Plugin(const Plugin &) = delete;
+    Plugin &operator=(const Plugin &) = delete;
+    virtual ~Plugin() = default;
+
   public:
     explicit Plugin(std::string_view pluginName);
     Plugin(std::string_view pluginName, std::string_view extension);
-    virtual ~Plugin() = default;
 
     virtual void *loadProcedure(std::string_view procedureName) const = 0;
 
@@ -24,4 +26,4 @@ class Plugin : public NonCopyable {
 } // namespace NOX
 
 #define NOX_DECLARE_PLUGIN_FUNCTION(name, returnType, argumentList) \
-    typedef returnType (*name)(argumentList)
+    using name = returnType (*)(argumentList)

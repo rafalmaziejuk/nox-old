@@ -7,11 +7,15 @@ struct VertexFormat;
 
 class GLVertexArray {
   public:
+    GLVertexArray(const GLVertexArray &) = delete;
+    GLVertexArray &operator=(const GLVertexArray &) = delete;
+
+  public:
     GLVertexArray();
     ~GLVertexArray();
 
     void setVertexBuffer(const GLBuffer &vertexBuffer, const VertexFormat &format);
-    void setIndexBuffer(const GLBuffer &indexBuffer);
+    void setIndexBuffer(const GLBuffer &indexBuffer) const;
 
     void bind() const;
 

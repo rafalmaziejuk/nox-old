@@ -23,7 +23,6 @@ WindowsWindow::WindowsWindow(const WindowDescriptor &descriptor) : m_descriptor{
     attributes.hbrBackground = reinterpret_cast<HBRUSH>(GetStockObject(WHITE_BRUSH));
     attributes.lpszClassName = TEXT(windowClassName);
     WindowsWindowHelper::registerWindowClass(attributes);
-    populateWindowMessageHandlers();
 
     m_handle = CreateWindow(TEXT(windowClassName),
                             TEXT(descriptor.title.c_str()),

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/non_copyable.h>
 #include <nox/renderer/swap_chain_types.h>
 
 #include <memory>
@@ -16,10 +15,16 @@ struct SwapChainDescriptor {
     bool isVSync;
 };
 
-class NOX_EXPORT SwapChain : public NonCopyable {
+class NOX_EXPORT SwapChain {
   public:
+    SwapChain(const SwapChain &) = delete;
+    SwapChain &operator=(const SwapChain &) = delete;
     virtual ~SwapChain();
 
+  protected:
+    SwapChain() = default;
+
+  public:
     virtual void swap() const = 0;
 
     virtual void setVSync(bool value) = 0;
