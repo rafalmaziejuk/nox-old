@@ -25,19 +25,19 @@ struct Vector {
     }
 
     template <typename U>
-    constexpr Vector(const Vector<U, 2> &other) : values{{static_cast<Type>(other.x()),
-                                                          static_cast<Type>(other.y())}} {}
+    constexpr explicit Vector(const Vector<U, 2> &other) : values{{static_cast<Type>(other.x()),
+                                                                   static_cast<Type>(other.y())}} {}
 
     template <typename U>
-    constexpr Vector(const Vector<U, 3> &other) : values{{static_cast<Type>(other.x()),
-                                                          static_cast<Type>(other.y()),
-                                                          static_cast<Type>(other.z())}} {}
+    constexpr explicit Vector(const Vector<U, 3> &other) : values{{static_cast<Type>(other.x()),
+                                                                   static_cast<Type>(other.y()),
+                                                                   static_cast<Type>(other.z())}} {}
 
     template <typename U>
-    constexpr Vector(const Vector<U, 4> &other) : values{{static_cast<Type>(other.x()),
-                                                          static_cast<Type>(other.y()),
-                                                          static_cast<Type>(other.z()),
-                                                          static_cast<Type>(other.w())}} {}
+    constexpr explicit Vector(const Vector<U, 4> &other) : values{{static_cast<Type>(other.x()),
+                                                                   static_cast<Type>(other.y()),
+                                                                   static_cast<Type>(other.z()),
+                                                                   static_cast<Type>(other.w())}} {}
 
     bool operator==(const Vector<Type, componentCount> &other) const { return (values == other.values); }
     bool operator!=(const Vector<Type, componentCount> &other) const { return (values != other.values); }

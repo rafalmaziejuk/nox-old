@@ -8,6 +8,10 @@ class GLRenderTargetBase;
 
 class GLPipelineState final : public PipelineState {
   public:
+    GLPipelineState(const GLPipelineState &) = delete;
+    GLPipelineState &operator=(const GLPipelineState &) = delete;
+
+  public:
     explicit GLPipelineState(const PipelineStateDescriptor &descriptor);
     ~GLPipelineState() override;
 

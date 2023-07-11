@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nox/non_copyable.h>
 #include <nox/renderer/renderer_types.h>
 
 #include <memory>
@@ -10,7 +9,11 @@ namespace NOX {
 struct PixelFormatDescriptor;
 class Window;
 
-class GLContext : public NonCopyable {
+class GLContext {
+  public:
+    GLContext(const GLContext &) = delete;
+    GLContext &operator=(const GLContext &) = delete;
+
   public:
     explicit GLContext(const OpenGLRendererConfig &config);
     ~GLContext();

@@ -1,16 +1,18 @@
 #pragma once
 
-#include <nox/non_copyable.h>
-
 namespace NOX {
 
 template <typename T>
-class Singleton : public NonCopyable {
+class Singleton {
   public:
     static T &instance() {
         static T instance{};
         return instance;
     }
+
+  public:
+    Singleton(const Singleton &) = delete;
+    Singleton &operator=(const Singleton &) = delete;
 
   protected:
     Singleton() = default;

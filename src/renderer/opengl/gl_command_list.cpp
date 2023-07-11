@@ -12,23 +12,29 @@ GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/,
                              std::shared_ptr<GLState> state) : m_state{std::move(state)} {}
 
 void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
-    const auto &vertexBuffer = dynamic_cast<const GLVertexBuffer &>(buffer);
-    auto vertexArrayIndex = vertexBuffer.getVertexArrayIndex();
+    const auto *glVertexBuffer = dynamic_cast<const GLVertexBuffer *>(&buffer);
+    NOX_ASSERT(glVertexBuffer == nullptr);
+
+    auto vertexArrayIndex = glVertexBuffer->getVertexArrayIndex();
     const auto &vertexArray = m_state->vertexArrays[vertexArrayIndex];
     vertexArray->bind();
     m_state->currentVertexArrayIndex = vertexArrayIndex;
 }
 
 void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
-    const auto &indexBuffer = dynamic_cast<const GLIndexBuffer &>(buffer);
+    const auto *glIndexBuffer = dynamic_cast<const GLIndexBuffer *>(&buffer);
+    NOX_ASSERT(glIndexBuffer == nullptr);
+
     const auto &vertexArray = m_state->vertexArrays[m_state->currentVertexArrayIndex];
-    vertexArray->setIndexBuffer(indexBuffer);
-    m_state->indexType = indexBuffer.getIndexType();
+    vertexArray->setIndexBuffer(*glIndexBuffer);
+    m_state->indexType = glIndexBuffer->getIndexType();
 }
 
 void GLCommandList::bindPipelineState(const PipelineState &pipeline) {
-    const auto &pipelineState = dynamic_cast<const GLPipelineState &>(pipeline);
-    pipelineState.bind();
+    const auto *glPipelineState = dynamic_cast<const GLPipelineState *>(&pipeline);
+    NOX_ASSERT(glPipelineState == nullptr);
+
+    glPipelineState->bind();
 }
 
 void GLCommandList::setViewport(const Viewport &viewport) {

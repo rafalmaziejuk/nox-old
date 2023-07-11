@@ -16,7 +16,7 @@ struct ProcessedVertexAttribute {
 };
 
 struct VertexArrayDescriptor {
-    VertexArrayDescriptor(const VertexFormat &format) {
+    explicit VertexArrayDescriptor(const VertexFormat &format) {
         const auto &attributes = format.attributes;
         auto attributesCount = attributes.size();
         processedAttributes.resize(attributesCount);
@@ -61,7 +61,7 @@ void GLVertexArray::setVertexBuffer(const GLBuffer &vertexBuffer, const VertexFo
     m_currentBindingIndex++;
 }
 
-void GLVertexArray::setIndexBuffer(const GLBuffer &indexBuffer) {
+void GLVertexArray::setIndexBuffer(const GLBuffer &indexBuffer) const {
     glVertexArrayElementBuffer(m_handle, indexBuffer.getHandle());
 }
 

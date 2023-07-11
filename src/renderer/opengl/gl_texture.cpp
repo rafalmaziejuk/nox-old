@@ -105,7 +105,7 @@ void GLTexture::bind(uint32_t index) const {
     glBindTextureUnit(index, m_handle);
 }
 
-void GLTexture::createTexture2D() {
+void GLTexture::createTexture2D() const {
     auto width = m_descriptor.size.x();
     auto height = m_descriptor.size.y();
     auto format = mapTextureFormat(m_descriptor.format);

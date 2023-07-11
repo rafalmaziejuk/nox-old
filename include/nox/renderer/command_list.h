@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/non_copyable.h>
 #include <nox/vec.h>
 #include <nox/renderer/command_list_types.h>
 
@@ -13,10 +12,16 @@ class RenderTarget;
 
 struct CommandListDescriptor {};
 
-class NOX_EXPORT CommandList : public NonCopyable {
+class NOX_EXPORT CommandList {
   public:
+    CommandList(const CommandList &) = delete;
+    CommandList &operator=(const CommandList &) = delete;
     virtual ~CommandList();
 
+  protected:
+    CommandList() = default;
+
+  public:
     virtual void bindVertexBuffer(const Buffer &buffer) = 0;
 
     virtual void bindIndexBuffer(const Buffer &buffer) = 0;

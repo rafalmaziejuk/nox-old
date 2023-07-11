@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/non_copyable.h>
 #include <nox/renderer/buffer_types.h>
 
 namespace NOX {
@@ -12,9 +11,14 @@ struct BufferDescriptor {
     uint8_t accessMethod;
 };
 
-class NOX_EXPORT Buffer : public NonCopyable {
+class NOX_EXPORT Buffer {
   public:
+    Buffer(const Buffer &) = delete;
+    Buffer &operator=(const Buffer &) = delete;
     virtual ~Buffer();
+
+  protected:
+    Buffer() = default;
 };
 
 } // namespace NOX
