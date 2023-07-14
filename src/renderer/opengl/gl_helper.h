@@ -2,9 +2,9 @@
 
 #include "renderer/format_helper.h"
 
-#include <nox/renderer/buffer_types.h>
-#include <nox/renderer/pipeline_state_types.h>
-#include <nox/renderer/shader_types.h>
+#include <nox/buffer_types.h>
+#include <nox/pipeline_state_types.h>
+#include <nox/shader_types.h>
 
 #include <glad/gl.h>
 

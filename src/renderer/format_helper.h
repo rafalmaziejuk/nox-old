@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/renderer/format.h>
+#include <nox/format.h>
 
 namespace NOX {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/renderer/swap_chain.h>
+#include <nox/swap_chain.h>
 
 namespace NOX {
 

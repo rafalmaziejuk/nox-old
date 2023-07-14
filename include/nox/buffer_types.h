@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/renderer/format.h>
+#include <nox/format.h>
 
 #include <string>
 #include <vector>

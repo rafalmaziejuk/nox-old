@@ -1,6 +1,6 @@
 #include "window/windows/windows_window_helper.h"
 
-#include <nox/window/window.h>
+#include <nox/window.h>
 
 namespace NOX::WindowsWindowHelper {
 

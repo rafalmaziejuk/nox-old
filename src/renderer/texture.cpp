@@ -1,4 +1,4 @@
-#include <nox/renderer/texture.h>
+#include <nox/texture.h>
 
 namespace NOX {
 

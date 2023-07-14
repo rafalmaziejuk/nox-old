@@ -2,8 +2,8 @@
 
 #include <nox/export.h>
 #include <nox/vec.h>
-#include <nox/renderer/format.h>
-#include <nox/renderer/texture_types.h>
+#include <nox/format.h>
+#include <nox/texture_types.h>
 
 namespace NOX {
 

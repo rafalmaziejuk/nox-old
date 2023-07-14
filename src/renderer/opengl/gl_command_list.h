@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/renderer/command_list.h>
+#include <nox/command_list.h>
 
 #include <memory>
 

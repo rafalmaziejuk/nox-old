@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/renderer/pipeline_state_types.h>
+#include <nox/pipeline_state_types.h>
 
 #include <memory>
 

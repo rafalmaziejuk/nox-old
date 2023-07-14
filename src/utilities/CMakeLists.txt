@@ -1,9 +1,0 @@
-set(NOX_UTILITIES_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-    ${CMAKE_CURRENT_SOURCE_DIR}/assertion.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/logger.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/singleton.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
-)
-
-target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_UTILITIES_SOURCES})

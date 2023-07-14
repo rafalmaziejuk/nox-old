@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/renderer/renderer_types.h>
+#include <nox/renderer_types.h>
 
 #include <functional>
 #include <memory>

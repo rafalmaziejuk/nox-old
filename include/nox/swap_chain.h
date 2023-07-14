@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/renderer/swap_chain_types.h>
+#include <nox/swap_chain_types.h>
 
 #include <memory>
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/renderer/renderer_types.h>
+#include <nox/renderer_types.h>
 
 #include <memory>
 

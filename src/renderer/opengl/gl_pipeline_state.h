@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/renderer/pipeline_state.h>
+#include <nox/pipeline_state.h>
 
 namespace NOX {
 
