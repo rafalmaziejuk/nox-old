@@ -1,7 +1,7 @@
 #pragma once
 
 #include "core/core.h"
-#include "utilities/logger.h"
+#include "core/logger.h"
 
 #if defined(NOX_DEBUG)
 #define NOX_ASSERT_MSG(expression, message, ...)              \

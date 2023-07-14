@@ -1,15 +1,15 @@
 #include "sandbox_application.h"
 
-#include <nox/renderer/buffer.h>
-#include <nox/renderer/command_list.h>
-#include <nox/renderer/pipeline_state.h>
-#include <nox/renderer/render_pass.h>
-#include <nox/renderer/render_target.h>
-#include <nox/renderer/shader.h>
-#include <nox/renderer/swap_chain.h>
-#include <nox/renderer/texture.h>
-#include <nox/window/event.h>
-#include <nox/window/window.h>
+#include <nox/buffer.h>
+#include <nox/command_list.h>
+#include <nox/pipeline_state.h>
+#include <nox/render_pass.h>
+#include <nox/render_target.h>
+#include <nox/shader.h>
+#include <nox/swap_chain.h>
+#include <nox/texture.h>
+#include <nox/event.h>
+#include <nox/window.h>
 
 namespace NOX {
 

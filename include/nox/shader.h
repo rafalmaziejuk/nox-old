@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/renderer/shader_types.h>
+#include <nox/shader_types.h>
 
 namespace NOX {
 

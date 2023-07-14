@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/renderer/render_target.h>
+#include <nox/render_target.h>
 
 namespace NOX {
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utilities/singleton.h"
+#include "core/singleton.h"
 
 #include <memory>
 #include <string_view>

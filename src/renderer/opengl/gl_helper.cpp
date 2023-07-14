@@ -1,6 +1,6 @@
 #include "renderer/opengl/gl_helper.h"
 
-#include <nox/renderer/command_list_types.h>
+#include <nox/command_list_types.h>
 
 namespace NOX::GLHelper {
 

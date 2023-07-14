@@ -80,8 +80,8 @@ target_precompile_headers(
     ${NOX_LIB_NAME}
     PRIVATE
     [["core/core.h"]]
-    [["utilities/assertion.h"]]
-    [["utilities/utilities.h"]]
+    [["core/assertion.h"]]
+    [["core/utilities.h"]]
     <algorithm>
     <cstdint>
     <memory>
@@ -117,7 +117,6 @@ nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_LIB_NAME})
 add_subdirectory(core)
 add_subdirectory(plugins)
 add_subdirectory(renderer)
-add_subdirectory(utilities)
 add_subdirectory(window)
 
 # --------------------------------------------------

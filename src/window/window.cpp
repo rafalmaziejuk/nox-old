@@ -1,5 +1,5 @@
-#include <nox/window/event.h>
-#include <nox/window/window.h>
+#include <nox/event.h>
+#include <nox/window.h>
 
 #define FOREACH_EVENT_DISPATCHER(function, ...)                                  \
     for (const auto &eventDispatcher : m_impl->eventDispatchers) {               \

@@ -2,7 +2,7 @@
 #include "plugins/plugin_loader.h"
 #include "plugins/plugin_procedure_names.h"
 
-#include <nox/renderer/renderer.h>
+#include <nox/renderer.h>
 
 namespace NOX {
 

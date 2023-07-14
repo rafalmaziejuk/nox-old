@@ -1,4 +1,4 @@
-#include <nox/renderer/shader.h>
+#include <nox/shader.h>
 
 namespace NOX {
 

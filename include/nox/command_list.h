@@ -2,7 +2,7 @@
 
 #include <nox/export.h>
 #include <nox/vec.h>
-#include <nox/renderer/command_list_types.h>
+#include <nox/command_list_types.h>
 
 namespace NOX {
 

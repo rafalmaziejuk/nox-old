@@ -1,4 +1,4 @@
-#include <nox/renderer/buffer.h>
+#include <nox/buffer.h>
 
 namespace NOX {
 

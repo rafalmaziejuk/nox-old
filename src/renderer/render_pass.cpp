@@ -1,4 +1,4 @@
-#include <nox/renderer/render_pass.h>
+#include <nox/render_pass.h>
 
 namespace NOX {
 

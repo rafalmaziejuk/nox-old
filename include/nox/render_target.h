@@ -2,7 +2,7 @@
 
 #include <nox/export.h>
 #include <nox/vec.h>
-#include <nox/renderer/render_target_types.h>
+#include <nox/render_target_types.h>
 
 namespace NOX {
 

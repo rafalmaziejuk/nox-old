@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/window/window.h>
+#include <nox/window.h>
 
 #include <Windows.h>
 
