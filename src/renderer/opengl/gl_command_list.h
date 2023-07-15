@@ -21,7 +21,7 @@ class GLCommandList final : public CommandList {
     void setClearColor(const Vector4D<float> &color) override;
     void setClearDepth(float depth) override;
     void setClearStencil(uint32_t stencil) override;
-    void clear(uint8_t flags) override;
+    void clear(uint32_t mask) override;
 
     void clearColor(const Vector4D<float> &color, uint8_t index) override;
     void clearColor(const Vector4D<int32_t> &color, uint8_t index) override;

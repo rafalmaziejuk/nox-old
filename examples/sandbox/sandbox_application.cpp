@@ -175,13 +175,13 @@ void SandboxApplication::createTriangleVertexBuffer() {
     };
 
     BufferDescriptor vertexBufferDescriptor{};
-    vertexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
+    vertexBufferDescriptor.usage = BufferUsage::STATIC;
     vertexBufferDescriptor.size = sizeof(vertices);
     vertexBufferDescriptor.data = vertices;
     m_triangleVertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor, vertexFormat);
 
     BufferDescriptor indexBufferDescriptor{};
-    indexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
+    indexBufferDescriptor.usage = BufferUsage::STATIC;
     indexBufferDescriptor.size = sizeof(indices);
     indexBufferDescriptor.data = indices;
     m_triangleIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
@@ -205,11 +205,11 @@ void SandboxApplication::createTriangleRenderPass() {
     pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
     ShaderDescriptor vertexShaderDescriptor{};
-    vertexShaderDescriptor.type = ShaderType::VERTEX;
+    vertexShaderDescriptor.stage = ShaderStage::VERTEX;
     pipelineStateDescriptor.vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, Shaders::triangleVertexShaderSource);
 
     ShaderDescriptor fragmentShaderDescriptor{};
-    fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
+    fragmentShaderDescriptor.stage = ShaderStage::FRAGMENT;
     pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, Shaders::triangleFragmentShaderSource);
 
     RenderPassDescriptor renderPassDescriptor{};
@@ -236,13 +236,13 @@ void SandboxApplication::createFullscreenVertexBuffer() {
     };
 
     BufferDescriptor vertexBufferDescriptor{};
-    vertexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
+    vertexBufferDescriptor.usage = BufferUsage::STATIC;
     vertexBufferDescriptor.size = sizeof(vertices);
     vertexBufferDescriptor.data = vertices;
     m_fullscreenVertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor, vertexFormat);
 
     BufferDescriptor indexBufferDescriptor{};
-    indexBufferDescriptor.accessMethod = BufferAccessMethod::STATIC;
+    indexBufferDescriptor.usage = BufferUsage::STATIC;
     indexBufferDescriptor.size = sizeof(indices);
     indexBufferDescriptor.data = indices;
     m_fullscreenIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
@@ -254,11 +254,11 @@ void SandboxApplication::createFullscreenRenderPass() {
     pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
     ShaderDescriptor vertexShaderDescriptor{};
-    vertexShaderDescriptor.type = ShaderType::VERTEX;
+    vertexShaderDescriptor.stage = ShaderStage::VERTEX;
     pipelineStateDescriptor.vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, Shaders::fullscreenVertexShaderSource);
 
     ShaderDescriptor fragmentShaderDescriptor{};
-    fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
+    fragmentShaderDescriptor.stage = ShaderStage::FRAGMENT;
     pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, Shaders::fullscreenFragmentShaderSource);
 
     RenderPassDescriptor renderPassDescriptor{};

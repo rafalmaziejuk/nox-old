@@ -7,7 +7,7 @@
 
 namespace NOX {
 
-struct BufferAccessMethod {
+struct BufferUsage {
     enum {
         STATIC = (1 << 0),
         DYNAMIC = (1 << 1)

@@ -4,10 +4,11 @@
 
 namespace NOX {
 
-enum class ShaderType : uint8_t {
-    VERTEX,
-    FRAGMENT,
-    MAX
+struct ShaderStage {
+    enum {
+        VERTEX = (1 << 0),
+        FRAGMENT = (1 << 1)
+    };
 };
 
 } // namespace NOX

@@ -6,7 +6,7 @@
 
 namespace NOX {
 
-struct ClearFlag {
+struct ClearMask {
     enum {
         COLOR = (1 << 0),
         DEPTH = (1 << 1),

@@ -1,5 +1,5 @@
 #include "renderer/opengl/gl_context.h"
-#include "renderer/opengl/gl_helper.h"
+#include "renderer/opengl/gl_debug_message_callback.inl"
 #include "window/windows/windows_window_helper.h"
 
 #include <nox/swap_chain_types.h>
@@ -151,7 +151,7 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
     if constexpr (isDebugConfiguration) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(GLHelper::debugMessageCallback, nullptr);
+        glDebugMessageCallback(debugMessageCallback, nullptr);
     }
 }
 

@@ -1,45 +1,61 @@
-#include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_shader.h"
+
+#include <glad/gl.h>
 
 namespace NOX {
 
 namespace {
 
-const char *shaderTypeToString(ShaderType type) {
-    switch (type) {
-    case ShaderType::VERTEX:
-        return "vertex";
-    case ShaderType::FRAGMENT:
-        return "fragment";
+const char *mapShaderStageBitToString(uint32_t stageBit) {
+    switch (stageBit) {
+        NOX_CASE_RETURN_STRING(GL_VERTEX_SHADER_BIT, GL_VERTEX_SHADER);
+        NOX_CASE_RETURN_STRING(GL_FRAGMENT_SHADER_BIT, GL_FRAGMENT_SHADER);
+
     default:
         NOX_ASSERT(true);
-        return "undefined";
+        return 0u;
+    }
+}
+
+GLenum mapShaderStageToEnum(uint8_t stage) {
+    switch (stage) {
+    case ShaderStage::VERTEX:
+        return GL_VERTEX_SHADER;
+    case ShaderStage::FRAGMENT:
+        return GL_FRAGMENT_SHADER;
+    default:
+        NOX_ASSERT(true);
+        return 0u;
+    }
+}
+
+GLbitfield mapShaderStageToBitfield(uint8_t stage) {
+    switch (stage) {
+    case ShaderStage::VERTEX:
+        return GL_VERTEX_SHADER_BIT;
+    case ShaderStage::FRAGMENT:
+        return GL_FRAGMENT_SHADER_BIT;
+    default:
+        NOX_ASSERT(true);
+        return 0u;
     }
 }
 
 } // namespace
 
-GLShader::GLShader(const ShaderDescriptor &descriptor) : m_type{descriptor.type} {
-    m_handle = glCreateShader(GLHelper::mapShaderEnum(m_type));
+GLShader::GLShader(const ShaderDescriptor &descriptor) {
+    m_handle = glCreateShader(mapShaderStageToEnum(descriptor.stage));
+    m_stageBit = mapShaderStageToBitfield(descriptor.stage);
 }
 
 GLShader::~GLShader() {
     glDeleteShader(m_handle);
 }
 
-void GLShader::compileFromString(std::string_view source) {
-    compile(source.data());
-}
-
 void GLShader::compile(const char *source) {
     glShaderSource(m_handle, 1, &source, nullptr);
     glCompileShader(m_handle);
 
-    auto result = checkCompileStatus(m_type);
-    NOX_ASSERT(!result);
-}
-
-bool GLShader::checkCompileStatus(ShaderType type) const {
     GLint result = GL_TRUE;
     glGetShaderiv(m_handle, GL_COMPILE_STATUS, &result);
 
@@ -51,11 +67,15 @@ bool GLShader::checkCompileStatus(ShaderType type) const {
         log.resize(length);
         glGetShaderInfoLog(m_handle, length, nullptr, log.data());
 
-        NOX_LOG_ERROR(OPENGL, "GLSL {} shader compilation error\n{}", shaderTypeToString(type), log);
+        NOX_LOG_ERROR(OPENGL, "{} compilation error\n{}", mapShaderStageBitToString(m_stageBit), log);
         glDeleteShader(m_handle);
-    }
 
-    return result;
+        NOX_ASSERT(true);
+    }
+}
+
+void GLShader::compileFromString(std::string_view source) {
+    compile(source.data());
 }
 
 } // namespace NOX

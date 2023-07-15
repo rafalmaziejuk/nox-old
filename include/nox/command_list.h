@@ -37,7 +37,7 @@ class NOX_EXPORT CommandList {
 
     virtual void setClearStencil(uint32_t stencil = 0u) = 0;
 
-    virtual void clear(uint8_t flags) = 0;
+    virtual void clear(uint32_t mask) = 0;
 
     virtual void clearColor(const Vector4D<float> &color, uint8_t index = 0u) = 0;
 

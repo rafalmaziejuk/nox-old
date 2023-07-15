@@ -1,6 +1,5 @@
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_command_list.h"
-#include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
 #include "renderer/opengl/gl_render_pass.h"
 #include "renderer/opengl/gl_render_target.h"
@@ -8,6 +7,26 @@
 #include "renderer/opengl/gl_vertex_array.h"
 
 namespace NOX {
+
+namespace {
+
+GLbitfield mapClearMaskToBitfield(uint32_t mask) {
+    GLbitfield result = 0u;
+
+    if (mask & ClearMask::COLOR) {
+        result |= GL_COLOR_BUFFER_BIT;
+    }
+    if (mask & ClearMask::DEPTH) {
+        result |= GL_DEPTH_BUFFER_BIT;
+    }
+    if (mask & ClearMask::STENCIL) {
+        result |= GL_STENCIL_BUFFER_BIT;
+    }
+
+    return result;
+}
+
+} // namespace
 
 GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/,
                              std::shared_ptr<GLState> state) : m_state{std::move(state)} {}
@@ -53,8 +72,8 @@ void GLCommandList::setClearStencil(uint32_t stencil) {
     glClearStencil(stencil);
 }
 
-void GLCommandList::clear(uint8_t flags) {
-    glClear(GLHelper::mapClearFlagBits(flags));
+void GLCommandList::clear(uint32_t mask) {
+    glClear(mapClearMaskToBitfield(mask));
 }
 
 void GLCommandList::clearColor(const Vector4D<float> &color, uint8_t index) {
@@ -88,13 +107,11 @@ void GLCommandList::clearDepthStencil(float depth, uint32_t stencil) {
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
-    auto mode = m_state->primitiveTopology;
-    glDrawArrays(mode, static_cast<GLint>(firstVertexIndex), static_cast<GLsizei>(vertexCount));
+    glDrawArrays(m_state->primitiveTopology, static_cast<GLint>(firstVertexIndex), static_cast<GLsizei>(vertexCount));
 }
 
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
-    auto mode = m_state->primitiveTopology;
-    glDrawElements(mode, vertexCount, static_cast<GLenum>(m_state->indexType), nullptr);
+    glDrawElements(m_state->primitiveTopology, vertexCount, m_state->indexType, nullptr);
 }
 
 void GLCommandList::beginRenderPass(const RenderPass &renderPass) {
