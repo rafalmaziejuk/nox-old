@@ -6,7 +6,7 @@
 namespace NOX {
 
 struct ShaderDescriptor {
-    ShaderType type;
+    uint8_t stage;
 };
 
 class NOX_EXPORT Shader {

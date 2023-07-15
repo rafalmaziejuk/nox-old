@@ -25,7 +25,7 @@ struct VertexArrayDescriptor {
             auto &attribute = processedAttributes[i];
             attribute.index = static_cast<GLuint>(i);
             attribute.componentCount = static_cast<GLint>(formatDescriptor.componentCount);
-            attribute.dataType = static_cast<GLenum>(GLHelper::mapDataTypeEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize));
+            attribute.dataType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
             attribute.normalized = static_cast<GLboolean>(formatDescriptor.isNormalized);
             attribute.offset = stride;
 

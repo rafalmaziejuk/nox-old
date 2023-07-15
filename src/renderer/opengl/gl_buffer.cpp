@@ -4,8 +4,25 @@
 
 namespace NOX {
 
+namespace {
+
+GLbitfield mapBufferUsageToBitfield(uint32_t usage) {
+    GLbitfield flags = 0u;
+
+    if (usage & BufferUsage::STATIC) {
+        flags |= 0u;
+    }
+    if (usage & BufferUsage::DYNAMIC) {
+        flags |= GL_DYNAMIC_STORAGE_BIT;
+    }
+
+    return flags;
+}
+
+} // namespace
+
 GLBuffer::GLBuffer(const BufferDescriptor &descriptor) {
-    auto flags = GLHelper::mapBufferStorageFlags(descriptor.accessMethod);
+    auto flags = mapBufferUsageToBitfield(descriptor.usage);
     glCreateBuffers(1, &m_handle);
     glNamedBufferStorage(m_handle, descriptor.size, descriptor.data, flags);
 }
@@ -24,7 +41,7 @@ uint32_t GLVertexBuffer::getVertexArrayIndex() const {
 
 void GLIndexBuffer::setIndexType(Format format) {
     auto formatDescriptor = FormatHelper::getFormatDescriptor(format);
-    m_indexType = GLHelper::mapDataTypeEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
+    m_indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
 }
 
 uint32_t GLIndexBuffer::getIndexType() const {

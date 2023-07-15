@@ -1,6 +1,7 @@
-#include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_program.h"
 #include "renderer/opengl/gl_shader.h"
+
+#include <glad/gl.h>
 
 namespace NOX {
 
@@ -18,7 +19,7 @@ uint32_t GLProgram::attachShader(const Shader *shader) {
 
     glAttachShader(m_handle, glShader->getHandle());
     m_attachedShaderHandles.push_back(glShader->getHandle());
-    return GLHelper::mapShaderBit(glShader->getType());
+    return glShader->getStageBit();
 }
 
 void GLProgram::link() {

@@ -1,7 +1,6 @@
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_context.h"
-#include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
 #include "renderer/opengl/gl_render_pass.h"
 #include "renderer/opengl/gl_render_target.h"
@@ -13,6 +12,20 @@
 #include "renderer/opengl/gl_vertex_array.h"
 
 namespace NOX {
+
+namespace {
+
+GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
+    switch (topology) {
+    case PrimitiveTopology::TRIANGLE_LIST:
+        return GL_TRIANGLES;
+    default:
+        NOX_ASSERT(true);
+        return 0u;
+    }
+}
+
+} // namespace
 
 GLRenderer::GLRenderer(const RendererDescriptor &descriptor) {
     auto config = descriptor.config.get<OpenGLRendererConfig>();
@@ -57,7 +70,7 @@ std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescripto
 }
 
 std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineStateDescriptor &descriptor) {
-    m_state->primitiveTopology = GLHelper::mapPrimitiveTopologyEnum(descriptor.primitiveTopology);
+    m_state->primitiveTopology = mapPrimitiveTopologyToEnum(descriptor.primitiveTopology);
     return std::make_unique<GLPipelineState>(descriptor);
 }
 

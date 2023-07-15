@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glad/gl.h>
+
 #include <vector>
 
 namespace NOX {
@@ -16,8 +18,8 @@ struct GLState {
     const GLRenderTargetBase *currentRenderTarget;
     uint32_t currentVertexArrayIndex;
 
-    uint32_t indexType;
-    uint32_t primitiveTopology;
+    GLenum indexType;
+    GLenum primitiveTopology;
 };
 
 } // namespace NOX

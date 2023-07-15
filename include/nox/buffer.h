@@ -6,9 +6,9 @@
 namespace NOX {
 
 struct BufferDescriptor {
+    uint32_t usage;
     uint32_t size;
     const void *data;
-    uint8_t accessMethod;
 };
 
 class NOX_EXPORT Buffer {

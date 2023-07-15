@@ -1,15 +1,17 @@
-#include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_pipeline_state.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_program.h"
+
+#include <glad/gl.h>
 
 namespace NOX {
 
 GLPipelineState::GLPipelineState(const PipelineStateDescriptor &descriptor) : m_renderTarget{descriptor.renderTarget} {
     GLProgram program{};
-    auto vertexShaderBit = program.attachShader(descriptor.vertexShader.get());
-    auto fragmentShaderBit = program.attachShader(descriptor.fragmentShader.get());
-    auto stages = vertexShaderBit | fragmentShaderBit;
+    GLbitfield stages = 0u;
+
+    stages |= program.attachShader(descriptor.vertexShader.get());
+    stages |= program.attachShader(descriptor.fragmentShader.get());
     program.link();
 
     glCreateProgramPipelines(1, &m_handle);

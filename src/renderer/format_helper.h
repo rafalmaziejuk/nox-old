@@ -18,7 +18,6 @@ struct FormatDescriptor {
     uint8_t componentCount;
     uint8_t dataTypeSize;
     bool isNormalized;
-    bool isColor;
     bool hasDepth;
     bool hasStencil;
 };
