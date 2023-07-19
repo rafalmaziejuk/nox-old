@@ -13,7 +13,7 @@ const char *mapShaderStageBitToString(uint32_t stageBit) {
 
     default:
         NOX_ASSERT(true);
-        return 0u;
+        return nullptr;
     }
 }
 
@@ -52,7 +52,7 @@ GLShader::~GLShader() {
     glDeleteShader(m_handle);
 }
 
-void GLShader::compile(const char *source) {
+void GLShader::compile(const char *source) const {
     glShaderSource(m_handle, 1, &source, nullptr);
     glCompileShader(m_handle);
 
@@ -74,7 +74,7 @@ void GLShader::compile(const char *source) {
     }
 }
 
-void GLShader::compileFromString(std::string_view source) {
+void GLShader::compileFromString(std::string_view source) const {
     compile(source.data());
 }
 

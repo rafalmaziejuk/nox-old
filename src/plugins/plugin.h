@@ -4,23 +4,35 @@
 
 namespace NOX {
 
+struct ConvertibleProcedureAddress {
+    template <typename T>
+    operator T *() const {
+        static_assert(std::is_function<T>::value);
+        return reinterpret_cast<T *>(address);
+    }
+
+    void *address{nullptr};
+};
+
 class Plugin {
   public:
+    Plugin() = default;
     Plugin(const Plugin &) = delete;
     Plugin &operator=(const Plugin &) = delete;
     virtual ~Plugin() = default;
 
   public:
-    explicit Plugin(std::string_view pluginName);
-    Plugin(std::string_view pluginName, std::string_view extension);
+    Plugin(std::string_view name, std::string_view extension);
 
-    virtual void *loadProcedure(std::string_view procedureName) const = 0;
+    ConvertibleProcedureAddress getFunction(std::string_view name) const {
+        return {getProcedureAddress(name)};
+    }
 
   protected:
-    const std::string &getPluginName() const { return m_pluginName; }
+    virtual void *getProcedureAddress(std::string_view procedureName) const = 0;
 
-  private:
-    std::string m_pluginName;
+  protected:
+    std::string m_name{};
 };
 
 } // namespace NOX

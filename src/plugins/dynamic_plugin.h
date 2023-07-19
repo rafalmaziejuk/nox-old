@@ -12,10 +12,11 @@ class DynamicPlugin final : public Plugin {
     DynamicPlugin &operator=(const DynamicPlugin &) = delete;
 
   public:
-    explicit DynamicPlugin(std::string_view pluginName);
+    explicit DynamicPlugin(std::string_view name);
     ~DynamicPlugin() override;
 
-    void *loadProcedure(std::string_view procedureName) const override;
+  protected:
+    void *getProcedureAddress(std::string_view procedureName) const override;
 
   private:
     struct Impl;

@@ -16,10 +16,10 @@ class GLShader final : public Shader {
     uint32_t getHandle() const { return m_handle; }
     uint32_t getStageBit() const { return m_stageBit; }
 
-    void compileFromString(std::string_view source);
+    void compileFromString(std::string_view source) const;
 
   private:
-    void compile(const char *source);
+    void compile(const char *source) const;
 
   private:
     uint32_t m_handle{0u};

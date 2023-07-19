@@ -12,6 +12,24 @@ inline constexpr auto isDebugConfiguration = true;
 inline constexpr auto isDebugConfiguration = false;
 #endif
 
+#if defined(__clang__)
+inline constexpr auto isClang = true;
+#else
+inline constexpr auto isClang = false;
+#endif
+
+#if defined(__GNUC__)
+inline constexpr auto isGcc = true;
+#else
+inline constexpr auto isGcc = false;
+#endif
+
+#if defined(_MSC_VER)
+inline constexpr auto isMsvc = true;
+#else
+inline constexpr auto isMsvc = false;
+#endif
+
 #if defined(NOX_DEBUG)
 #if defined(NOX_WIN32)
 #define NOX_DEBUG_BREAK() __debugbreak()
