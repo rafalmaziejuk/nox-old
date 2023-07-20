@@ -2,12 +2,12 @@
 
 namespace NOX {
 
-Plugin::Plugin(std::string_view pluginName) : m_pluginName{Utilities::toLower(pluginName.data())} {}
-
-Plugin::Plugin(std::string_view pluginName, std::string_view extension) : m_pluginName{Utilities::toLower(pluginName.data())} {
-    constexpr auto prefix = "nox-";
-    constexpr auto postfix = isDebugConfiguration ? "-d" : "";
-    m_pluginName = prefix + m_pluginName + postfix + extension.data();
+Plugin::Plugin(std::string_view name, std::string_view extension) {
+    m_name += (isGcc ? "lib" : "");
+    m_name += "nox-";
+    m_name += name.data();
+    m_name += (isDebugConfiguration ? "-d" : "");
+    m_name += extension.data();
 }
 
 } // namespace NOX

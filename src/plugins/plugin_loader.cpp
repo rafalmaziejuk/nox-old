@@ -4,22 +4,21 @@
 
 namespace NOX {
 
-const Plugin *PluginLoader::loadPlugin(std::string_view pluginName) {
+const Plugin *PluginLoader::load(std::string_view name) {
     if constexpr (isStaticLinking) {
-        return m_plugins.emplace_back(std::make_unique<StaticPlugin>(pluginName)).get();
+        return m_plugins.emplace_back(std::make_unique<StaticPlugin>(name)).get();
     } else {
-        return m_plugins.emplace_back(std::make_unique<DynamicPlugin>(pluginName)).get();
+        return m_plugins.emplace_back(std::make_unique<DynamicPlugin>(name)).get();
     }
 }
 
-void PluginLoader::unloadPlugin(const Plugin *pluginToUnload) {
-    auto pluginsIterator = std::find_if(m_plugins.begin(), m_plugins.end(), [pluginToUnload](const auto &plugin) {
-        return (pluginToUnload == plugin.get());
+void PluginLoader::unload(const Plugin *plugin) {
+    auto iterator = std::find_if(m_plugins.begin(), m_plugins.end(), [plugin](const auto &element) {
+        return (plugin == element.get());
     });
-    NOX_ASSERT(pluginsIterator == m_plugins.end());
+    NOX_ASSERT(iterator == m_plugins.end());
 
-    pluginsIterator->reset();
-    m_plugins.erase(pluginsIterator);
+    m_plugins.erase(iterator);
 }
 
 } // namespace NOX

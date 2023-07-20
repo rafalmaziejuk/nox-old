@@ -6,14 +6,10 @@ namespace NOX {
 
 class StaticPlugin final : public Plugin {
   public:
-    StaticPlugin(const StaticPlugin &) = delete;
-    StaticPlugin &operator=(const StaticPlugin &) = delete;
+    StaticPlugin(std::string_view name);
 
-  public:
-    explicit StaticPlugin(std::string_view pluginName);
-    ~StaticPlugin() override;
-
-    void *loadProcedure(std::string_view name) const override;
+  protected:
+    void *getProcedureAddress(std::string_view procedureName) const override;
 };
 
 } // namespace NOX
