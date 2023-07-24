@@ -16,13 +16,12 @@ struct ConvertibleProcedureAddress {
 
 class Plugin {
   public:
-    Plugin() = default;
     Plugin(const Plugin &) = delete;
     Plugin &operator=(const Plugin &) = delete;
     virtual ~Plugin() = default;
 
   public:
-    Plugin(std::string_view name, std::string_view extension);
+    explicit Plugin(std::string_view name);
 
     ConvertibleProcedureAddress getFunction(std::string_view name) const {
         return {getProcedureAddress(name)};
