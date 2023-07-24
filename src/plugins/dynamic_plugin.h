@@ -19,6 +19,9 @@ class DynamicPlugin final : public Plugin {
     void *getProcedureAddress(std::string_view procedureName) const override;
 
   private:
+    std::string preparePluginName(std::string_view name, std::string_view extension);
+
+  private:
     struct Impl;
     std::unique_ptr<Impl> m_impl;
 };

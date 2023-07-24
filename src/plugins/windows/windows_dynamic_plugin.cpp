@@ -8,7 +8,7 @@ struct DynamicPlugin::Impl {
     HMODULE handle{nullptr};
 };
 
-DynamicPlugin::DynamicPlugin(std::string_view name) : Plugin{name, ".dll"},
+DynamicPlugin::DynamicPlugin(std::string_view name) : Plugin{preparePluginName(name, ".dll")},
                                                       m_impl{std::make_unique<Impl>()} {
     m_impl->handle = LoadLibrary(m_name.c_str());
     NOX_ASSERT(m_impl->handle == nullptr);

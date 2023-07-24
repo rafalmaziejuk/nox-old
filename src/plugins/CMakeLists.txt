@@ -1,5 +1,6 @@
 set(NOX_PLUGINS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin.h

@@ -7,8 +7,6 @@
 
 namespace NOX {
 
-StaticPlugin::StaticPlugin(std::string_view /*name*/) {}
-
 void *StaticPlugin::getProcedureAddress(std::string_view procedureName) const {
     if constexpr (isStaticLinking) {
 #if defined(NOX_BUILD_RENDERER_OPENGL)
