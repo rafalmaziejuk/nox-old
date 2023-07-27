@@ -116,11 +116,11 @@ void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCo
 
 void GLCommandList::beginRenderPass(const RenderPass &renderPass) {
     const auto *glRenderPass = downcast<GLRenderPass>(renderPass);
-    const auto *glPipelineState = glRenderPass->getPipelineState();
-    const auto *glRenderTarget = glPipelineState->getRenderTarget();
-    glPipelineState->bind();
-    glRenderTarget->bind();
-    m_state->currentRenderTarget = glRenderTarget;
+    const auto &glPipelineState = glRenderPass->getPipelineState();
+    const auto &glRenderTarget = glPipelineState.getRenderTarget();
+    glPipelineState.bind();
+    glRenderTarget.bind();
+    m_state->currentRenderTarget = &glRenderTarget;
 }
 
 void GLCommandList::endRenderPass() {

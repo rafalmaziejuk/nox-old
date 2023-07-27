@@ -1,9 +1,10 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/vec.h>
 #include <nox/format.h>
+#include <nox/resource.h>
 #include <nox/texture_types.h>
+#include <nox/vec.h>
 
 namespace NOX {
 
@@ -13,11 +14,11 @@ struct TextureDescriptor {
     Format format;
 };
 
-class NOX_EXPORT Texture {
+class NOX_EXPORT Texture : public Resource {
   public:
     Texture(const Texture &) = delete;
     Texture &operator=(const Texture &) = delete;
-    virtual ~Texture();
+    ~Texture() override;
 
   protected:
     Texture() = default;

@@ -17,7 +17,7 @@ const char *mapShaderStageBitToString(uint32_t stageBit) {
     }
 }
 
-GLenum mapShaderStageToEnum(uint8_t stage) {
+GLenum mapShaderStageToEnum(uint32_t stage) {
     switch (stage) {
     case ShaderStage::VERTEX:
         return GL_VERTEX_SHADER;
@@ -29,7 +29,7 @@ GLenum mapShaderStageToEnum(uint8_t stage) {
     }
 }
 
-GLbitfield mapShaderStageToBitfield(uint8_t stage) {
+GLbitfield mapShaderStageToBitfield(uint32_t stage) {
     switch (stage) {
     case ShaderStage::VERTEX:
         return GL_VERTEX_SHADER_BIT;

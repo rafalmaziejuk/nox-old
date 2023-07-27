@@ -9,6 +9,7 @@ set(NOX_RENDERER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/render_target.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_plugin.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/resource.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/swap_chain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/texture.cpp

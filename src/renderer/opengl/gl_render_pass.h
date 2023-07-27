@@ -10,12 +10,12 @@ class GLRenderPass final : public RenderPass {
   public:
     explicit GLRenderPass(const RenderPassDescriptor &descriptor);
 
-    void setInput(uint32_t index, const Texture &texture) override;
+    const GLPipelineState &getPipelineState() const { return *m_pipelineState; }
 
-    const GLPipelineState *getPipelineState() const;
+    void setInput(uint32_t binding, const Resource &resource) override;
 
   private:
-    std::shared_ptr<PipelineState> m_pipelineState{nullptr};
+    std::shared_ptr<GLPipelineState> m_pipelineState{nullptr};
 };
 
 } // namespace NOX
