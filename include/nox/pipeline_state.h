@@ -11,6 +11,7 @@ class RenderTarget;
 class Shader;
 
 struct PipelineStateDescriptor {
+    PipelineLayoutDescriptor pipelineLayoutDescriptor;
     std::unique_ptr<Shader> vertexShader;
     std::unique_ptr<Shader> fragmentShader;
     std::shared_ptr<RenderTarget> renderTarget;

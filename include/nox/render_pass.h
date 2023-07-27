@@ -5,9 +5,9 @@
 
 namespace NOX {
 
-class RenderTarget;
 class PipelineState;
-class Texture;
+class RenderTarget;
+class Resource;
 
 struct RenderPassDescriptor {
     std::shared_ptr<PipelineState> pipelineState;
@@ -23,7 +23,7 @@ class NOX_EXPORT RenderPass {
     RenderPass() = default;
 
   public:
-    virtual void setInput(uint32_t index, const Texture &texture) = 0;
+    virtual void setInput(uint32_t binding, const Resource &resource) = 0;
 };
 
 } // namespace NOX

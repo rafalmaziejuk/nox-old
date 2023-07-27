@@ -88,7 +88,6 @@ std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetD
 
 std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {
     NOX_ASSERT(descriptor.pipelineState == nullptr);
-    NOX_ASSERT(downcast<GLPipelineState>(*descriptor.pipelineState)->getRenderTarget() == nullptr);
     return std::make_unique<GLRenderPass>(descriptor);
 }
 

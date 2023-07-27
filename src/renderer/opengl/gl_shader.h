@@ -22,8 +22,8 @@ class GLShader final : public Shader {
     void compile(const char *source) const;
 
   private:
-    uint32_t m_handle{0u};
     uint32_t m_stageBit{0u};
+    uint32_t m_handle{0u};
 };
 
 } // namespace NOX

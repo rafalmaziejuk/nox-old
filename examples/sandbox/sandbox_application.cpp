@@ -261,11 +261,18 @@ void SandboxApplication::createFullscreenRenderPass() {
     fragmentShaderDescriptor.stage = ShaderStage::FRAGMENT;
     pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, Shaders::fullscreenFragmentShaderSource);
 
+    auto &bindingDescriptors = pipelineStateDescriptor.pipelineLayoutDescriptor.bindingDescriptors;
+    BindingDescriptor outputTextureBindingDescriptor{};
+    outputTextureBindingDescriptor.set = 0u;
+    outputTextureBindingDescriptor.binding = 0u;
+    outputTextureBindingDescriptor.shaderStages = ShaderStage::FRAGMENT;
+    outputTextureBindingDescriptor.resourceType = ResourceType::TEXTURE;
+    bindingDescriptors.push_back(outputTextureBindingDescriptor);
+
     RenderPassDescriptor renderPassDescriptor{};
     renderPassDescriptor.pipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
     m_fullscreenRenderPass = m_renderer->createRenderPass(renderPassDescriptor);
-
-    m_fullscreenRenderPass->setInput(0u, *m_outputTexture);
+    m_fullscreenRenderPass->setInput(outputTextureBindingDescriptor.binding, *m_outputTexture);
 }
 
 } // namespace NOX
