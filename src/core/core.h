@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/logger.h"
+
 #if defined(NOX_STATIC)
 inline constexpr auto isStaticLinking = true;
 #else
@@ -30,6 +32,10 @@ inline constexpr auto isMsvc = true;
 inline constexpr auto isMsvc = false;
 #endif
 
+#define NOX_UNUSED(x) (void)(x)
+
+#define BIT(x) (1 << x)
+
 #if defined(NOX_DEBUG)
 #if defined(NOX_WIN32)
 #define NOX_DEBUG_BREAK() __debugbreak()
@@ -41,9 +47,24 @@ inline constexpr auto isMsvc = false;
 #define NOX_DEBUG_BREAK()
 #endif
 
-#define NOX_UNUSED(x) (void)(x)
+#if defined(NOX_DEBUG)
+#define NOX_ASSERT_MSG(expression, message, ...)              \
+    if (expression) {                                         \
+        NOX_LOG_ERROR(ASSERT, "({}) {}", __LINE__, __FILE__); \
+        NOX_LOG_ERROR(ASSERT, message, ##__VA_ARGS__);        \
+        NOX_DEBUG_BREAK();                                    \
+    }
 
-#define BIT(x) (1 << x)
+#define NOX_ASSERT(expression)                                \
+    if (expression) {                                         \
+        NOX_LOG_ERROR(ASSERT, "({}) {}", __LINE__, __FILE__); \
+        NOX_LOG_ERROR(ASSERT, "{}", #expression);             \
+        NOX_DEBUG_BREAK();                                    \
+    }
+#else
+#define NOX_ASSERT(expression) NOX_UNUSED(expression)
+#define NOX_ASSERT_MSG(expression, ...) NOX_UNUSED(expression)
+#endif
 
 #define NOX_CASE_RETURN_VALUE(label, value) \
     case label:                             \
