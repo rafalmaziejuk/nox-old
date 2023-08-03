@@ -31,7 +31,7 @@ class Plugin {
     virtual void *getProcedureAddress(std::string_view procedureName) const = 0;
 
   protected:
-    std::string m_name{};
+    std::string m_name;
 };
 
 } // namespace NOX
