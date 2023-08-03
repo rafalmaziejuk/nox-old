@@ -1,5 +1,3 @@
-#pragma once
-
 #include "plugins/dynamic_plugin.h"
 
 namespace NOX {
