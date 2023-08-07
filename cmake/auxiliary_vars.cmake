@@ -1,4 +1,5 @@
 set(NOX_LIB_NAME "nox")
+set(NOX_IMPL_LIB_NAME "nox-impl")
 set(NOX_OPENGL_LIB_NAME "nox-opengl")
 
 set(NOX_FOLDER_NAME "nox")

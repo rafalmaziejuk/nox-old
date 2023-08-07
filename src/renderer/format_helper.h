@@ -24,7 +24,7 @@ struct FormatDescriptor {
 
 namespace FormatHelper {
 
-NOX_EXPORT FormatDescriptor getFormatDescriptor(Format format);
+FormatDescriptor getFormatDescriptor(Format format);
 
 } // namespace FormatHelper
 

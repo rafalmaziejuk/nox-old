@@ -1,6 +1,5 @@
 #pragma once
 
-#include <nox/export.h>
 #include <nox/vec.h>
 
 #include <Windows.h>
@@ -13,8 +12,8 @@ struct WindowDescriptor;
 
 namespace WindowsWindowHelper {
 
-NOX_EXPORT void registerWindowClass(const WNDCLASS &attributes);
-NOX_EXPORT void unregisterWindowClass(std::string_view className);
+void registerWindowClass(const WNDCLASS &attributes);
+void unregisterWindowClass(std::string_view className);
 
 DWORD getWindowStyle(const WindowDescriptor &descriptor);
 RECT getWindowClientArea(const WindowDescriptor &descriptor, DWORD style);

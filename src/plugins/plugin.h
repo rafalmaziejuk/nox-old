@@ -18,10 +18,10 @@ class Plugin {
   public:
     Plugin(const Plugin &) = delete;
     Plugin &operator=(const Plugin &) = delete;
-    virtual ~Plugin() = default;
 
   public:
-    explicit Plugin(std::string_view name);
+    Plugin() = default;
+    virtual ~Plugin() = default;
 
     ConvertibleProcedureAddress getFunction(std::string_view name) const {
         return {getProcedureAddress(name)};
@@ -29,9 +29,6 @@ class Plugin {
 
   protected:
     virtual void *getProcedureAddress(std::string_view procedureName) const = 0;
-
-  protected:
-    std::string m_name;
 };
 
 } // namespace NOX

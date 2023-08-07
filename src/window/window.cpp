@@ -1,6 +1,8 @@
 #include <nox/event.h>
 #include <nox/window.h>
 
+#include <vector>
+
 #define FOREACH_EVENT_DISPATCHER(function, ...)                                  \
     for (const auto &eventDispatcher : m_impl->eventDispatchers) {               \
         if (eventDispatcher.function && eventDispatcher.function(__VA_ARGS__)) { \
