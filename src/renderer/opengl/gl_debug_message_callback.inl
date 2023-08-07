@@ -1,5 +1,3 @@
-#include "core/assertion.h"
-
 #include <glad/gl.h>
 
 namespace NOX {
