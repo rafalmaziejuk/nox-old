@@ -21,10 +21,10 @@ void *StaticPlugin::getProcedureAddress(std::string_view procedureName) const {
         if (iterator != glPluginProcedures.end()) {
             return iterator->second;
         }
-
-        NOX_ASSERT(true);
-        return nullptr;
     }
+
+    NOX_ASSERT(true);
+    return nullptr;
 }
 
 extern "C" {

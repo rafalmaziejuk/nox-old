@@ -1,14 +1,17 @@
 cmake_minimum_required(VERSION 3.16.0 FATAL_ERROR)
 
-include(cmake/utilities.cmake)
-nox_extract_version()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
+include(utilities)
+
+nox_extract_version()
 project(nox VERSION ${NOX_VERSION})
 
 include(CMakePackageConfigHelpers)
 include(CMakeDependentOption)
 include(GenerateExportHeader)
 include(GNUInstallDirs)
+include(auxiliary_vars)
 
 # --------------------------------------------------
 # Set global properties/variables
@@ -16,9 +19,9 @@ include(GNUInstallDirs)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS OFF)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/bin)
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
 
 # --------------------------------------------------
 # Specify options
@@ -84,9 +87,9 @@ if(NOX_INSTALL)
     install(
         TARGETS ${NOX_INSTALLATION_TARGETS}
         EXPORT nox-targets
-        RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+        RUNTIME DESTINATION "${CMAKE_INSTALL_BINDIR}"
+        LIBRARY DESTINATION "${CMAKE_INSTALL_LIBDIR}"
+        ARCHIVE DESTINATION "${CMAKE_INSTALL_LIBDIR}"
     )
 
     install(

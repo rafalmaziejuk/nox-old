@@ -46,7 +46,7 @@ set_target_properties(
 target_precompile_headers(
     nox-opengl
     PRIVATE
-    [["core/assertion.h"]]
+    [["core/core.h"]]
     <algorithm>
     <cstdint>
     <memory>

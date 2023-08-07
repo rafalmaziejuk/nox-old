@@ -1,16 +1,4 @@
 # --------------------------------------------------
-# Set convenience variables
-# --------------------------------------------------
-set(NOX_LIB_NAME "nox")
-set(NOX_OPENGL_LIB_NAME "nox-opengl")
-
-set(NOX_FOLDER_NAME "nox")
-set(NOX_RENDERERS_FOLDER_NAME "${NOX_FOLDER_NAME}/renderers")
-set(NOX_THIRD_PARTY_FOLDER_NAME "${NOX_FOLDER_NAME}/third_party")
-
-set(NOX_THIRD_PARTY_DIR "${PROJECT_SOURCE_DIR}/third_party")
-
-# --------------------------------------------------
 # Create nox target
 # --------------------------------------------------
 add_library(${NOX_LIB_NAME})
@@ -55,13 +43,6 @@ endif()
 # --------------------------------------------------
 # Set properties
 # --------------------------------------------------
-if(BUILD_SHARED_LIBS)
-    set(NOX_DEBUG_POSTFIX "-d")
-else()
-    set(NOX_DEBUG_POSTFIX "-s-d")
-    set(NOX_RELEASE_POSTFIX "-s")
-endif()
-
 set_target_properties(
     ${NOX_LIB_NAME}
     PROPERTIES
@@ -80,7 +61,6 @@ target_precompile_headers(
     ${NOX_LIB_NAME}
     PRIVATE
     [["core/core.h"]]
-    [["core/assertion.h"]]
     [["core/utilities.h"]]
     <algorithm>
     <cstdint>
