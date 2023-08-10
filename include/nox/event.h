@@ -2,6 +2,8 @@
 
 #include <nox/vec.h>
 
+#include <functional>
+
 namespace NOX {
 
 struct ResizeEvent {

@@ -2,12 +2,12 @@
 
 #include <nox/renderer_types.h>
 
+#include <array>
+
 namespace NOX::RendererPlugin {
 
-inline constexpr auto glPluginName{"opengl"};
-
 inline constexpr std::array<std::pair<RendererAPI, const char *>, static_cast<size_t>(RendererAPI::MAX)> rendererPluginNames{{
-    {RendererAPI::OPENGL, glPluginName},
+    {RendererAPI::OPENGL, "opengl"},
 }};
 
 inline const char *getRendererPluginName(RendererAPI api) {

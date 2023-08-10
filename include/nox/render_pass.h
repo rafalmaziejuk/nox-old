@@ -3,6 +3,8 @@
 #include <nox/export.h>
 #include <nox/render_pass_types.h>
 
+#include <memory>
+
 namespace NOX {
 
 class PipelineState;

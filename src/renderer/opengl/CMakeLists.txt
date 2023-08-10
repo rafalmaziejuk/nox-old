@@ -3,8 +3,6 @@ if(NOT OPENGL_FOUND)
     message(FATAL_ERROR "OpenGL 4.6 not found")
 endif()
 
-target_compile_definitions(${NOX_LIB_NAME} PRIVATE NOX_BUILD_RENDERER_OPENGL)
-
 # --------------------------------------------------
 # Create OpenGL renderer target
 # --------------------------------------------------
@@ -14,17 +12,9 @@ target_include_directories(
     ${NOX_OPENGL_LIB_NAME} 
     PRIVATE
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
-    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/third_party/spdlog/include>"
 )
 
-# --------------------------------------------------
-# Specify compile options
-# --------------------------------------------------
-if(MSVC)
-    target_compile_options(${NOX_OPENGL_LIB_NAME} PRIVATE /W4 /WX)
-else()
-    target_compile_options(${NOX_OPENGL_LIB_NAME} PRIVATE -Wall)
-endif()
+target_precompile_headers(${NOX_OPENGL_LIB_NAME} REUSE_FROM ${NOX_IMPL_LIB_NAME})
 
 # --------------------------------------------------
 # Set properties
@@ -43,20 +33,6 @@ set_target_properties(
 # --------------------------------------------------
 # Create generated files
 # --------------------------------------------------
-target_precompile_headers(
-    nox-opengl
-    PRIVATE
-    [["core/core.h"]]
-    <algorithm>
-    <cstdint>
-    <memory>
-    <string>
-    <string_view>
-    <unordered_map>
-    <utility>
-    <vector>
-)
-
 generate_export_header(
     ${NOX_OPENGL_LIB_NAME}
     EXPORT_MACRO_NAME NOX_OPENGL_EXPORT
@@ -77,6 +53,7 @@ target_link_libraries(
     ${NOX_OPENGL_LIB_NAME}
     PRIVATE
     ${NOX_LIB_NAME}
+    ${NOX_IMPL_LIB_NAME}
     glad
     OpenGL::GL
 )
