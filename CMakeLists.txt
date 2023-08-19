@@ -11,6 +11,7 @@ include(CMakePackageConfigHelpers)
 include(CMakeDependentOption)
 include(GenerateExportHeader)
 include(GNUInstallDirs)
+include(FetchContent)
 include(auxiliary_vars)
 
 # --------------------------------------------------
@@ -35,6 +36,7 @@ endif()
 option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 option(NOX_INSTALL "Generate installation target." ${NOX_MAIN_PROJECT})
 option(NOX_BUILD_EXAMPLES "Build examples." OFF)
+option(NOX_BUILD_UNIT_TESTS "Build unit tests." OFF)
 option(NOX_BUILD_RENDERER_OPENGL "Build OpenGL renderer." ON)
 
 cmake_dependent_option(NOX_PLATFORM_WINDOWS "Target platform Windows." ON "WIN32" OFF)
@@ -59,6 +61,10 @@ add_subdirectory(src)
 
 if(NOX_BUILD_EXAMPLES)
     add_subdirectory(examples)
+endif()
+
+if(NOX_BUILD_UNIT_TESTS)
+    add_subdirectory(unit_tests)
 endif()
 
 # --------------------------------------------------
