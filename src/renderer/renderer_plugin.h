@@ -2,18 +2,16 @@
 
 #include <nox/renderer_types.h>
 
-#include <array>
+namespace NOX {
 
-namespace NOX::RendererPlugin {
+class Plugin;
 
-inline constexpr std::array<std::pair<RendererAPI, const char *>, static_cast<size_t>(RendererAPI::MAX)> rendererPluginNames{{
-    {RendererAPI::OPENGL, "opengl"},
-}};
+class RendererPlugin {
+  public:
+    static constexpr auto allocateRendererProcedureName = "allocateRenderer";
 
-inline const char *getRendererPluginName(RendererAPI api) {
-    return (rendererPluginNames.at(static_cast<size_t>(api)).second);
-}
+    [[nodiscard]] static const char *getRendererName(RendererAPI api);
+    [[nodiscard]] static Plugin *load(RendererAPI api, std::string_view pluginName);
+};
 
-inline constexpr auto allocateRendererProcedureName{"allocateRenderer"};
-
-} // namespace NOX::RendererPlugin
+} // namespace NOX

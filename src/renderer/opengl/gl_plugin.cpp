@@ -1,36 +1,24 @@
-#include "plugins/static_plugin.h"
 #include "renderer/renderer_plugin.h"
 #include "renderer/opengl/gl_plugin.h"
 #include "renderer/opengl/gl_renderer.h"
 
 namespace NOX {
 
-namespace {
+extern "C" Renderer *allocateRenderer(const RendererDescriptor &descriptor) {
+    NOX_ASSERT(descriptor.api != RendererAPI::OPENGL);
 
-constexpr std::array<std::pair<const char *, void *>, 1> glPluginProcedures{{
-    {RendererPlugin::allocateRendererProcedureName, GLPlugin::allocateRenderer},
-}};
+    return new GLRenderer{descriptor};
+}
 
-} // namespace
+void *GLPlugin::getProcedureAddress(std::string_view procedureName) const {
+    NOX_ASSERT(procedureName.empty());
 
-void *StaticPlugin::getProcedureAddress(std::string_view procedureName) const {
-    if constexpr (Config::staticEnabled) {
-        auto iterator = std::find_if(glPluginProcedures.begin(), glPluginProcedures.end(), [procedureName](const auto &element) {
-            return (procedureName == std::string(element.first));
-        });
-        if (iterator != glPluginProcedures.end()) {
-            return iterator->second;
-        }
+    if (procedureName == RendererPlugin::allocateRendererProcedureName) {
+        return reinterpret_cast<void *>(allocateRenderer);
     }
 
     NOX_ASSERT(true);
     return nullptr;
-}
-
-extern "C" {
-Renderer *GLPlugin::allocateRenderer(const RendererDescriptor &descriptor) {
-    return new GLRenderer{descriptor};
-}
 }
 
 } // namespace NOX
