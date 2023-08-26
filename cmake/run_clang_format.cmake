@@ -10,7 +10,7 @@ endif()
 # Run clang-format
 # --------------------------------------------------
 set(SOURCES "")
-foreach (DIRECTORY IN ITEMS include src)
+foreach (DIRECTORY IN ITEMS include src examples)
     file(GLOB_RECURSE FILES "${DIRECTORY}/*.h" "${DIRECTORY}/*.cpp" "${DIRECTORY}/*.inl")
     list(APPEND SOURCES ${FILES})
 endforeach()
