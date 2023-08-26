@@ -148,7 +148,7 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
     NOX_LOG_INFO(OPENGL, "Device: {}", reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
     NOX_LOG_INFO(OPENGL, "Version: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
 
-    if constexpr (isDebugConfiguration) {
+    if constexpr (Config::debugEnabled) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
         glDebugMessageCallback(debugMessageCallback, nullptr);

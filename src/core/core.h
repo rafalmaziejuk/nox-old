@@ -2,36 +2,6 @@
 
 #include "core/logger.h"
 
-#if defined(NOX_STATIC)
-inline constexpr auto isStaticLinking = true;
-#else
-inline constexpr auto isStaticLinking = false;
-#endif
-
-#if defined(NOX_DEBUG)
-inline constexpr auto isDebugConfiguration = true;
-#else
-inline constexpr auto isDebugConfiguration = false;
-#endif
-
-#if defined(__clang__)
-inline constexpr auto isClang = true;
-#else
-inline constexpr auto isClang = false;
-#endif
-
-#if defined(__GNUC__)
-inline constexpr auto isGcc = true;
-#else
-inline constexpr auto isGcc = false;
-#endif
-
-#if defined(_MSC_VER)
-inline constexpr auto isMsvc = true;
-#else
-inline constexpr auto isMsvc = false;
-#endif
-
 #define NOX_UNUSED(x) (void)(x)
 
 #define BIT(x) (1 << x)

@@ -58,8 +58,8 @@ set_target_properties(
 target_precompile_headers(
     ${NOX_IMPL_LIB_NAME}
     PRIVATE
+    [["core/config.h"]]
     [["core/core.h"]]
-    [["core/utilities.h"]]
     <array>
     <algorithm>
     <cstdint>
