@@ -4,8 +4,6 @@
 
 namespace NOX {
 
-enum class FormatDataType : uint8_t;
-struct FormatDescriptor;
 class GLTexture;
 class Texture;
 

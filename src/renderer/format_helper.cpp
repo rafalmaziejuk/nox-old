@@ -190,7 +190,6 @@ bool isDataTypeAttributeEnabled(Format format, uint32_t attribute) {
 
 FormatDescriptor getFormatDescriptor(Format format) {
     FormatDescriptor descriptor{};
-    descriptor.format = format;
     descriptor.dataType = getDataType(format);
     descriptor.componentCount = getComponentCount(format);
     descriptor.dataTypeSize = getDataTypeSize(format);
