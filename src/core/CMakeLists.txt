@@ -1,9 +1,9 @@
 set(NOX_IMPL_CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/config.h
     ${CMAKE_CURRENT_SOURCE_DIR}/core.h
     ${CMAKE_CURRENT_SOURCE_DIR}/logger.h
     ${CMAKE_CURRENT_SOURCE_DIR}/singleton.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/utilities.h
 )
 
 target_sources(${NOX_IMPL_LIB_NAME} PRIVATE ${NOX_IMPL_CORE_SOURCES})

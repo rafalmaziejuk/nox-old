@@ -14,7 +14,7 @@ constexpr std::array<std::pair<const char *, void *>, 1> glPluginProcedures{{
 } // namespace
 
 void *StaticPlugin::getProcedureAddress(std::string_view procedureName) const {
-    if constexpr (isStaticLinking) {
+    if constexpr (Config::staticEnabled) {
         auto iterator = std::find_if(glPluginProcedures.begin(), glPluginProcedures.end(), [procedureName](const auto &element) {
             return (procedureName == std::string(element.first));
         });

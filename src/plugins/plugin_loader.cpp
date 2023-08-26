@@ -5,7 +5,7 @@
 namespace NOX {
 
 const Plugin *PluginLoader::load(std::string_view name) {
-    if constexpr (isStaticLinking) {
+    if constexpr (Config::staticEnabled) {
         return m_plugins.emplace_back(std::make_unique<StaticPlugin>()).get();
     } else {
         return m_plugins.emplace_back(std::make_unique<DynamicPlugin>(name)).get();
