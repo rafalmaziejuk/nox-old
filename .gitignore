@@ -2,6 +2,7 @@
 .vs/
 build/
 output/
+scripts/tools/__pycache__/
 
 # Files
 include/nox/export.h
