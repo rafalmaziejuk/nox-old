@@ -8,3 +8,7 @@ target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_WINDOW_SOURCES})
 if(NOX_PLATFORM_WINDOWS)
     add_subdirectory(windows)
 endif()
+
+if(NOX_PLATFORM_LINUX)
+    add_subdirectory(linux)
+endif()
