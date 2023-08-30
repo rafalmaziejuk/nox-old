@@ -3,6 +3,8 @@ if(NOT OPENGL_FOUND)
     message(FATAL_ERROR "OpenGL 4.6 not found")
 endif()
 
+target_compile_definitions(${NOX_IMPL_LIB_NAME} PUBLIC NOX_BUILD_RENDERER_OPENGL)
+
 # --------------------------------------------------
 # Create OpenGL renderer target
 # --------------------------------------------------

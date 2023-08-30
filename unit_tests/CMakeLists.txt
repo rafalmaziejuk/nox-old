@@ -58,4 +58,7 @@ set(NOX_UNIT_TESTS_SOURCES
 
 target_sources(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE ${NOX_UNIT_TESTS_SOURCES})
 
+add_subdirectory(mocks)
+add_subdirectory(plugins)
+
 nox_create_project_source_tree(${NOX_UNIT_TESTS_EXE_NAME})
