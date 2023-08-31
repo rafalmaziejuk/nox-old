@@ -75,6 +75,11 @@ target_precompile_headers(
 # Link libraries
 # --------------------------------------------------
 add_subdirectory(${NOX_THIRD_PARTY_DIR}/spdlog spdlog)
+set_target_properties(
+    spdlog
+    PROPERTIES
+    FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/spdlog"
+)
 
 target_link_libraries(
     ${NOX_IMPL_LIB_NAME}
