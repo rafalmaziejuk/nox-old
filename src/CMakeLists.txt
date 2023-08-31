@@ -81,7 +81,7 @@ target_link_libraries(
     PUBLIC
     spdlog
 )
-nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_IMPL_LIB_NAME})
+nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_IMPL_LIB_NAME} spdlog)
 
 # --------------------------------------------------
 # Create nox target
