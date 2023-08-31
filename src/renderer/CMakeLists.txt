@@ -18,6 +18,7 @@ set(NOX_IMPL_RENDERER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_plugin.h
 )
 
