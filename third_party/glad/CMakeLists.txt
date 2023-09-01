@@ -1,18 +1,28 @@
-set(GLAD_INCLUDE_DIR)
-set(GLAD_SOURCES)
-
-if(NOX_PLATFORM_WINDOWS)
-    set(GLAD_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/windows/include)
-    set(GLAD_SOURCES
-        ${CMAKE_CURRENT_SOURCE_DIR}/windows/src/gl.c
-        ${CMAKE_CURRENT_SOURCE_DIR}/windows/src/wgl.c
-    )
-endif()
-
-add_library(glad STATIC ${GLAD_SOURCES})
+# --------------------------------------------------
+# Create glad target
+# --------------------------------------------------
+add_library(glad STATIC)
 target_include_directories(
-    glad 
+    glad
     PUBLIC
-    "$<BUILD_INTERFACE:${GLAD_INCLUDE_DIR}>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
+
+if(NOX_PLATFORM_WINDOWS)
+    target_compile_definitions(glad PRIVATE NOX_GLAD_WIN32)
+endif()
+
+if(NOX_PLATFORM_LINUX)
+    target_compile_definitions(glad PRIVATE NOX_GLAD_UNIX)
+endif()
+
+# --------------------------------------------------
+# Add sources
+# --------------------------------------------------
+set(NOX_GLAD_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/glad.c
+)
+
+target_sources(glad PRIVATE ${NOX_GLAD_SOURCES})

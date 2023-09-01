@@ -48,7 +48,7 @@ add_subdirectory(${NOX_THIRD_PARTY_DIR}/glad glad)
 set_target_properties(
     glad
     PROPERTIES 
-    FOLDER ${NOX_THIRD_PARTY_FOLDER_NAME}/glad
+    FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/glad"
 )
 
 target_link_libraries(

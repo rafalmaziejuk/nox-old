@@ -73,14 +73,7 @@ GLContext::GLContext(const OpenGLRendererConfig &config) : m_impl{std::make_uniq
     makeCurrent();
 
     gladLoaderLoadWGL(m_impl->handleDeviceContext);
-    NOX_ASSERT(!wglCreateContextAttribsARB);
-    NOX_ASSERT(!wglSwapIntervalEXT);
-    NOX_ASSERT(!GLAD_WGL_EXT_swap_control);
-
     gladLoaderLoadGL();
-    NOX_ASSERT(!GLAD_GL_EXT_direct_state_access);
-    NOX_ASSERT(!GLAD_GL_KHR_debug);
-    NOX_ASSERT(!GLAD_GL_ARB_separate_shader_objects);
 
     int32_t majorVersion{}, minorVersion{};
     glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
