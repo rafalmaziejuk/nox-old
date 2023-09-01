@@ -2,10 +2,6 @@
 
 #include "renderer/format_helper.h"
 
-#include <nox/buffer_types.h>
-#include <nox/pipeline_state_types.h>
-#include <nox/shader_types.h>
-
 #include <glad/gl.h>
 
 namespace NOX::GLHelper {

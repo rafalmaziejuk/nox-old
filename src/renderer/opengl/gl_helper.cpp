@@ -1,7 +1,5 @@
 #include "renderer/opengl/gl_helper.h"
 
-#include <nox/command_list_types.h>
-
 namespace NOX::GLHelper {
 
 GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size) {
