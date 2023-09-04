@@ -1,6 +1,6 @@
 from os import path
 
-ROOT_DIR = path.abspath(path.join(path.dirname(__file__), '../../'))
+ROOT_DIR = path.abspath(path.join(path.dirname(__file__), '../'))
 OUTPUT_DIR = path.join(ROOT_DIR, 'output/')
 CMAKE_DIR = path.join(ROOT_DIR, 'cmake/')
 
