@@ -1,14 +1,26 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/vec.h>
+#include <nox/vector.h>
 
+#include <cstdint>
+#include <functional>
 #include <memory>
 #include <string>
 
 namespace NOX {
 
-struct EventDispatcher;
+struct ResizeEvent {
+    Vector2D<uint32_t> size;
+};
+
+struct EventDispatcher {
+    using CloseEventCallback = std::function<bool()>;
+    using ResizeEventCallback = std::function<bool(const ResizeEvent &event)>;
+
+    CloseEventCallback closeEventCallback{};
+    ResizeEventCallback resizeEventCallback{};
+};
 
 struct WindowDescriptor {
     std::string title;
@@ -22,12 +34,6 @@ struct WindowDescriptor {
 };
 
 class NOX_EXPORT Window {
-  public:
-    Window();
-    Window(const Window &) = delete;
-    Window &operator=(const Window &) = delete;
-    virtual ~Window();
-
   public:
     [[nodiscard]] static std::unique_ptr<Window> create(const WindowDescriptor &descriptor);
 
@@ -48,9 +54,17 @@ class NOX_EXPORT Window {
     void onCloseEvent() const;
     void onResizeEvent(uint32_t width, uint32_t height) const;
 
+  public:
+    Window();
+    Window(const Window &) = delete;
+    Window &operator=(const Window &) = delete;
+    Window(Window &&) = delete;
+    Window &operator=(Window &&) = delete;
+    virtual ~Window();
+
   private:
     struct Impl;
-    Impl *m_impl{nullptr};
+    std::unique_ptr<Impl> m_impl{nullptr};
 };
 
 } // namespace NOX

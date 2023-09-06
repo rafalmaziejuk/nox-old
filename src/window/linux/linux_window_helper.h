@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/vec.h>
+#include <nox/vector.h>
 
 typedef struct _XDisplay Display; // NOLINT
 

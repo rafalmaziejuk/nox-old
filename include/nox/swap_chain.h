@@ -1,13 +1,18 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/swap_chain_types.h>
+#include <nox/render_target.h>
 
+#include <cstdint>
 #include <memory>
 
 namespace NOX {
 
-class RenderTarget;
+struct PixelFormatDescriptor {
+    uint8_t colorBits{32u};
+    uint8_t depthBits{24u};
+    uint8_t stencilBits{8u};
+};
 
 struct SwapChainDescriptor {
     PixelFormatDescriptor pixelFormatDescriptor;
@@ -17,19 +22,21 @@ struct SwapChainDescriptor {
 
 class NOX_EXPORT SwapChain {
   public:
-    SwapChain(const SwapChain &) = delete;
-    SwapChain &operator=(const SwapChain &) = delete;
-    virtual ~SwapChain();
-
-  protected:
-    SwapChain() = default;
-
-  public:
     virtual void swap() const = 0;
 
     virtual void setVSync(bool value) = 0;
 
-    virtual std::shared_ptr<RenderTarget> getRenderTarget() = 0;
+    [[nodiscard]] virtual std::shared_ptr<RenderTarget> getRenderTarget() = 0;
+
+  public:
+    SwapChain(const SwapChain &) = delete;
+    SwapChain &operator=(const SwapChain &) = delete;
+    SwapChain(SwapChain &&) = delete;
+    SwapChain &operator=(SwapChain &&) = delete;
+    virtual ~SwapChain() = default;
+
+  protected:
+    SwapChain() = default;
 };
 
 } // namespace NOX

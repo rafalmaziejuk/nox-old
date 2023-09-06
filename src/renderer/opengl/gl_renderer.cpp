@@ -28,8 +28,9 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
 } // namespace
 
 GLRenderer::GLRenderer(const RendererDescriptor &descriptor) {
-    auto config = descriptor.config.get<OpenGLRendererConfig>();
-    m_context = std::make_shared<GLContext>(config);
+    NOX_ASSERT(descriptor.api != RendererAPI::OPENGL);
+
+    m_context = std::make_shared<GLContext>();
     m_state = std::make_shared<GLState>();
 }
 

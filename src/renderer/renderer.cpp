@@ -6,10 +6,8 @@
 
 namespace NOX {
 
-Renderer::~Renderer() = default;
-
 std::unique_ptr<Renderer, RendererDeleter> Renderer::create(const RendererDescriptor &descriptor) {
-    NOX_ASSERT(descriptor.api >= RendererAPI::MAX);
+    NOX_ASSERT(descriptor.api == RendererAPI::NONE);
 
     auto &pluginManager = PluginManager::instance();
     const auto *rendererName = RendererPlugin::getRendererName(descriptor.api);

@@ -1,12 +1,18 @@
 #pragma once
 
+#include <nox/common.h>
 #include <nox/export.h>
-#include <nox/format.h>
 #include <nox/resource.h>
-#include <nox/texture_types.h>
-#include <nox/vec.h>
+#include <nox/vector.h>
+
+#include <cstdint>
 
 namespace NOX {
+
+enum class TextureType : uint8_t {
+    NONE,
+    TEXTURE2D
+};
 
 struct TextureDescriptor {
     Vector3D<uint32_t> size;
@@ -18,7 +24,9 @@ class NOX_EXPORT Texture : public Resource {
   public:
     Texture(const Texture &) = delete;
     Texture &operator=(const Texture &) = delete;
-    ~Texture() override;
+    Texture(Texture &&) = delete;
+    Texture &operator=(Texture &&) = delete;
+    ~Texture() override = default;
 
   protected:
     Texture() = default;

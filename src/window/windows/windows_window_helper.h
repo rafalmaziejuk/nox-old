@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/vec.h>
+#include <nox/vector.h>
 
 #include <Windows.h>
 

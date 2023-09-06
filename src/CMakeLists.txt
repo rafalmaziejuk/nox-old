@@ -5,7 +5,7 @@ add_library(${NOX_IMPL_LIB_NAME} STATIC)
 add_library(nox::${NOX_IMPL_LIB_NAME} ALIAS ${NOX_IMPL_LIB_NAME})
 target_include_directories(
     ${NOX_IMPL_LIB_NAME}
-    PUBLIC
+    PRIVATE
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
@@ -98,6 +98,8 @@ target_include_directories(
     PUBLIC
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
+    PRIVATE
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
 
 target_precompile_headers(${NOX_LIB_NAME} REUSE_FROM ${NOX_IMPL_LIB_NAME})

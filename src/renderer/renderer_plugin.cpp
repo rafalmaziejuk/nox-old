@@ -9,21 +9,21 @@ namespace NOX {
 
 namespace {
 
-constexpr std::array<std::pair<RendererAPI, const char *>, static_cast<size_t>(RendererAPI::MAX)> rendererNames{{
+constexpr std::array<std::pair<RendererAPI, const char *>, 1> rendererNames{{
     {RendererAPI::OPENGL, "nox-opengl"},
 }};
 
 } // namespace
 
 const char *RendererPlugin::getRendererName(RendererAPI api) {
-    NOX_ASSERT(api >= RendererAPI::MAX);
+    NOX_ASSERT(api == RendererAPI::NONE);
 
-    const auto *pluginName = rendererNames.at(static_cast<size_t>(api)).second;
+    const auto *pluginName = rendererNames.at(static_cast<size_t>(api) - 1).second;
     return pluginName;
 }
 
 std::unique_ptr<Plugin> RendererPlugin::load(RendererAPI api, std::string_view pluginName) {
-    NOX_ASSERT((api >= RendererAPI::MAX) || (pluginName.empty()));
+    NOX_ASSERT((api == RendererAPI::NONE) || (pluginName.empty()));
 
     std::unique_ptr<Plugin> plugin{nullptr};
     if constexpr (Config::staticEnabled) {
