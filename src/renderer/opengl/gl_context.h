@@ -1,21 +1,19 @@
 #pragma once
 
-#include <nox/renderer_types.h>
-
 #include <memory>
 
 namespace NOX {
 
 struct PixelFormatDescriptor;
+
 class Window;
 
 class GLContext {
-  public:
-    GLContext(const GLContext &) = delete;
-    GLContext &operator=(const GLContext &) = delete;
+    static constexpr auto glMajorVersion = 4u;
+    static constexpr auto glMinorVersion = 6u;
 
   public:
-    explicit GLContext(const OpenGLRendererConfig &config);
+    GLContext();
     ~GLContext();
 
     void createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window);
@@ -25,10 +23,15 @@ class GLContext {
     void swapBuffers() const;
     void setSwapInterval(bool value);
 
+  public:
+    GLContext(const GLContext &) = delete;
+    GLContext &operator=(const GLContext &) = delete;
+    GLContext(GLContext &&) = delete;
+    GLContext &operator=(GLContext &&) = delete;
+
   private:
     struct Impl;
-    std::unique_ptr<Impl> m_impl;
-    OpenGLRendererConfig m_config;
+    std::unique_ptr<Impl> m_impl{nullptr};
 };
 
 } // namespace NOX

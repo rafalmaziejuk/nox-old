@@ -59,6 +59,11 @@ target_link_libraries(
     glad
     OpenGL::GL
 )
+
+if(NOT BUILD_SHARED_LIBS)
+    target_link_libraries(${NOX_LIB_NAME} PRIVATE ${NOX_OPENGL_LIB_NAME})
+endif()
+
 nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_OPENGL_LIB_NAME} glad)
 
 # --------------------------------------------------

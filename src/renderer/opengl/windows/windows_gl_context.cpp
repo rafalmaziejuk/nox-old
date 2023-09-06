@@ -2,7 +2,7 @@
 #include "renderer/opengl/gl_debug_message_callback.inl"
 #include "window/windows/windows_window_helper.h"
 
-#include <nox/swap_chain_types.h>
+#include <nox/swap_chain.h>
 #include <nox/window.h>
 
 #include <glad/wgl.h>
@@ -35,8 +35,7 @@ struct GLContext::Impl {
     HGLRC handleRenderingContext{nullptr};
 };
 
-GLContext::GLContext(const OpenGLRendererConfig &config) : m_impl{std::make_unique<Impl>()},
-                                                           m_config{config} {
+GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     constexpr auto dummyWindowName = "__NOX_DUMMY_WINDOW_CLASS__";
     auto dummyWindowProcedure = [](HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT {
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -78,15 +77,7 @@ GLContext::GLContext(const OpenGLRendererConfig &config) : m_impl{std::make_uniq
     int32_t majorVersion{}, minorVersion{};
     glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
     glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-
-    const auto queriedVersion = majorVersion * 10 + minorVersion;
-    const auto configVersion = m_config.majorVersion * 10 + m_config.minorVersion;
-    NOX_ASSERT_MSG(configVersion > queriedVersion, "This system supports OpenGL up to version [{}.{}]", majorVersion, minorVersion);
-
-    if (configVersion == 0) {
-        m_config.majorVersion = majorVersion;
-        m_config.minorVersion = minorVersion;
-    }
+    NOX_ASSERT_MSG((majorVersion != glMajorVersion) && (minorVersion != glMinorVersion), "This system doesn't support OpenGL 4.6");
 
     wglDeleteContext(m_impl->handleRenderingContext);
     m_impl->handleRenderingContext = nullptr;
@@ -129,8 +120,8 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
 
     constexpr auto attributePairsCount = 3u;
     constexpr auto attributesArraySize = attributePairsCount * 2u + 1u;
-    std::array<int32_t, attributesArraySize> attributes{WGL_CONTEXT_MAJOR_VERSION_ARB, m_config.majorVersion,
-                                                        WGL_CONTEXT_MINOR_VERSION_ARB, m_config.minorVersion,
+    std::array<int32_t, attributesArraySize> attributes{WGL_CONTEXT_MAJOR_VERSION_ARB, glMajorVersion,
+                                                        WGL_CONTEXT_MINOR_VERSION_ARB, glMinorVersion,
                                                         WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
                                                         0};
     m_impl->handleRenderingContext = wglCreateContextAttribsARB(m_impl->handleDeviceContext, nullptr, attributes.data());

@@ -8,7 +8,6 @@
 #include <nox/shader.h>
 #include <nox/swap_chain.h>
 #include <nox/texture.h>
-#include <nox/event.h>
 #include <nox/window.h>
 
 namespace NOX {
@@ -126,12 +125,8 @@ SandboxApplication::SandboxApplication() {
     };
     m_window->pushBackEventDispatcher(eventDispatcher);
 
-    OpenGLRendererConfig rendererConfig;
-    rendererConfig.majorVersion = 4;
-    rendererConfig.minorVersion = 6;
     RendererDescriptor rendererDescriptor;
     rendererDescriptor.api = RendererAPI::OPENGL;
-    rendererDescriptor.config = rendererConfig;
     m_renderer = Renderer::create(rendererDescriptor);
 
     SwapChainDescriptor swapChainDescriptor{};
@@ -170,8 +165,8 @@ void SandboxApplication::createTriangleVertexBuffer() {
 
     VertexFormat vertexFormat;
     vertexFormat.attributes = {
-        {"aPosition", Format::RG32F},
-        {"aColor", Format::RGBA8_UNORM},
+        {Format::RG32F},
+        {Format::RGBA8_UNORM},
     };
 
     BufferDescriptor vertexBufferDescriptor{};
@@ -231,8 +226,8 @@ void SandboxApplication::createFullscreenVertexBuffer() {
 
     VertexFormat vertexFormat;
     vertexFormat.attributes = {
-        {"aPosition", Format::RG32F},
-        {"aTextureCoordinates", Format::RG32F},
+        {Format::RG32F},
+        {Format::RG32F},
     };
 
     BufferDescriptor vertexBufferDescriptor{};

@@ -1,6 +1,6 @@
 #include "renderer/opengl/gl_pipeline_layout.h"
 
-#include <nox/pipeline_state_types.h>
+#include <nox/pipeline_state.h>
 
 namespace NOX {
 

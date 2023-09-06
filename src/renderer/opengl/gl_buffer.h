@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nox/buffer.h>
+#include <nox/common.h>
 
 namespace NOX {
 

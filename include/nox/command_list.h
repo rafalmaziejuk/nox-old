@@ -1,27 +1,19 @@
 #pragma once
 
+#include <nox/buffer.h>
+#include <nox/common.h>
 #include <nox/export.h>
-#include <nox/vec.h>
-#include <nox/command_list_types.h>
+#include <nox/pipeline_state.h>
+#include <nox/render_pass.h>
+#include <nox/vector.h>
+
+#include <cstdint>
 
 namespace NOX {
-
-class Buffer;
-class PipelineState;
-class RenderPass;
-class RenderTarget;
 
 struct CommandListDescriptor {};
 
 class NOX_EXPORT CommandList {
-  public:
-    CommandList(const CommandList &) = delete;
-    CommandList &operator=(const CommandList &) = delete;
-    virtual ~CommandList();
-
-  protected:
-    CommandList() = default;
-
   public:
     virtual void bindVertexBuffer(const Buffer &buffer) = 0;
 
@@ -58,6 +50,16 @@ class NOX_EXPORT CommandList {
     virtual void beginRenderPass(const RenderPass &renderPass) = 0;
 
     virtual void endRenderPass() = 0;
+
+  public:
+    CommandList(const CommandList &) = delete;
+    CommandList &operator=(const CommandList &) = delete;
+    CommandList(CommandList &&) = delete;
+    CommandList &operator=(CommandList &&) = delete;
+    virtual ~CommandList() = default;
+
+  protected:
+    CommandList() = default;
 };
 
 } // namespace NOX

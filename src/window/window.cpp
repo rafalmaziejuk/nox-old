@@ -1,4 +1,3 @@
-#include <nox/event.h>
 #include <nox/window.h>
 
 #include <vector>
@@ -17,12 +16,9 @@ struct Window::Impl {
     bool shouldClose{false};
 };
 
-Window::Window() : m_impl{new Impl} {}
+Window::Window() : m_impl{std::make_unique<Impl>()} {}
 
-Window::~Window() {
-    delete m_impl;
-    m_impl = nullptr;
-}
+Window::~Window() = default;
 
 bool Window::shouldClose() const {
     return m_impl->shouldClose;

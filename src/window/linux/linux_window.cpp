@@ -52,7 +52,7 @@ void LinuxWindow::createWindow() {
         visualType,
         CWEventMask | CWOverrideRedirect | CWColormap,
         (&attributes));
-    NOX_LOG_INFO(WINDOW, "Created window (title: [{}], size: [{} x {}], position: [{} x {}])", descriptor.title, size.x(), size.y(), position.x(), position.y());
+    NOX_LOG_INFO(WINDOW, "Created window (title: [{}], size: [{} x {}], position: [{} x {}])", m_descriptor.title, m_descriptor.size.x(), m_descriptor.size.y(), windowPosition.x(), windowPosition.y());
 }
 
 void LinuxWindow::initializeWindowSpecification() {
