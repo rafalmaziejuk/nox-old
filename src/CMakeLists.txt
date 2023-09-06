@@ -52,6 +52,10 @@ set_target_properties(
     EXPORT_COMPILE_COMMANDS ON
 )
 
+if(BUILD_SHARED_LIBS)
+    set_target_properties(${NOX_IMPL_LIB_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+endif()
+
 # --------------------------------------------------
 # Create generated files
 # --------------------------------------------------
@@ -132,11 +136,7 @@ generate_export_header(
 # --------------------------------------------------
 # Link libraries
 # --------------------------------------------------
-target_link_libraries(
-    ${NOX_LIB_NAME}
-    PRIVATE
-    ${NOX_IMPL_LIB_NAME}
-)
+target_link_libraries(${NOX_LIB_NAME} PRIVATE ${NOX_IMPL_LIB_NAME})
 
 # --------------------------------------------------
 # Add public headers to sources (for IDE)
