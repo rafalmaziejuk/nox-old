@@ -1,24 +1,19 @@
-#include "renderer/renderer_plugin.h"
-#include "renderer/opengl/gl_plugin.h"
+#include "plugins/plugin_interface.h"
+#include "renderer/renderer_callback_registry.h"
 #include "renderer/opengl/gl_renderer.h"
+#include "renderer/opengl/nox_opengl_export.h"
 
-namespace NOX {
+#define NOX_PLUGIN_EXPORT NOX_OPENGL_EXPORT
 
-extern "C" Renderer *allocateRenderer(const RendererDescriptor &descriptor) {
-    NOX_ASSERT(descriptor.api != RendererAPI::OPENGL);
+NOX_PLUGIN_REGISTER(OpenGL) {
+    auto createRenderer = []() -> NOX::Renderer * {
+        return new NOX::GLRenderer{};
+    };
+    auto destroyRenderer = [](NOX::Renderer *renderer) {
+        delete renderer;
+        renderer = nullptr;
+    };
 
-    return new GLRenderer{descriptor};
+    NOX::RendererCallbackRegistry::registerCallback(NOX::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
+    return true;
 }
-
-void *GLPlugin::getProcedureAddress(std::string_view procedureName) const {
-    NOX_ASSERT(procedureName.empty());
-
-    if (procedureName == RendererPlugin::allocateRendererProcedureName) {
-        return reinterpret_cast<void *>(allocateRenderer);
-    }
-
-    NOX_ASSERT(true);
-    return nullptr;
-}
-
-} // namespace NOX

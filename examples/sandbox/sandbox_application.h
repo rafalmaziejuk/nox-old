@@ -2,15 +2,7 @@
 
 #include <nox/renderer.h>
 
-#include <memory>
-
 namespace NOX {
-
-class Buffer;
-class RenderPass;
-class SwapChain;
-class Texture;
-class Window;
 
 class SandboxApplication {
   public:
@@ -29,8 +21,8 @@ class SandboxApplication {
 
   private:
     bool m_isRunning{true};
+    RendererPtr m_renderer{nullptr};
     std::unique_ptr<Window> m_window{nullptr};
-    std::unique_ptr<Renderer, RendererDeleter> m_renderer{nullptr};
     std::shared_ptr<SwapChain> m_swapChain{nullptr};
     std::unique_ptr<Buffer> m_triangleVertexBuffer{nullptr};
     std::unique_ptr<Buffer> m_triangleIndexBuffer{nullptr};

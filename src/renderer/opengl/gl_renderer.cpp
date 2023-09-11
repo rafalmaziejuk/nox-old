@@ -27,11 +27,13 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
 
 } // namespace
 
-GLRenderer::GLRenderer(const RendererDescriptor &descriptor) {
-    NOX_ASSERT(descriptor.api != RendererAPI::OPENGL);
-
+GLRenderer::GLRenderer() {
     m_context = std::make_shared<GLContext>();
     m_state = std::make_shared<GLState>();
+}
+
+RendererBackend GLRenderer::getRendererBackend() const {
+    return RendererBackend::OPENGL;
 }
 
 std::unique_ptr<SwapChain> GLRenderer::createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) {

@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
 #include <string>
 
 namespace NOX {
+
+[[nodiscard]] std::string createPluginFilename(std::string_view name, std::string_view extension);
+using PluginFilenameCreationStrategy = decltype(createPluginFilename);
 
 struct ConvertibleProcedureAddress {
     template <typename T>
@@ -16,32 +20,27 @@ struct ConvertibleProcedureAddress {
 
 class Plugin {
   public:
-    Plugin(const Plugin &) = delete;
-    Plugin &operator=(const Plugin &) = delete;
-
-  public:
-    Plugin() = default;
-    explicit Plugin(std::string_view name) : m_name{name} {}
+    Plugin(std::string_view name) : m_filename{name} {}
     virtual ~Plugin() = default;
 
-    [[nodiscard]] static std::unique_ptr<Plugin> load(std::string_view name);
-    [[nodiscard]] static std::string createFilename(std::string_view name, bool withPrefix, bool withPostfix);
-    [[nodiscard]] static std::string createFilenameWithExtension(std::string_view name, std::string_view extension);
+    [[nodiscard]] static std::unique_ptr<Plugin> create(std::string_view name, PluginFilenameCreationStrategy createFilename);
 
-    [[nodiscard]] ConvertibleProcedureAddress operator[](std::string_view name) const {
-        return {getProcedureAddress(name)};
-    }
+    [[nodiscard]] virtual bool load() = 0;
 
-    std::string getFilename() { return m_name; }
+    [[nodiscard]] std::string getFilename() const { return m_filename; }
 
   protected:
     virtual void *getProcedureAddress(std::string_view procedureName) const = 0;
+    [[nodiscard]] ConvertibleProcedureAddress getFunction(std::string_view name) const {
+        return {getProcedureAddress(name)};
+    }
 
-  private:
-    std::string m_name;
+  public:
+    Plugin(const Plugin &) = delete;
+    Plugin &operator=(const Plugin &) = delete;
+
+  protected:
+    std::string m_filename;
 };
 
 } // namespace NOX
-
-#define NOX_DECLARE_PLUGIN_FUNCTION(name, returnType, ...) \
-    using name = returnType (*)(__VA_ARGS__)

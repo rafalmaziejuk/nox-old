@@ -17,6 +17,7 @@ Checks: >
   -bugprone-reserved-identifier,
   -clang-analyzer-core.CallAndMessage,
   -cppcoreguidelines-avoid-magic-numbers,
+  -cppcoreguidelines-avoid-non-const-global-variables,
   -cppcoreguidelines-macro-usage,
   -cppcoreguidelines-narrowing-conversions,
   -cppcoreguidelines-non-private-member-variables-in-classes,
@@ -40,12 +41,18 @@ Checks: >
   -readability-implicit-bool-conversion,
   -readability-redundant-access-specifiers,
   -readability-convert-member-functions-to-static,
-CheckOptions:
-  - { key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted, value: true }
-  - { key: readability-identifier-naming.ClassCase,           value: CamelCase }
-  - { key: readability-identifier-naming.FunctionCase,        value: camelBack }
-  - { key: readability-identifier-naming.VariableCase,        value: camelBack }
-  - { key: readability-identifier-naming.ParameterCase,       value: camelBack }
 HeaderFilterRegex: '(include|src).+\.(h|hpp|inl)$'
 WarningsAsErrors: '*'
+CheckOptions:
+  - { key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted, value: true }
+  - { key: readability-identifier-naming.ClassCase,               value: CamelCase }
+  - { key: readability-identifier-naming.StructCase,              value: CamelCase }
+  - { key: readability-identifier-naming.FunctionCase,            value: camelBack }
+  - { key: readability-identifier-naming.ParameterCase,           value: camelBack }
+  - { key: readability-identifier-naming.LocalVariableCase,       value: camelBack }
+  - { key: readability-identifier-naming.ConstexprVariableCase,   value: camelBack }
+  - { key: readability-identifier-naming.ClassMethodCase,         value: camelBack }
+  - { key: readability-identifier-naming.MethodCase,              value: camelBack }
+  - { key: readability-identifier-naming.ClassMemberCase,         value: camelBack }
+  - { key: readability-identifier-naming.ClassMemberPrefix,       value: m_        }
 ...

@@ -48,7 +48,7 @@ add_subdirectory(${NOX_THIRD_PARTY_DIR}/glad glad)
 set_target_properties(
     glad
     PROPERTIES 
-    FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/glad"
+    FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}"
 )
 
 target_link_libraries(
@@ -84,7 +84,6 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_pipeline_state.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_pipeline_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.cpp

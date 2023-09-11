@@ -1,23 +1,37 @@
+#include "plugins/plugin_interface.h"
 #include "plugins/windows/windows_plugin.h"
 
 namespace NOX {
 
-std::unique_ptr<Plugin> Plugin::load(std::string_view name) {
-    return std::make_unique<WindowsPlugin>(name);
-}
-
-WindowsPlugin::WindowsPlugin(std::string_view name) : Plugin{name} {
-    NOX_ASSERT(name.empty());
-
-    constexpr auto pluginExtension = "dll";
-    const auto filename = Plugin::createFilenameWithExtension(name, pluginExtension);
-    m_handle = LoadLibrary(filename.c_str());
-    NOX_ASSERT(m_handle == nullptr);
+std::unique_ptr<Plugin> Plugin::create(std::string_view name, PluginFilenameCreationStrategy createFilename) {
+    constexpr auto extension = "dll";
+    const auto filename = createFilename(name, extension);
+    return std::make_unique<WindowsPlugin>(filename);
 }
 
 WindowsPlugin::~WindowsPlugin() {
-    auto result = FreeLibrary(m_handle);
-    NOX_ASSERT(result == 0);
+    if (m_handle != nullptr) {
+        auto result = FreeLibrary(m_handle);
+        NOX_ASSERT(result == 0);
+        m_handle = nullptr;
+    }
+}
+
+bool WindowsPlugin::load() {
+    m_handle = LoadLibrary(m_filename.c_str());
+    if (m_handle == nullptr) {
+        NOX_ASSERT(true);
+        return false;
+    }
+
+    PluginRegisterFunctionType registerPlugin = getFunction(pluginRegisterProcedureName);
+    if (registerPlugin == nullptr) {
+        NOX_ASSERT(true);
+        return false;
+    }
+    registerPlugin();
+
+    return true;
 }
 
 void *WindowsPlugin::getProcedureAddress(std::string_view procedureName) const {

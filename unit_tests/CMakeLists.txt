@@ -25,10 +25,17 @@ target_include_directories(
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
 )
 
+target_precompile_headers(${NOX_UNIT_TESTS_EXE_NAME} REUSE_FROM ${NOX_IMPL_LIB_NAME})
+
 # --------------------------------------------------
 # Set properties
 # --------------------------------------------------
 set_target_properties(${NOX_UNIT_TESTS_EXE_NAME} PROPERTIES FOLDER ${NOX_FOLDER_NAME})
+
+# --------------------------------------------------
+# Add dependencies
+# --------------------------------------------------
+add_dependencies(${NOX_UNIT_TESTS_EXE_NAME} ${NOX_OPENGL_LIB_NAME})
 
 # --------------------------------------------------
 # Link libraries
@@ -40,6 +47,7 @@ endif()
 target_link_libraries(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
+    ${NOX_LIB_NAME}
     ${NOX_IMPL_LIB_NAME}
     GTest::gtest_main
     GTest::gmock_main
@@ -54,11 +62,10 @@ gtest_discover_tests(${NOX_UNIT_TESTS_EXE_NAME})
 set(NOX_UNIT_TESTS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugins_tests.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_tests.cpp
 )
 
 target_sources(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE ${NOX_UNIT_TESTS_SOURCES})
-
-add_subdirectory(mocks)
-add_subdirectory(plugins)
 
 nox_create_project_source_tree(${NOX_UNIT_TESTS_EXE_NAME})

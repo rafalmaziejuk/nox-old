@@ -125,9 +125,7 @@ SandboxApplication::SandboxApplication() {
     };
     m_window->pushBackEventDispatcher(eventDispatcher);
 
-    RendererDescriptor rendererDescriptor;
-    rendererDescriptor.api = RendererAPI::OPENGL;
-    m_renderer = Renderer::create(rendererDescriptor);
+    m_renderer = RendererFactory::createRenderer(RendererBackend::OPENGL);
 
     SwapChainDescriptor swapChainDescriptor{};
     swapChainDescriptor.isVSync = true;

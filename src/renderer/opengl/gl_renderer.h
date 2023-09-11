@@ -12,7 +12,9 @@ class GLSwapChain;
 
 class GLRenderer final : public Renderer {
   public:
-    explicit GLRenderer(const RendererDescriptor &descriptor);
+    GLRenderer();
+
+    RendererBackend getRendererBackend() const override;
 
     std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) override;
 
