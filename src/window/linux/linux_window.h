@@ -20,6 +20,8 @@ class LinuxWindow final : public Window {
     void *getNativeHandle() const override;
     Vector2D<uint32_t> getSize() const override;
 
+    ::Window getWindow() const;
+
   private:
     WindowDescriptor m_descriptor;
 

@@ -130,4 +130,8 @@ Vector2D<uint32_t> LinuxWindow::getSize() const {
     return m_descriptor.size;
 }
 
+::Window LinuxWindow::getWindow() const {
+    return m_window;
+}
+
 } // namespace NOX

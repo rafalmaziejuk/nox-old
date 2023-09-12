@@ -110,4 +110,8 @@ if(NOX_PLATFORM_WINDOWS)
     add_subdirectory(windows)
 endif()
 
+if(NOX_PLATFORM_LINUX)
+    add_subdirectory(linux)
+endif()
+
 nox_create_project_source_tree(${NOX_OPENGL_LIB_NAME})

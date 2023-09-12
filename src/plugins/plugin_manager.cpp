@@ -16,7 +16,6 @@ bool PluginManager::load(std::string_view name, PluginFilenameCreationStrategy c
     }
 
     return false;
-
 }
 bool PluginManager::isLoaded(std::string_view name) const {
     NOX_ASSERT(name.empty());
