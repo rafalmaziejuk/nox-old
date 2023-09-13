@@ -4,7 +4,8 @@
 #endif
 
 #if defined(NOX_GLAD_UNIX)
-// placeholder
+#define GLAD_GLX_IMPLEMENTATION
+#include <glad/glx.h>
 #endif
 
 #define GLAD_GL_IMPLEMENTATION

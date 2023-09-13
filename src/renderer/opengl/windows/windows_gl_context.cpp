@@ -77,7 +77,7 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     int32_t majorVersion{}, minorVersion{};
     glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
     glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-    NOX_ASSERT_MSG((majorVersion != glMajorVersion) && (minorVersion != glMinorVersion), "This system doesn't support OpenGL 4.6");
+    NOX_ASSERT_MSG((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion), "This system doesn't support OpenGL 4.6");
 
     wglDeleteContext(m_impl->handleRenderingContext);
     m_impl->handleRenderingContext = nullptr;
