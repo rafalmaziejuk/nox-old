@@ -12,3 +12,7 @@ target_sources(${NOX_IMPL_LIB_NAME} PRIVATE ${NOX_IMPL_PLUGINS_SOURCES})
 if(NOX_PLATFORM_WINDOWS)
     add_subdirectory(windows)
 endif()
+
+if(NOX_PLATFORM_LINUX)
+    add_subdirectory(linux)
+endif()
