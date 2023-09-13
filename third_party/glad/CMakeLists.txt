@@ -8,6 +8,11 @@ target_include_directories(
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>"
     "$<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>"
 )
+set_target_properties(
+    glad
+    PROPERTIES
+    POSITION_INDEPENDENT_CODE ON
+)
 
 if(NOX_PLATFORM_WINDOWS)
     target_compile_definitions(glad PRIVATE NOX_GLAD_WIN32)
