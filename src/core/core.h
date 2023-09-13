@@ -2,6 +2,24 @@
 
 #include "core/logger.h"
 
+#if defined(NOX_STATIC)
+static constexpr auto staticEnabled = true;
+#else
+static constexpr auto staticEnabled = false;
+#endif
+
+#if defined(NOX_DEBUG)
+static constexpr auto debugEnabled = true;
+#else
+static constexpr auto debugEnabled = false;
+#endif
+
+#if (defined(__GNUC__) || defined(NOX_UNIX))
+static constexpr auto unixEnvironment = true;
+#else
+static constexpr auto unixEnvironment = false;
+#endif
+
 #define NOX_UNUSED(x) (void)(x)
 
 #define BIT(x) (1 << x)

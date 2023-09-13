@@ -19,21 +19,14 @@
 
 namespace NOX {
 
-enum class RendererAPI : uint8_t {
+enum class RendererBackend : uint8_t {
     NONE,
     OPENGL
 };
 
-struct RendererDescriptor {
-    RendererAPI api;
-};
-
-class Renderer;
-using RendererDeleter = std::function<void(Renderer *)>;
-
 class NOX_EXPORT Renderer {
   public:
-    [[nodiscard]] static std::unique_ptr<Renderer, RendererDeleter> create(const RendererDescriptor &descriptor);
+    [[nodiscard]] virtual RendererBackend getRendererBackend() const = 0;
 
     [[nodiscard]] virtual std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
 
@@ -62,6 +55,14 @@ class NOX_EXPORT Renderer {
 
   protected:
     Renderer() = default;
+};
+
+using RendererDeleter = std::function<void(Renderer *)>;
+using RendererPtr = std::unique_ptr<Renderer, RendererDeleter>;
+
+class NOX_EXPORT RendererFactory {
+  public:
+    [[nodiscard]] static RendererPtr createRenderer(RendererBackend backend);
 };
 
 } // namespace NOX

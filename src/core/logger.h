@@ -27,9 +27,7 @@ class Logger : public Singleton<Logger> {
         m_logger->set_level(spdlog::level::trace);
     }
 
-    spdlog::logger &getLogger() const {
-        return *m_logger;
-    }
+    spdlog::logger &getLogger() const { return *m_logger; }
 
   private:
     std::unique_ptr<spdlog::logger> m_logger{nullptr};

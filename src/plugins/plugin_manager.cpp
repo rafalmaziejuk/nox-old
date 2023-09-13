@@ -1,56 +1,29 @@
-#include "plugins/plugin.h"
 #include "plugins/plugin_manager.h"
 
 namespace NOX {
 
-PluginHandle PluginManager::registerPlugin(std::unique_ptr<Plugin> &&plugin) {
-    NOX_ASSERT(plugin == nullptr);
-    NOX_ASSERT(isPluginRegistered(plugin->getFilename()));
+bool PluginManager::load(std::string_view name, PluginFilenameCreationStrategy createFilename) {
+    NOX_ASSERT(name.empty());
 
-    const auto handle = static_cast<PluginHandle>(m_plugins.size() + 1);
-    m_plugins.insert({handle, std::move(plugin)});
-    return handle;
+    auto plugin = Plugin::create(name, createFilename);
+    if (isLoaded(plugin->getFilename())) {
+        return true;
+    }
+
+    if (plugin->load()) {
+        m_plugins.push_back(std::move(plugin));
+        return true;
+    }
+
+    return false;
+
 }
+bool PluginManager::isLoaded(std::string_view name) const {
+    NOX_ASSERT(name.empty());
 
-void PluginManager::unregisterPlugin(PluginHandle handle) {
-    NOX_ASSERT(m_plugins.find(handle) == m_plugins.end());
-
-    m_plugins.erase(handle);
-}
-
-bool PluginManager::isPluginRegistered(std::string_view pluginName) const {
-    NOX_ASSERT(pluginName.empty());
-
-    return std::any_of(m_plugins.begin(), m_plugins.end(), [pluginName](const auto &element) {
-        const auto &plugin = element.second;
-        return (plugin->getFilename() == pluginName);
+    return std::any_of(m_plugins.begin(), m_plugins.end(), [name](const auto &plugin) {
+        return (plugin->getFilename() == name);
     });
-}
-
-PluginHandle PluginManager::getPluginHandle(std::string_view pluginName) const {
-    NOX_ASSERT(pluginName.empty());
-
-    const auto &iterator = std::find_if(m_plugins.begin(), m_plugins.end(), [pluginName](const auto &element) {
-        const auto &plugin = element.second;
-        return (plugin->getFilename() == pluginName);
-    });
-    NOX_ASSERT(iterator == m_plugins.end());
-
-    return (iterator->first);
-}
-
-Plugin &PluginManager::operator[](PluginHandle handle) {
-    NOX_ASSERT(m_plugins.find(handle) == m_plugins.end());
-
-    auto &plugin = *m_plugins.at(handle);
-    return plugin;
-}
-
-const Plugin &PluginManager::operator[](PluginHandle handle) const {
-    NOX_ASSERT(m_plugins.find(handle) == m_plugins.end());
-
-    const auto &plugin = *m_plugins.at(handle);
-    return plugin;
 }
 
 } // namespace NOX

@@ -89,9 +89,11 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
 }
 
 GLContext::~GLContext() {
-    auto result = wglDeleteContext(m_impl->handleRenderingContext);
-    NOX_ASSERT_MSG(!result, "Unable to delete OpenGL rendering context");
-    NOX_LOG_TRACE(OPENGL, "Destroyed rendering context");
+    if (m_impl->handleRenderingContext != nullptr) {
+        auto result = wglDeleteContext(m_impl->handleRenderingContext);
+        NOX_ASSERT_MSG(!result, "Unable to delete OpenGL rendering context");
+        NOX_LOG_TRACE(OPENGL, "Destroyed rendering context");
+    }
 }
 
 void GLContext::makeCurrent() const {
@@ -132,7 +134,7 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
     NOX_LOG_INFO(OPENGL, "Device: {}", reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
     NOX_LOG_INFO(OPENGL, "Version: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
 
-    if constexpr (Config::debugEnabled) {
+    if constexpr (debugEnabled) {
         glEnable(GL_DEBUG_OUTPUT);
         glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
         glDebugMessageCallback(debugMessageCallback, nullptr);
