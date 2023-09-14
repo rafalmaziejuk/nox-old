@@ -1,13 +1,13 @@
-#include "plugins/plugin.h"
+#include "plugins/dynamic_plugin.h"
 
 #include <Windows.h>
 
 namespace NOX {
 
-class WindowsPlugin final : public Plugin {
+class WindowsDynamicPlugin final : public DynamicPlugin {
   public:
-    using Plugin::Plugin;
-    ~WindowsPlugin() override;
+    using DynamicPlugin::DynamicPlugin;
+    ~WindowsDynamicPlugin() override;
 
     bool load() override;
 

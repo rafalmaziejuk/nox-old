@@ -1,11 +1,11 @@
-#include "plugins/plugin.h"
+#include "plugins/dynamic_plugin.h"
 
 namespace NOX {
 
-class LinuxPlugin final : public Plugin {
+class LinuxDynamicPlugin final : public DynamicPlugin {
   public:
-    using Plugin::Plugin;
-    ~LinuxPlugin() override;
+    using DynamicPlugin::DynamicPlugin;
+    ~LinuxDynamicPlugin() override;
 
     bool load() override;
 

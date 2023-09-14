@@ -2,8 +2,6 @@
 
 namespace NOX {
 
-std::unordered_map<RendererBackend, RendererCallbackRegistry::Callback> RendererCallbackRegistry::m_callbacks;
-
 void RendererCallbackRegistry::registerCallback(RendererBackend backend, const Callback &callback) {
     NOX_ASSERT(backend == RendererBackend::NONE);
 
@@ -13,15 +11,9 @@ void RendererCallbackRegistry::registerCallback(RendererBackend backend, const C
 RendererCallbackRegistry::Callback RendererCallbackRegistry::getCallback(RendererBackend backend) {
     NOX_ASSERT(backend == RendererBackend::NONE);
 
-    const auto &callback = m_callbacks.at(backend);
-    return callback;
-}
-
-bool RendererCallbackRegistry::isCallbackRegistered(RendererBackend backend) {
-    NOX_ASSERT(backend == RendererBackend::NONE);
-
     const auto it = m_callbacks.find(backend);
-    return (it != m_callbacks.end());
+    NOX_ASSERT(it == m_callbacks.end());
+    return it->second;
 }
 
 } // namespace NOX

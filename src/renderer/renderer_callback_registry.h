@@ -1,5 +1,7 @@
 #pragma once
 
+#include "core/singleton.h"
+
 #include <nox/export.h>
 #include <nox/renderer.h>
 
@@ -8,18 +10,17 @@
 
 namespace NOX {
 
-class NOX_EXPORT RendererCallbackRegistry {
+class NOX_EXPORT RendererCallbackRegistry : public Singleton<RendererCallbackRegistry> {
   public:
     using CreateCallback = std::function<Renderer *()>;
     using DestroyCallback = std::function<void(Renderer *)>;
     using Callback = std::pair<CreateCallback, DestroyCallback>;
 
-    static void registerCallback(RendererBackend backend, const Callback &callback);
-    [[nodiscard]] static bool isCallbackRegistered(RendererBackend backend);
-    [[nodiscard]] static Callback getCallback(RendererBackend backend);
+    void registerCallback(RendererBackend backend, const Callback &callback);
+    [[nodiscard]] Callback getCallback(RendererBackend backend);
 
   private:
-    static std::unordered_map<RendererBackend, Callback> m_callbacks;
+    std::unordered_map<RendererBackend, Callback> m_callbacks;
 };
 
 } // namespace NOX
