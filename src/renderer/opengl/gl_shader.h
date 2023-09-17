@@ -6,10 +6,6 @@ namespace NOX {
 
 class GLShader final : public Shader {
   public:
-    GLShader(const GLShader &) = delete;
-    GLShader &operator=(const GLShader &) = delete;
-
-  public:
     explicit GLShader(const ShaderDescriptor &descriptor);
     ~GLShader() override;
 

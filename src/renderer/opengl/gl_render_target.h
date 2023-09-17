@@ -34,10 +34,6 @@ class GLRenderTarget final : public GLRenderTargetBase {
     using DepthStencilAttachmentsContainer = AttachmentsContainer::DepthStencilAttachmentsContainer;
 
   public:
-    GLRenderTarget(const GLRenderTarget &) = delete;
-    GLRenderTarget &operator=(const GLRenderTarget &) = delete;
-
-  public:
     explicit GLRenderTarget(const RenderTargetDescriptor &descriptor);
     ~GLRenderTarget() override;
 

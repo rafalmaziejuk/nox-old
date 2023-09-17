@@ -6,10 +6,6 @@ namespace NOX {
 
 class GLTexture final : public Texture {
   public:
-    GLTexture(const GLTexture &) = delete;
-    GLTexture &operator=(const GLTexture &) = delete;
-
-  public:
     explicit GLTexture(const TextureDescriptor &descriptor);
     ~GLTexture() override;
 
