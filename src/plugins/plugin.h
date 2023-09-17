@@ -38,6 +38,8 @@ class Plugin {
   public:
     Plugin(const Plugin &) = delete;
     Plugin &operator=(const Plugin &) = delete;
+    Plugin(Plugin &&) = delete;
+    Plugin &operator=(Plugin &&) = delete;
 
   protected:
     std::string m_filename;

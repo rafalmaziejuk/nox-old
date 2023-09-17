@@ -26,6 +26,7 @@ Checks: >
   -cppcoreguidelines-pro-type-reinterpret-cast,
   -cppcoreguidelines-pro-type-union-access,
   -cppcoreguidelines-owning-memory,
+  -cppcoreguidelines-special-member-functions,
   -google-default-arguments,
   -google-explicit-constructor,
   -misc-non-private-member-variables-in-classes,
@@ -44,7 +45,6 @@ Checks: >
 HeaderFilterRegex: '(include|src).+\.(h|hpp|inl)$'
 WarningsAsErrors: '*'
 CheckOptions:
-  - { key: cppcoreguidelines-special-member-functions.AllowMissingMoveFunctionsWhenCopyIsDeleted, value: true }
   - { key: readability-identifier-naming.ClassCase,               value: CamelCase }
   - { key: readability-identifier-naming.StructCase,              value: CamelCase }
   - { key: readability-identifier-naming.FunctionCase,            value: camelBack }

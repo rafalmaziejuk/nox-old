@@ -8,10 +8,6 @@ namespace NOX {
 
 class LinuxWindow final : public Window {
   public:
-    LinuxWindow(const LinuxWindow &) = delete;
-    LinuxWindow &operator=(const LinuxWindow &) = delete;
-
-  public:
     explicit LinuxWindow(const WindowDescriptor &descriptor);
     ~LinuxWindow() override;
 
