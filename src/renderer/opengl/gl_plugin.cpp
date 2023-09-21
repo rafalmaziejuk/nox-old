@@ -14,6 +14,8 @@ NOX_PLUGIN_REGISTER(OpenGL) {
         renderer = nullptr;
     };
 
-    NOX::RendererCallbackRegistry::registerCallback(NOX::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
+    NOX::RendererCallbackRegistry::instance().registerCallback(NOX::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
     return true;
 }
+
+NOX_PLUGIN_VERSION(OpenGL);

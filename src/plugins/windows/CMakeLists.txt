@@ -1,7 +1,7 @@
 set(NOX_IMPL_PLUGINS_WINDOWS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-    ${CMAKE_CURRENT_SOURCE_DIR}/windows_plugin.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/windows_plugin.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/windows_dynamic_plugin.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/windows_dynamic_plugin.h
 )
 
 target_sources(${NOX_IMPL_LIB_NAME} PRIVATE ${NOX_IMPL_PLUGINS_WINDOWS_SOURCES})

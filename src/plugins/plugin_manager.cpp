@@ -1,22 +1,25 @@
+#include "plugins/plugin_interface.h"
 #include "plugins/plugin_manager.h"
 
 namespace NOX {
 
-bool PluginManager::load(std::string_view name, PluginFilenameCreationStrategy createFilename) {
-    NOX_ASSERT(name.empty());
+bool PluginManager::registerPlugin(std::unique_ptr<Plugin> &&plugin) {
+    NOX_ASSERT(plugin == nullptr);
 
-    auto plugin = Plugin::create(name, createFilename);
     if (isLoaded(plugin->getFilename())) {
         return true;
     }
 
     if (plugin->load()) {
-        m_plugins.push_back(std::move(plugin));
-        return true;
+        if (plugin->getVersion() == NOX_PLUGIN_API_VERSION) {
+            m_plugins.push_back(std::move(plugin));
+            return true;
+        }
     }
 
     return false;
 }
+
 bool PluginManager::isLoaded(std::string_view name) const {
     NOX_ASSERT(name.empty());
 

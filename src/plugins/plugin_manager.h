@@ -4,7 +4,6 @@
 #include "plugins/plugin.h"
 
 #include <memory>
-#include <string_view>
 #include <vector>
 
 namespace NOX {
@@ -13,7 +12,7 @@ class Plugin;
 
 class PluginManager : public Singleton<PluginManager> {
   public:
-    [[nodiscard]] bool load(std::string_view name, PluginFilenameCreationStrategy createFilename);
+    [[nodiscard]] bool registerPlugin(std::unique_ptr<Plugin> &&plugin);
 
   private:
     [[nodiscard]] bool isLoaded(std::string_view name) const;

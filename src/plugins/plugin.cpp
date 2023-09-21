@@ -2,12 +2,13 @@
 
 namespace NOX {
 
-std::string createPluginFilename(std::string_view name, std::string_view extension) {
+std::string createPluginFilename(std::string_view name) {
     NOX_ASSERT(name.empty());
 
     constexpr auto prefix = (unixEnvironment ? "lib" : "");
     constexpr auto infix = "nox-";
-    constexpr auto postfix = (debugEnabled ? "-d" : "");
+    constexpr auto staticPostfix = (staticEnabled ? "-s" : "");
+    constexpr auto debugPostfix = (debugEnabled ? "-d" : "");
     auto toLower = [](std::string str) {
         std::transform(str.begin(), str.end(), str.begin(), [](uint8_t c) { return static_cast<uint8_t>(std::tolower(c)); });
         return str;
@@ -16,11 +17,10 @@ std::string createPluginFilename(std::string_view name, std::string_view extensi
     std::string result;
     result += prefix;
     result += infix;
-    result += toLower(name.data());
-    result += postfix;
-    result += '.';
-    result += extension;
-    return result;
+    result += name.data();
+    result += staticPostfix;
+    result += debugPostfix;
+    return toLower(result);
 }
 
 } // namespace NOX
