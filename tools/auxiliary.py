@@ -1,21 +1,36 @@
-from os import path
+import os
+import subprocess
 
-ROOT_DIR = path.abspath(path.join(path.dirname(__file__), '../'))
-OUTPUT_DIR = path.join(ROOT_DIR, 'output/')
-CMAKE_DIR = path.join(ROOT_DIR, 'cmake/')
+ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '../'))
+OUTPUT_DIR = os.path.join(ROOT_DIR, 'output/')
+CMAKE_DIR = os.path.join(ROOT_DIR, 'cmake/')
+
+def is_tool_available(tool: str, check: bool = True):
+    from shutil import which
+    result = which(tool.lower()) is not None
+
+    if result == False and check:
+        raise Exception(f"{tool} is not available")
+
+    return result
 
 class CMakeCommand():
     def __init__(self):
-        self.command = []
-        self.command.append('cmake')
+        self._command = ['cmake']
 
-    def add_option(self, option : str):
-        self.command.extend(option.split())
-    
-    def run(self, stdout: str=None, stderr: str=None):
-        from subprocess import check_call
-        check_call(self.command, cwd=ROOT_DIR, stdout=stdout, stderr=stderr)
+    def append(self, option: str):
+        self._command.extend(option.split())
+        return self
 
-def is_tool_available(tool_name : str):
-    from shutil import which
-    return which(tool_name.lower()) is not None
+    def run(self):
+        print(f"Running {self._command}", flush=True)
+        output = subprocess.run(self._command,
+                                cwd=ROOT_DIR,
+                                capture_output=True,
+                                text=True)
+        if output.returncode == 0:
+            print('Success\n', flush=True)
+        else:
+            print('Error\n', flush=True)
+
+        return output
