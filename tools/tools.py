@@ -25,8 +25,9 @@ def main():
         print('No arguments provided, exiting...')
         exit()
 
-    runners = []
     try:
+        runners = []
+
         if args.build:
             runners.append(BuildRunner())
 
@@ -35,15 +36,15 @@ def main():
         
         if args.clang_tidy:
             runners.append(ClangTidyRunner())
+
+        if args.clang_tidy or args.build:
+            Path(OUTPUT_DIR).mkdir(exist_ok=True)
+    
+        for runner in runners:
+            runner.run()
     except Exception as e:
         print(str(e))
         exit()
-
-    if args.clang_tidy or args.build:
-        Path(OUTPUT_DIR).mkdir(exist_ok=True)
-    
-    for runner in runners:
-        runner.run()
 
 if __name__ == "__main__":
      main()
