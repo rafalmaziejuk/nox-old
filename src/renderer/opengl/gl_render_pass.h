@@ -10,7 +10,7 @@ class GLRenderPass final : public RenderPass {
   public:
     explicit GLRenderPass(const RenderPassDescriptor &descriptor);
 
-    const GLPipelineState &getPipelineState() const { return *m_pipelineState; }
+    const GLPipelineState &getPipelineState() const;
 
     void setInput(uint32_t binding, const Resource &resource) override;
 

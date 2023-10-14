@@ -12,6 +12,7 @@ namespace NOX {
 namespace {
 
 bool isRendererPluginRegistered(RendererBackend backend) {
+    NOX_LOG_TRACE_DECLARE(RENDERER);
     NOX_ASSERT(backend == RendererBackend::NONE);
 
 #if defined(NOX_BUILD_RENDERER_OPENGL)
@@ -27,6 +28,7 @@ bool isRendererPluginRegistered(RendererBackend backend) {
 } // namespace
 
 RendererPtr RendererFactory::createRenderer(RendererBackend backend) {
+    NOX_LOG_TRACE_DECLARE(RENDERER);
     NOX_ASSERT(backend == RendererBackend::NONE);
 
     if (!isRendererPluginRegistered(backend)) {

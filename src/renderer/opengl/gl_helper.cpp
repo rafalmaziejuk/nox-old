@@ -3,6 +3,8 @@
 namespace NOX::GLHelper {
 
 GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     if (type == FormatDataType::UINT) {
         if (size == 1u) {
             return GL_UNSIGNED_BYTE;
@@ -42,6 +44,8 @@ GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size) {
 }
 
 bool isExtensionSupported(std::string_view extensionsList, std::string_view extension) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     return (extensionsList.find(extension) != std::string::npos);
 }
 

@@ -9,8 +9,8 @@ class GLShader final : public Shader {
     explicit GLShader(const ShaderDescriptor &descriptor);
     ~GLShader() override;
 
-    uint32_t getHandle() const { return m_handle; }
-    uint32_t getStageBit() const { return m_stageBit; }
+    uint32_t getHandle() const;
+    uint32_t getStageBit() const;
 
     void compileFromString(std::string_view source) const;
 

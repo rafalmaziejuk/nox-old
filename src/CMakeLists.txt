@@ -38,6 +38,10 @@ if(NOT BUILD_SHARED_LIBS)
     target_compile_definitions(${NOX_IMPL_LIB_NAME} PUBLIC NOX_STATIC)
 endif()
 
+if(NOX_ENABLE_LOGGING)
+    target_compile_definitions(${NOX_IMPL_LIB_NAME} PUBLIC NOX_ENABLE_LOGGING)
+endif()
+
 # --------------------------------------------------
 # Set properties
 # --------------------------------------------------

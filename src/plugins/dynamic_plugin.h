@@ -16,10 +16,10 @@ class DynamicPlugin : public Plugin {
     [[nodiscard]] static std::unique_ptr<Plugin> create(std::string_view name, PluginFilenameCreationStrategy createFilename);
 
   protected:
-    inline static constexpr auto pluginVersionProcedureName = "pluginVersion";
+    static constexpr auto pluginVersionProcedureName = "pluginVersion";
     using PluginVersionFunctionType = uint8_t (*)();
 
-    inline static constexpr auto pluginRegisterProcedureName = "pluginRegister";
+    static constexpr auto pluginRegisterProcedureName = "pluginRegister";
     using PluginRegisterFunctionType = bool (*)();
 
     struct ConvertibleProcedureAddress {

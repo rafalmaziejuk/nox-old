@@ -6,25 +6,37 @@
 namespace NOX {
 
 GLProgram::GLProgram() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     m_handle = glCreateProgram();
     glProgramParameteri(m_handle, GL_PROGRAM_SEPARABLE, GL_TRUE);
 }
 
 GLProgram::~GLProgram() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     glDeleteProgram(m_handle);
 }
 
-uint32_t GLProgram::attachShader(const Shader *shader) {
-    const auto *glShader = downcast<GLShader>(*shader);
+uint32_t GLProgram::getHandle() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
 
+    return m_handle;
+}
+
+uint32_t GLProgram::attachShader(const Shader *shader) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
+    const auto *glShader = downcast<GLShader>(*shader);
     glAttachShader(m_handle, glShader->getHandle());
     m_attachedShaderHandles.push_back(glShader->getHandle());
     return glShader->getStageBit();
 }
 
 void GLProgram::link() {
-    glLinkProgram(m_handle);
+    NOX_LOG_TRACE_DECLARE(OPENGL);
 
+    glLinkProgram(m_handle);
     auto result = checkLinkStatus();
     NOX_ASSERT(!result);
 
@@ -32,6 +44,8 @@ void GLProgram::link() {
 }
 
 void GLProgram::detachShaders() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     for (const auto shaderHandle : m_attachedShaderHandles) {
         glDetachShader(m_handle, shaderHandle);
     }
@@ -39,6 +53,8 @@ void GLProgram::detachShaders() {
 }
 
 bool GLProgram::checkLinkStatus() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     GLint result = GL_TRUE;
     glGetProgramiv(m_handle, GL_LINK_STATUS, &result);
 

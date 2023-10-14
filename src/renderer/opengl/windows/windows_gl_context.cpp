@@ -11,6 +11,8 @@ namespace NOX {
 
 struct GLContext::Impl {
     void setContextPixelFormat(const PixelFormatDescriptor &descriptor) const {
+        NOX_LOG_TRACE_DECLARE(OPENGL);
+
         constexpr uint8_t defaultAlphaBits = 8u;
         constexpr uint8_t defaultColorBits = 32u;
 
@@ -36,6 +38,8 @@ struct GLContext::Impl {
 };
 
 GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     constexpr auto dummyWindowName = "__NOX_DUMMY_WINDOW_CLASS__";
     auto dummyWindowProcedure = [](HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) -> LRESULT {
         return DefWindowProc(hwnd, uMsg, wParam, lParam);
@@ -89,31 +93,38 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
 }
 
 GLContext::~GLContext() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     if (m_impl->handleRenderingContext != nullptr) {
         auto result = wglDeleteContext(m_impl->handleRenderingContext);
         NOX_ASSERT_MSG(!result, "Unable to delete OpenGL rendering context");
-        NOX_LOG_TRACE(OPENGL, "Destroyed rendering context");
     }
 }
 
 void GLContext::makeCurrent() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto result = wglMakeCurrent(m_impl->handleDeviceContext, m_impl->handleRenderingContext);
     NOX_ASSERT_MSG(!result, "Unable to make OpenGL rendering context current");
-    NOX_LOG_TRACE(OPENGL, "Rendering context made current");
 }
 
 void GLContext::swapBuffers() const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     auto result = SwapBuffers(m_impl->handleDeviceContext);
     NOX_ASSERT_MSG(!result, "Unable to swap buffers in OpenGL swap chain");
 }
 
 void GLContext::setSwapInterval(bool value) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto result = wglSwapIntervalEXT(static_cast<int32_t>(value));
     NOX_ASSERT_MSG(!result, "Unable to set swap interval for OpenGL swap chain");
-    NOX_LOG_TRACE(OPENGL, "Swap interval set to {}", value);
 }
 
 void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto *windowHandle = static_cast<HWND>(window.getNativeHandle());
     m_impl->handleDeviceContext = GetDC(windowHandle);
     NOX_ASSERT(m_impl->handleDeviceContext == nullptr);

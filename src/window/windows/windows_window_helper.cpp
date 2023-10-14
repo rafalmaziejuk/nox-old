@@ -5,16 +5,22 @@
 namespace NOX::WindowsWindowHelper {
 
 void registerWindowClass(const WNDCLASS &attributes) {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     auto result = RegisterClass(&attributes);
     NOX_ASSERT_MSG(!result, "Unable to register window class");
 }
 
 void unregisterWindowClass(std::string_view className) {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     auto result = UnregisterClass(TEXT(className.data()), GetModuleHandle(nullptr));
     NOX_ASSERT_MSG(!result, "Unable to unregister window class");
 }
 
 DWORD getWindowStyle(const WindowDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     DWORD result{};
 
     if (descriptor.isVisible) {
@@ -34,6 +40,8 @@ DWORD getWindowStyle(const WindowDescriptor &descriptor) {
 }
 
 RECT getWindowClientArea(const WindowDescriptor &descriptor, DWORD style) {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     RECT rectangle;
     rectangle.left = 0;
     rectangle.top = 0;
@@ -47,6 +55,8 @@ RECT getWindowClientArea(const WindowDescriptor &descriptor, DWORD style) {
 }
 
 Vector2D<int32_t> getWindowPosition(const WindowDescriptor &descriptor, RECT clientArea) {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     if (!descriptor.isCentered) {
         return descriptor.position;
     }
@@ -60,6 +70,8 @@ Vector2D<int32_t> getWindowPosition(const WindowDescriptor &descriptor, RECT cli
 }
 
 Vector2D<uint32_t> getWindowSize(RECT clientArea) {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     auto width = static_cast<uint32_t>(clientArea.right - clientArea.left);
     auto height = static_cast<uint32_t>(clientArea.bottom - clientArea.top);
     return {width, height};

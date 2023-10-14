@@ -7,6 +7,8 @@ namespace NOX {
 namespace {
 
 GLenum mapTextureTarget(TextureType type) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     switch (type) {
         NOX_CASE_RETURN_VALUE(TextureType::TEXTURE2D, GL_TEXTURE_2D);
 
@@ -17,6 +19,8 @@ GLenum mapTextureTarget(TextureType type) {
 }
 
 GLenum mapTextureFormat(Format format) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     switch (format) {
         NOX_CASE_RETURN_VALUE(Format::R8UI, GL_R8UI);
         NOX_CASE_RETURN_VALUE(Format::R16UI, GL_R16UI);
@@ -83,6 +87,8 @@ GLenum mapTextureFormat(Format format) {
 } // namespace
 
 GLTexture::GLTexture(const TextureDescriptor &descriptor) : m_descriptor{descriptor} {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto target = mapTextureTarget(descriptor.type);
     glCreateTextures(target, 1, &m_handle);
 
@@ -98,14 +104,32 @@ GLTexture::GLTexture(const TextureDescriptor &descriptor) : m_descriptor{descrip
 }
 
 GLTexture::~GLTexture() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     glDeleteTextures(1, &m_handle);
 }
 
+uint32_t GLTexture::getHandle() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
+    return m_handle;
+}
+
+const TextureDescriptor &GLTexture::getDescriptor() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
+    return m_descriptor;
+}
+
 void GLTexture::bind(uint32_t index) const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     glBindTextureUnit(index, m_handle);
 }
 
 void GLTexture::createTexture2D() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto width = m_descriptor.size.x();
     auto height = m_descriptor.size.y();
     auto format = mapTextureFormat(m_descriptor.format);

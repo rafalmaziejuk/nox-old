@@ -6,12 +6,12 @@ FetchContent_Declare(
     URL https://github.com/google/googletest/archive/b796f7d.zip
 )
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
+set(BUILD_GMOCK OFF CACHE BOOL "")
 FetchContent_MakeAvailable(googletest)
     
 set_target_properties(gtest PROPERTIES FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/gtest")
 set_target_properties(gtest_main PROPERTIES FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/gtest")
-set_target_properties(gmock PROPERTIES FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/gtest")
-set_target_properties(gmock_main PROPERTIES FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/gtest")
 enable_testing()
 
 # --------------------------------------------------
@@ -38,19 +38,21 @@ set_target_properties(${NOX_UNIT_TESTS_EXE_NAME} PROPERTIES FOLDER ${NOX_FOLDER_
 add_dependencies(${NOX_UNIT_TESTS_EXE_NAME} ${NOX_OPENGL_LIB_NAME})
 
 # --------------------------------------------------
-# Link libraries
+# Specify compile definitions
 # --------------------------------------------------
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY)
 endif()
 
+# --------------------------------------------------
+# Link libraries
+# --------------------------------------------------
 target_link_libraries(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
     ${NOX_LIB_NAME}
     ${NOX_IMPL_LIB_NAME}
     GTest::gtest_main
-    GTest::gmock_main
 )
 
 include(GoogleTest)

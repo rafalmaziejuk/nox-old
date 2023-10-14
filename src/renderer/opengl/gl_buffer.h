@@ -10,7 +10,7 @@ class GLBuffer : public Buffer {
     explicit GLBuffer(const BufferDescriptor &descriptor);
     ~GLBuffer() override;
 
-    uint32_t getHandle() const { return m_handle; }
+    uint32_t getHandle() const;
 
   private:
     uint32_t m_handle{0u};

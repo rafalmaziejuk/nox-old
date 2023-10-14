@@ -16,6 +16,8 @@ namespace NOX {
 namespace {
 
 GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     switch (topology) {
     case PrimitiveTopology::TRIANGLE_LIST:
         return GL_TRIANGLES;
@@ -28,20 +30,28 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
 } // namespace
 
 GLRenderer::GLRenderer() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     m_context = std::make_shared<GLContext>();
     m_state = std::make_shared<GLState>();
 }
 
 RendererBackend GLRenderer::getRendererBackend() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     return RendererBackend::OPENGL;
 }
 
 std::unique_ptr<SwapChain> GLRenderer::createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     m_context->createExtendedContext(descriptor.pixelFormatDescriptor, window);
     return std::make_unique<GLSwapChain>(descriptor, m_context);
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &format) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto buffer = std::make_unique<GLVertexBuffer>(descriptor);
     uint32_t vertexArrayIndex = 0u;
 
@@ -59,6 +69,8 @@ std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const BufferDescriptor &d
 }
 
 std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &descriptor, Format format) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto buffer = std::make_unique<GLIndexBuffer>(descriptor);
     buffer->setIndexType(format);
 
@@ -66,6 +78,8 @@ std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &de
 }
 
 std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto shader = std::make_unique<GLShader>(descriptor);
     shader->compileFromString(source);
 
@@ -73,28 +87,40 @@ std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescripto
 }
 
 std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineStateDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     m_state->primitiveTopology = mapPrimitiveTopologyToEnum(descriptor.primitiveTopology);
     return std::make_unique<GLPipelineState>(descriptor);
 }
 
 std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     return std::make_unique<GLCommandList>(descriptor, m_state);
 }
 
 std::unique_ptr<Texture> GLRenderer::createTexture(const TextureDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     return std::make_unique<GLTexture>(descriptor);
 }
 
 std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     return std::make_unique<GLRenderTarget>(descriptor);
 }
 
 std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
     NOX_ASSERT(descriptor.pipelineState == nullptr);
+
     return std::make_unique<GLRenderPass>(descriptor);
 }
 
 bool GLRenderer::isVertexFormatUnique(const VertexFormat &format, uint32_t &index) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto isSameVertexFormat = [](const VertexFormat &lhs, const VertexFormat &rhs) {
         if (lhs.attributes.size() != rhs.attributes.size()) {
             return false;

@@ -40,7 +40,7 @@ void GLAPIENTRY debugMessageCallback(GLenum source,
     const auto *sourceLabel = glDebugEnumToString(source);
 
     if (severity == GL_DEBUG_SEVERITY_NOTIFICATION) {
-        NOX_LOG_TRACE(OPENGL, "[{}][{}] {}", typeLabel, sourceLabel, message);
+        NOX_LOG_DEBUG(OPENGL, "[{}][{}] {}", typeLabel, sourceLabel, message);
     } else if (severity == GL_DEBUG_SEVERITY_LOW) {
         NOX_LOG_WARN(OPENGL, "[{}][{}] {}", typeLabel, sourceLabel, message);
     } else if (severity == GL_DEBUG_SEVERITY_MEDIUM) {

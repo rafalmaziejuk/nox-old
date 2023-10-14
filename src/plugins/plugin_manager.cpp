@@ -4,6 +4,7 @@
 namespace NOX {
 
 bool PluginManager::registerPlugin(std::unique_ptr<Plugin> &&plugin) {
+    NOX_LOG_TRACE_DECLARE(PLUGINS);
     NOX_ASSERT(plugin == nullptr);
 
     if (isLoaded(plugin->getFilename())) {
@@ -21,6 +22,7 @@ bool PluginManager::registerPlugin(std::unique_ptr<Plugin> &&plugin) {
 }
 
 bool PluginManager::isLoaded(std::string_view name) const {
+    NOX_LOG_TRACE_DECLARE(PLUGINS);
     NOX_ASSERT(name.empty());
 
     return std::any_of(m_plugins.begin(), m_plugins.end(), [name](const auto &plugin) {

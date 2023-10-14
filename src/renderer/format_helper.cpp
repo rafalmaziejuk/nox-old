@@ -121,6 +121,8 @@ constexpr std::array<uint32_t, static_cast<size_t>(Format::MAX)> formatValues{{
 }};
 
 FormatDataType getDataType(Format format) {
+    NOX_LOG_TRACE_DECLARE(RENDERER);
+
     auto value = formatValues.at(static_cast<size_t>(format));
     if (value & FormatAttribute::UINT) {
         return FormatDataType::UINT;
@@ -136,6 +138,8 @@ FormatDataType getDataType(Format format) {
 }
 
 uint8_t getComponentCount(Format format) {
+    NOX_LOG_TRACE_DECLARE(RENDERER);
+
     auto value = formatValues.at(static_cast<size_t>(format));
     if (value & FormatAttribute::R) {
         return 1u;
@@ -154,6 +158,8 @@ uint8_t getComponentCount(Format format) {
 }
 
 uint8_t getDataTypeSize(Format format) {
+    NOX_LOG_TRACE_DECLARE(RENDERER);
+
     auto value = formatValues.at(static_cast<size_t>(format));
     if (value & FormatAttribute::BITS8) {
         return 1u;
@@ -175,6 +181,8 @@ uint8_t getDataTypeSize(Format format) {
 }
 
 bool isDataTypeAttributeEnabled(Format format, uint32_t attribute) {
+    NOX_LOG_TRACE_DECLARE(RENDERER);
+
     auto value = formatValues.at(static_cast<size_t>(format));
     switch (value & attribute) {
     case FormatAttribute::NORMALIZED:
@@ -189,6 +197,8 @@ bool isDataTypeAttributeEnabled(Format format, uint32_t attribute) {
 } // namespace
 
 FormatDescriptor getFormatDescriptor(Format format) {
+    NOX_LOG_TRACE_DECLARE(RENDERER);
+
     FormatDescriptor descriptor{};
     descriptor.dataType = getDataType(format);
     descriptor.componentCount = getComponentCount(format);

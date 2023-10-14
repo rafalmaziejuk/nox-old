@@ -5,7 +5,9 @@
 
 #define NOX_PLUGIN_EXPORT NOX_OPENGL_EXPORT
 
-NOX_PLUGIN_REGISTER(OpenGL) {
+NOX_PLUGIN_REGISTER(OPENGL) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     auto createRenderer = []() -> NOX::Renderer * {
         return new NOX::GLRenderer{};
     };
@@ -18,4 +20,4 @@ NOX_PLUGIN_REGISTER(OpenGL) {
     return true;
 }
 
-NOX_PLUGIN_VERSION(OpenGL);
+NOX_PLUGIN_VERSION(OPENGL);

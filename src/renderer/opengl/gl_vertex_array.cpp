@@ -17,6 +17,8 @@ struct ProcessedVertexAttribute {
 
 struct VertexArrayDescriptor {
     explicit VertexArrayDescriptor(const VertexFormat &format) {
+        NOX_LOG_TRACE_DECLARE(OPENGL);
+
         const auto &attributes = format.attributes;
         auto attributesCount = attributes.size();
         processedAttributes.resize(attributesCount);
@@ -40,14 +42,20 @@ struct VertexArrayDescriptor {
 } // namespace
 
 GLVertexArray::GLVertexArray() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     glCreateVertexArrays(1, &m_handle);
 }
 
 GLVertexArray::~GLVertexArray() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     glDeleteVertexArrays(1, &m_handle);
 }
 
 void GLVertexArray::setVertexBuffer(const GLBuffer &vertexBuffer, const VertexFormat &format) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     constexpr GLuint offsetToFirstElementInsideBuffer = 0u;
     const VertexArrayDescriptor vertexArrayDescriptor{format};
 
@@ -62,10 +70,14 @@ void GLVertexArray::setVertexBuffer(const GLBuffer &vertexBuffer, const VertexFo
 }
 
 void GLVertexArray::setIndexBuffer(const GLBuffer &indexBuffer) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glVertexArrayElementBuffer(m_handle, indexBuffer.getHandle());
 }
 
 void GLVertexArray::bind() const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glBindVertexArray(m_handle);
 }
 

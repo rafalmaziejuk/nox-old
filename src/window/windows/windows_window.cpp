@@ -5,10 +5,14 @@
 namespace NOX {
 
 std::unique_ptr<Window> Window::create(const WindowDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     return std::make_unique<WindowsWindow>(descriptor);
 }
 
 WindowsWindow::WindowsWindow(const WindowDescriptor &descriptor) : m_descriptor{descriptor} {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     auto style = WindowsWindowHelper::getWindowStyle(descriptor);
     auto clientArea = WindowsWindowHelper::getWindowClientArea(descriptor, style);
     auto position = WindowsWindowHelper::getWindowPosition(descriptor, clientArea);
@@ -42,19 +46,23 @@ WindowsWindow::WindowsWindow(const WindowDescriptor &descriptor) : m_descriptor{
 }
 
 WindowsWindow::~WindowsWindow() {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     auto result = DestroyWindow(m_handle);
     NOX_ASSERT_MSG(!result, "Unable to destroy [{}] window", m_descriptor.title);
-    NOX_LOG_TRACE(WINDOW, "Destroyed [{}] window", m_descriptor.title);
 
     WindowsWindowHelper::unregisterWindowClass(windowClassName);
 }
 
 void WindowsWindow::show() const {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     ShowWindow(m_handle, SW_NORMAL);
-    NOX_LOG_TRACE(WINDOW, "Shown window");
 }
 
 void WindowsWindow::processEvents() const {
+    NOX_LOG_TRACE_DECLARE_ONCE(WINDOW);
+
     MSG message;
     while (PeekMessage(&message, m_handle, 0u, 0u, PM_REMOVE)) {
         TranslateMessage(&message);
@@ -63,20 +71,26 @@ void WindowsWindow::processEvents() const {
 }
 
 void WindowsWindow::postCloseEvent() {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     onCloseEvent();
-    NOX_LOG_TRACE(WINDOW, "Close event posted");
 }
 
 void WindowsWindow::postResizeEvent(uint32_t width, uint32_t height) {
+    NOX_LOG_TRACE_DECLARE_ONCE(WINDOW);
+
     onResizeEvent(width, height);
-    NOX_LOG_TRACE(WINDOW, "Resize event posted");
 }
 
 void *WindowsWindow::getNativeHandle() const {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     return m_handle;
 }
 
 Vector2D<uint32_t> WindowsWindow::getSize() const {
+    NOX_LOG_TRACE_DECLARE(WINDOW);
+
     return m_descriptor.size;
 }
 

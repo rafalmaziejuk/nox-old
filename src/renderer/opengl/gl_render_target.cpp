@@ -7,49 +7,71 @@
 namespace NOX {
 
 void GLRenderTargetBase::bind() const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
 }
 
 void GLRenderTargetBase::clear(const Vector4D<float> &color, uint8_t index) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glClearNamedFramebufferfv(m_handle, GL_COLOR, index, color.values.data());
 }
 
 void GLRenderTargetBase::clear(const Vector4D<int32_t> &color, uint8_t index) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glClearNamedFramebufferiv(m_handle, GL_COLOR, index, color.values.data());
 }
 
 void GLRenderTargetBase::clear(const Vector4D<uint32_t> &color, uint8_t index) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glClearNamedFramebufferuiv(m_handle, GL_COLOR, index, color.values.data());
 }
 
 void GLRenderTargetBase::clear(float depth) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glClearNamedFramebufferfv(m_handle, GL_DEPTH, 0, &depth);
 }
 
 void GLRenderTargetBase::clear(uint32_t stencil) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glClearNamedFramebufferuiv(m_handle, GL_STENCIL, 0, &stencil);
 }
 
 void GLRenderTargetBase::clear(float depth, uint32_t stencil) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     glClearNamedFramebufferfi(m_handle, GL_DEPTH_STENCIL, 0, depth, stencil);
 }
 
 void GLDefaultRenderTarget::clear(const Vector4D<float> &color, uint8_t index) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
     NOX_ASSERT(index != 0u);
+
     GLRenderTargetBase::clear(color, 0u);
 }
 
 void GLDefaultRenderTarget::clear(const Vector4D<int32_t> &color, uint8_t index) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
     NOX_ASSERT(index != 0u);
+
     GLRenderTargetBase::clear(color, 0u);
 }
 
 void GLDefaultRenderTarget::clear(const Vector4D<uint32_t> &color, uint8_t index) const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
     NOX_ASSERT(index != 0u);
+
     GLRenderTargetBase::clear(color, 0u);
 }
 
 GLRenderTarget::GLRenderTarget(const RenderTargetDescriptor &descriptor) : m_size{descriptor.size} {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     const auto &colorAttachments = descriptor.attachments.colorAttachments;
     const auto &depthStencilAttachments = descriptor.attachments.depthStencilAttachments;
     m_colorAttachmentsCount = validateColorAttachments(colorAttachments);
@@ -85,12 +107,15 @@ GLRenderTarget::GLRenderTarget(const RenderTargetDescriptor &descriptor) : m_siz
 }
 
 GLRenderTarget::~GLRenderTarget() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
     auto attachmentsCount = m_colorAttachmentsCount + m_depthStencilAttachmentsCount;
     glInvalidateNamedFramebufferData(m_handle, attachmentsCount, m_attachmentPoints.data());
     glDeleteFramebuffers(1, &m_handle);
 }
 
 uint8_t GLRenderTarget::validateColorAttachments(const ColorAttachmentsContainer &attachments) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     int32_t maxColorAttachments = 0;
     glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
 
@@ -107,6 +132,8 @@ uint8_t GLRenderTarget::validateColorAttachments(const ColorAttachmentsContainer
 }
 
 uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttachmentsContainer &attachments) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     uint8_t depthStencilAttachmentCount = 0u;
     uint8_t depthAttachmentCount = 0u;
     uint8_t stencilAttachmentCount = 0u;
@@ -143,11 +170,15 @@ uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttach
 }
 
 void GLRenderTarget::createColorAttachment(const Texture &texture, uint32_t attachmentPoint) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     const auto *glTexture = downcast<GLTexture>(texture);
     glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture->getHandle(), 0);
 }
 
 void GLRenderTarget::createDepthStencilAttachment(Format format) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     TextureDescriptor textureDescriptor{};
     textureDescriptor.type = TextureType::TEXTURE2D;
     textureDescriptor.format = format;

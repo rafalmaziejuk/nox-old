@@ -7,6 +7,8 @@ namespace NOX {
 namespace {
 
 const char *mapShaderStageBitToString(uint32_t stageBit) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     switch (stageBit) {
         NOX_CASE_RETURN_STRING(GL_VERTEX_SHADER_BIT, GL_VERTEX_SHADER);
         NOX_CASE_RETURN_STRING(GL_FRAGMENT_SHADER_BIT, GL_FRAGMENT_SHADER);
@@ -18,6 +20,8 @@ const char *mapShaderStageBitToString(uint32_t stageBit) {
 }
 
 GLenum mapShaderStageToEnum(uint32_t stage) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     switch (stage) {
     case ShaderStage::VERTEX:
         return GL_VERTEX_SHADER;
@@ -30,6 +34,8 @@ GLenum mapShaderStageToEnum(uint32_t stage) {
 }
 
 GLbitfield mapShaderStageToBitfield(uint32_t stage) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     switch (stage) {
     case ShaderStage::VERTEX:
         return GL_VERTEX_SHADER_BIT;
@@ -44,15 +50,33 @@ GLbitfield mapShaderStageToBitfield(uint32_t stage) {
 } // namespace
 
 GLShader::GLShader(const ShaderDescriptor &descriptor) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     m_handle = glCreateShader(mapShaderStageToEnum(descriptor.stage));
     m_stageBit = mapShaderStageToBitfield(descriptor.stage);
 }
 
 GLShader::~GLShader() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     glDeleteShader(m_handle);
 }
 
+uint32_t GLShader::getHandle() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
+    return m_handle;
+}
+
+uint32_t GLShader::getStageBit() const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
+    return m_stageBit;
+}
+
 void GLShader::compile(const char *source) const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     glShaderSource(m_handle, 1, &source, nullptr);
     glCompileShader(m_handle);
 
@@ -75,6 +99,8 @@ void GLShader::compile(const char *source) const {
 }
 
 void GLShader::compileFromString(std::string_view source) const {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     compile(source.data());
 }
 

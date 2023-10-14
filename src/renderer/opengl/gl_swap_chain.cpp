@@ -6,19 +6,26 @@ namespace NOX {
 
 GLSwapChain::GLSwapChain(const SwapChainDescriptor &descriptor, std::shared_ptr<GLContext> context) : m_context{std::move(context)},
                                                                                                       m_renderTarget{std::make_shared<GLDefaultRenderTarget>()} {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     setVSync(descriptor.isVSync);
-    NOX_LOG_INFO(OPENGL, "Created swap chain");
 }
 
 void GLSwapChain::swap() const {
+    NOX_LOG_TRACE_DECLARE_ONCE(OPENGL);
+
     m_context->swapBuffers();
 }
 
 void GLSwapChain::setVSync(bool value) {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     m_context->setSwapInterval(value);
 }
 
 std::shared_ptr<RenderTarget> GLSwapChain::getRenderTarget() {
+    NOX_LOG_TRACE_DECLARE(OPENGL);
+
     return m_renderTarget;
 }
 

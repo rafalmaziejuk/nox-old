@@ -15,7 +15,7 @@ class GLProgram {
     GLProgram();
     ~GLProgram();
 
-    uint32_t getHandle() const { return m_handle; }
+    uint32_t getHandle() const;
 
     uint32_t attachShader(const Shader *shader);
     void link();

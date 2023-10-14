@@ -12,8 +12,8 @@ class GLPipelineState final : public PipelineState {
     explicit GLPipelineState(const PipelineStateDescriptor &descriptor);
     ~GLPipelineState() override;
 
-    const GLPipelineLayout &getPipelineLayout() const { return *m_pipelineLayout; }
-    const GLRenderTargetBase &getRenderTarget() const { return *m_renderTarget; }
+    const GLPipelineLayout &getPipelineLayout() const;
+    const GLRenderTargetBase &getRenderTarget() const;
 
     void bind() const;
 

@@ -9,8 +9,8 @@ class GLTexture final : public Texture {
     explicit GLTexture(const TextureDescriptor &descriptor);
     ~GLTexture() override;
 
-    uint32_t getHandle() const { return m_handle; }
-    const TextureDescriptor &getDescriptor() const { return m_descriptor; }
+    uint32_t getHandle() const;
+    const TextureDescriptor &getDescriptor() const;
 
     void bind(uint32_t index) const;
 
