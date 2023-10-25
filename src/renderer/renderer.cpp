@@ -4,7 +4,7 @@
 #include <nox/renderer.h>
 
 #if defined(NOX_BUILD_RENDERER_OPENGL)
-NOX_PLUGIN_LOAD(OpenGL);
+NOX_PLUGIN_IMPORT(OPENGL);
 #endif
 
 namespace NOX {
@@ -14,9 +14,12 @@ namespace {
 bool isRendererPluginRegistered(RendererBackend backend) {
     NOX_ASSERT(backend == RendererBackend::NONE);
 
+#if defined(NOX_BUILD_RENDERER_OPENGL)
     if (backend == RendererBackend::OPENGL) {
-        return OpenGLPlugin::pluginRegistered;
+        const bool pluginRegistered = NOX_PLUGIN_LOAD(OPENGL);
+        return pluginRegistered;
     }
+#endif
 
     return false;
 }
