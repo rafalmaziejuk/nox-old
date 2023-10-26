@@ -42,6 +42,12 @@ option(NOX_BUILD_RENDERER_OPENGL "Build OpenGL renderer." ON)
 cmake_dependent_option(NOX_PLATFORM_WINDOWS "Target platform Windows." ON "WIN32" OFF)
 cmake_dependent_option(NOX_PLATFORM_LINUX "Target platform Linux." ON "UNIX" OFF)
 
+message(STATUS "BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}")
+message(STATUS "NOX_INSTALL = ${NOX_INSTALL}")
+message(STATUS "NOX_BUILD_EXAMPLES = ${NOX_BUILD_EXAMPLES}")
+message(STATUS "NOX_BUILD_UNIT_TESTS = ${NOX_BUILD_UNIT_TESTS}")
+message(STATUS "NOX_BUILD_RENDERER_OPENGL = ${NOX_BUILD_RENDERER_OPENGL}")
+
 # --------------------------------------------------
 # Specify build types
 # --------------------------------------------------
@@ -50,8 +56,8 @@ if(CMAKE_CONFIGURATION_TYPES)
 endif()
 
 if(NOT CMAKE_BUILD_TYPE)
-    message(STATUS "CMAKE_BUILD_TYPE not specified, using Release.")
     set(CMAKE_BUILD_TYPE "Release" CACHE STRING "NOX build type: [Release, Debug]" FORCE)
+    message(STATUS "CMAKE_BUILD_TYPE = ${CMAKE_BUILD_TYPE}")
 endif()
 
 # --------------------------------------------------
