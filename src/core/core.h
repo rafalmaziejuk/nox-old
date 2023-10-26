@@ -1,23 +1,23 @@
 #pragma once
 
-#include "core/logger.h"
+#include "core/logger_impl.h"
 
 #if defined(NOX_STATIC)
-static constexpr auto staticEnabled = true;
+inline constexpr auto staticEnabled = true;
 #else
-static constexpr auto staticEnabled = false;
+inline constexpr auto staticEnabled = false;
 #endif
 
 #if defined(NOX_DEBUG)
-static constexpr auto debugEnabled = true;
+inline constexpr auto debugEnabled = true;
 #else
-static constexpr auto debugEnabled = false;
+inline constexpr auto debugEnabled = false;
 #endif
 
 #if (defined(__GNUC__) || defined(NOX_UNIX))
-static constexpr auto unixEnvironment = true;
+inline constexpr auto unixEnvironment = true;
 #else
-static constexpr auto unixEnvironment = false;
+inline constexpr auto unixEnvironment = false;
 #endif
 
 #define NOX_UNUSED(x) (void)(x)
