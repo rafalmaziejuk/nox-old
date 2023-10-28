@@ -20,12 +20,11 @@ LinuxWindow::~LinuxWindow() {
     XCloseDisplay(m_display);
 
     m_display = nullptr;
-    NOX_LOG_TRACE(WINDOW, "Destroyed [{}] window", m_descriptor.title);
 }
 
 void LinuxWindow::createWindow() {
     m_display = XOpenDisplay(static_cast<char *>(nullptr));
-    NOX_ASSERT_MSG(m_display == nullptr, "Unable to connect to X11 display");
+    NOX_ASSERT(m_display == nullptr);
 
     ::Screen *screen = DefaultScreenOfDisplay(m_display); // NOLINT
     const int32_t screenId = DefaultScreen(m_display);
@@ -52,7 +51,6 @@ void LinuxWindow::createWindow() {
         visualType,
         CWEventMask | CWOverrideRedirect | CWColormap,
         (&attributes));
-    NOX_LOG_INFO(WINDOW, "Created window (title: [{}], size: [{} x {}], position: [{} x {}])", m_descriptor.title, m_descriptor.size.x(), m_descriptor.size.y(), windowPosition.x(), windowPosition.y());
 }
 
 void LinuxWindow::initializeWindowSpecification() {
@@ -89,8 +87,6 @@ void LinuxWindow::show() const {
 
     m_closeWindowAtom = XInternAtom(m_display, "WM_DELETE_WINDOW", False);
     XSetWMProtocols(m_display, m_window, &m_closeWindowAtom, 1);
-
-    NOX_LOG_TRACE(WINDOW, "Shown window");
 }
 
 void LinuxWindow::processEvents() const {
@@ -114,12 +110,10 @@ void LinuxWindow::postEvent(XEvent const &event) const {
 
 void LinuxWindow::postCloseEvent() const {
     onCloseEvent();
-    NOX_LOG_TRACE(WINDOW, "Close event posted");
 }
 
 void LinuxWindow::postResizeEvent(uint32_t width, uint32_t height) const {
     onResizeEvent(width, height);
-    NOX_LOG_TRACE(WINDOW, "Resize event posted");
 }
 
 void *LinuxWindow::getNativeHandle() const {

@@ -50,7 +50,6 @@ bool GLProgram::checkLinkStatus() {
         log.resize(length);
         glGetProgramInfoLog(m_handle, length, nullptr, log.data());
 
-        NOX_LOG_ERROR(OPENGL, "GLSL shader program linking error\n{}", log);
         detachShaders();
         glDeleteProgram(m_handle);
     }

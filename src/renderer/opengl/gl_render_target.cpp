@@ -56,7 +56,7 @@ GLRenderTarget::GLRenderTarget(const RenderTargetDescriptor &descriptor) : m_siz
     m_depthStencilAttachmentsCount = validateDepthStencilAttachments(depthStencilAttachments);
 
     auto attachmentsCount = m_colorAttachmentsCount + m_depthStencilAttachmentsCount;
-    NOX_ASSERT_MSG(attachmentsCount == 0u, "Render target with no attachments is not allowed");
+    NOX_ASSERT(attachmentsCount == 0u);
     m_attachmentPoints.reserve(attachmentsCount);
 
     glCreateFramebuffers(1, &m_handle);
@@ -81,7 +81,7 @@ GLRenderTarget::GLRenderTarget(const RenderTargetDescriptor &descriptor) : m_siz
     }
 
     auto result = glCheckNamedFramebufferStatus(m_handle, GL_FRAMEBUFFER);
-    NOX_ASSERT_MSG(result != GL_FRAMEBUFFER_COMPLETE, "Render target is not complete");
+    NOX_ASSERT(result != GL_FRAMEBUFFER_COMPLETE);
 }
 
 GLRenderTarget::~GLRenderTarget() {
@@ -101,7 +101,7 @@ uint8_t GLRenderTarget::validateColorAttachments(const ColorAttachmentsContainer
         }
         colorAttachmentsCount++;
     }
-    NOX_ASSERT_MSG(colorAttachmentsCount > maxColorAttachments, "Color attachments count for render target exceeded");
+    NOX_ASSERT(colorAttachmentsCount > maxColorAttachments);
 
     return colorAttachmentsCount;
 }
@@ -137,7 +137,7 @@ uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttach
             isValid = false;
         }
     }
-    NOX_ASSERT_MSG(!isValid, "Depth and stencil attachments combination is incorrect");
+    NOX_ASSERT(!isValid);
 
     return (depthStencilAttachmentCount + depthAttachmentCount + stencilAttachmentCount);
 }

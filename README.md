@@ -8,7 +8,7 @@ system.
 | Platform | CI | OpenGL | Vulkan | D3D12 |
 |----------|:--:|:----------:|:------:|:-----:|
 | Windows | [![Windows](https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml) | In Development | Planned | Planned |
-| Linux | N/A | Planned | Planned | Planned |
+| Linux | N/A | Planned | Planned | N/A |
 
 ## Building
 ```
@@ -31,5 +31,4 @@ generate_nox_visual.bat shared 2022
 ```
 
 ## Dependencies
-* [spdlog](https://github.com/gabime/spdlog) : Fast C++ logging library.
 * [glad](https://github.com/Dav1dde/glad) : Loader-Generator for OpenGL API.

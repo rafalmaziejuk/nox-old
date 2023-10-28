@@ -16,9 +16,12 @@ struct Window::Impl {
     bool shouldClose{false};
 };
 
-Window::Window() : m_impl{std::make_unique<Impl>()} {}
+Window::Window() : m_impl{new Impl()} {}
 
-Window::~Window() = default;
+Window::~Window() {
+    delete m_impl;
+    m_impl = nullptr;
+}
 
 bool Window::shouldClose() const {
     return m_impl->shouldClose;

@@ -1,5 +1,4 @@
 #include "renderer/opengl/gl_context.h"
-#include "renderer/opengl/gl_debug_message_callback.inl"
 #include "renderer/opengl/gl_helper.h"
 #include "window/linux/linux_window.h"
 
@@ -12,8 +11,8 @@ namespace NOX {
 
 struct GLContext::Impl {
     void setContextPixelFormatAndVisual(const PixelFormatDescriptor &descriptor) {
-        NOX_ASSERT_MSG((descriptor.colorBits % 4) != 0, "Invalid colorBits value");
-        NOX_ASSERT_MSG(display == nullptr, "Not connected to X11 display");
+        NOX_ASSERT((descriptor.colorBits % 4) != 0);
+        NOX_ASSERT(display == nullptr);
 
         constexpr auto defaultAlphaBits = 8;
         constexpr auto defaultColorBits = 32;
@@ -40,12 +39,12 @@ struct GLContext::Impl {
         // preparing compatible frame buffer and visual for modern glx context
         int32_t fbCount;
         GLXFBConfig *fbConfigArray = glXChooseFBConfig(display, DefaultScreen(display), glxAttributes.data(), &fbCount);
-        NOX_ASSERT_MSG(fbConfigArray == nullptr, "Could not create any frame buffer compatible with modern glx context");
+        NOX_ASSERT(fbConfigArray == nullptr);
 
         frameBufferConfig = getBestFrameBufferConfig(fbConfigArray, fbCount);
 
         visual = glXGetVisualFromFBConfig(display, frameBufferConfig);
-        NOX_ASSERT_MSG(visual == nullptr, "Could not create correct visual window");
+        NOX_ASSERT(visual == nullptr);s
     }
 
     GLXFBConfig getBestFrameBufferConfig(GLXFBConfig *&fbConfig, const GLint fbCount) {
@@ -88,7 +87,7 @@ struct GLContext::Impl {
 
 GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     m_impl->display = XOpenDisplay(static_cast<const char *>(nullptr));
-    NOX_ASSERT_MSG(m_impl->display == nullptr, "Unable to connect to X11 display");
+    NOX_ASSERT(m_impl->display == nullptr);
 
     m_impl->screen = DefaultScreenOfDisplay(m_impl->display); // NOLINT
     m_impl->screenId = DefaultScreen(m_impl->display);
@@ -97,12 +96,7 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
         gladLoaderLoadGLX(m_impl->display, m_impl->screenId);
         int32_t majorGLX{}, minorGLX{};
         glXQueryVersion(m_impl->display, &majorGLX, &minorGLX);
-        NOX_ASSERT_MSG((majorGLX <= m_impl->glxMajorVersion) && (minorGLX < m_impl->glxMinorVersion), "This system doesn't support GLX 1.4");
-
-        NOX_LOG_TRACE(OPENGL, "GLX client version: {}", glXGetClientString(m_impl->display, GLX_VERSION));
-        NOX_LOG_TRACE(OPENGL, "GLX client vendor: {}", glXGetClientString(m_impl->display, GLX_VENDOR));
-        NOX_LOG_TRACE(OPENGL, "GLX server version: {}", glXQueryServerString(m_impl->display, m_impl->screenId, GLX_VERSION));
-        NOX_LOG_TRACE(OPENGL, "GLX server vendoe: {}", glXQueryServerString(m_impl->display, m_impl->screenId, GLX_VENDOR));
+        NOX_ASSERT((majorGLX <= m_impl->glxMajorVersion) && (minorGLX < m_impl->glxMinorVersion));
     }
 
     // creating dummy opengl context for early gl initialization
@@ -111,14 +105,14 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
 
     GLXContext dummyContext = glXCreateContext(m_impl->display, m_impl->visual, NULL, GL_TRUE);
     auto result = glXMakeCurrent(m_impl->display, 0, dummyContext);
-    NOX_ASSERT_MSG(!result, "Unable to make OpenGL rendering dummy context current");
+    NOX_ASSERT(!result);
 
     {
         gladLoaderLoadGL();
         GLint majorVersion, minorVersion;
         glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
         glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-        NOX_ASSERT_MSG((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion), "This system doesn't support OpenGL 4.6");
+        NOX_ASSERT((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion));
     }
     glXDestroyContext(m_impl->display, dummyContext);
 
@@ -132,14 +126,12 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
 GLContext::~GLContext() {
     if (m_impl->display != nullptr && m_impl->handleRenderingContext != nullptr) {
         glXDestroyContext(m_impl->display, m_impl->handleRenderingContext);
-        NOX_LOG_TRACE(OPENGL, "Destroyed rendering context");
     }
 }
 
 void GLContext::makeCurrent() const {
     auto result = glXMakeCurrent(m_impl->display, m_impl->window, m_impl->handleRenderingContext);
-    NOX_ASSERT_MSG(!result, "Unable to make OpenGL rendering context current");
-    NOX_LOG_TRACE(OPENGL, "Rendering context made current");
+    NOX_ASSERT(!result);
 }
 
 void GLContext::swapBuffers() const {
@@ -148,7 +140,6 @@ void GLContext::swapBuffers() const {
 
 void GLContext::setSwapInterval(bool value) {
     glXSwapIntervalEXT(m_impl->display, m_impl->window, static_cast<int32_t>(value));
-    NOX_LOG_TRACE(OPENGL, "Swap interval set to {}", value);
 }
 
 void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
@@ -163,8 +154,8 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
     m_impl->screenId = DefaultScreen(m_impl->display);
 
     m_impl->setContextPixelFormatAndVisual(descriptor);
-    NOX_ASSERT_MSG(m_impl->screenId != m_impl->visual->screen, "Screen id {} does not match visual screen id {}", m_impl->screenId, m_impl->visual->screen);
-    NOX_ASSERT_MSG(!GLHelper::isExtensionSupported(glXQueryExtensionsString(m_impl->display, m_impl->screenId), "GLX_ARB_create_context"), "GLX_ARB_create_context extension not supported, could not create extended opengl context");
+    NOX_ASSERT(m_impl->screenId != m_impl->visual->screen);
+    NOX_ASSERT(!GLHelper::isExtensionSupported(glXQueryExtensionsString(m_impl->display, m_impl->screenId), "GLX_ARB_create_context"));
 
     constexpr auto attributePairsCount = 3u;
     constexpr auto attributesArraySize = attributePairsCount * 2u + 1u;
@@ -182,17 +173,6 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
                                                                 contextAttributes.data());
     XSync(m_impl->display, False);
     makeCurrent();
-
-    NOX_LOG_INFO(OPENGL, "OpenGL context info");
-    NOX_LOG_INFO(OPENGL, "Vendor: {}", reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
-    NOX_LOG_INFO(OPENGL, "Device: {}", reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
-    NOX_LOG_INFO(OPENGL, "Version: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-
-    if constexpr (debugEnabled) {
-        glEnable(GL_DEBUG_OUTPUT);
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(debugMessageCallback, nullptr);
-    }
 }
 
 } // namespace NOX

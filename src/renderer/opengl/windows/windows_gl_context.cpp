@@ -1,5 +1,4 @@
 #include "renderer/opengl/gl_context.h"
-#include "renderer/opengl/gl_debug_message_callback.inl"
 #include "window/windows/windows_window_helper.h"
 
 #include <nox/swap_chain.h>
@@ -25,10 +24,10 @@ struct GLContext::Impl {
         pixelFormatDescriptor.cStencilBits = static_cast<BYTE>(descriptor.stencilBits);
 
         auto pixelFormat = ChoosePixelFormat(handleDeviceContext, &pixelFormatDescriptor);
-        NOX_ASSERT_MSG(!pixelFormat, "Unable to choose pixel format for device context");
+        NOX_ASSERT(!pixelFormat);
 
         auto result = SetPixelFormat(handleDeviceContext, pixelFormat, &pixelFormatDescriptor);
-        NOX_ASSERT_MSG(!result, "Unable to set pixel format for device context");
+        NOX_ASSERT(!result);
     }
 
     HDC handleDeviceContext{nullptr};
@@ -59,7 +58,7 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
                                           nullptr,
                                           GetModuleHandle(nullptr),
                                           nullptr);
-    NOX_ASSERT_MSG(dummyWindowHandle == nullptr, "Unable to create dummy window");
+    NOX_ASSERT(dummyWindowHandle == nullptr);
 
     m_impl->handleDeviceContext = GetDC(dummyWindowHandle);
     NOX_ASSERT(m_impl->handleDeviceContext == nullptr);
@@ -77,40 +76,37 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     int32_t majorVersion{}, minorVersion{};
     glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
     glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-    NOX_ASSERT_MSG((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion), "This system doesn't support OpenGL 4.6");
+    NOX_ASSERT((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion));
 
     wglDeleteContext(m_impl->handleRenderingContext);
     m_impl->handleRenderingContext = nullptr;
     m_impl->handleDeviceContext = nullptr;
 
     auto result = DestroyWindow(dummyWindowHandle);
-    NOX_ASSERT_MSG(!result, "Unable to destroy dummy window");
+    NOX_ASSERT(!result);
     WindowsWindowHelper::unregisterWindowClass(dummyWindowName);
 }
 
 GLContext::~GLContext() {
     if (m_impl->handleRenderingContext != nullptr) {
         auto result = wglDeleteContext(m_impl->handleRenderingContext);
-        NOX_ASSERT_MSG(!result, "Unable to delete OpenGL rendering context");
-        NOX_LOG_TRACE(OPENGL, "Destroyed rendering context");
+        NOX_ASSERT(!result);
     }
 }
 
 void GLContext::makeCurrent() const {
     auto result = wglMakeCurrent(m_impl->handleDeviceContext, m_impl->handleRenderingContext);
-    NOX_ASSERT_MSG(!result, "Unable to make OpenGL rendering context current");
-    NOX_LOG_TRACE(OPENGL, "Rendering context made current");
+    NOX_ASSERT(!result);
 }
 
 void GLContext::swapBuffers() const {
     auto result = SwapBuffers(m_impl->handleDeviceContext);
-    NOX_ASSERT_MSG(!result, "Unable to swap buffers in OpenGL swap chain");
+    NOX_ASSERT(!result);
 }
 
 void GLContext::setSwapInterval(bool value) {
     auto result = wglSwapIntervalEXT(static_cast<int32_t>(value));
-    NOX_ASSERT_MSG(!result, "Unable to set swap interval for OpenGL swap chain");
-    NOX_LOG_TRACE(OPENGL, "Swap interval set to {}", value);
+    NOX_ASSERT(!result);
 }
 
 void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
@@ -128,17 +124,6 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
                                                         0};
     m_impl->handleRenderingContext = wglCreateContextAttribsARB(m_impl->handleDeviceContext, nullptr, attributes.data());
     makeCurrent();
-
-    NOX_LOG_INFO(OPENGL, "OpenGL context info");
-    NOX_LOG_INFO(OPENGL, "Vendor: {}", reinterpret_cast<const char *>(glGetString(GL_VENDOR)));
-    NOX_LOG_INFO(OPENGL, "Device: {}", reinterpret_cast<const char *>(glGetString(GL_RENDERER)));
-    NOX_LOG_INFO(OPENGL, "Version: {}", reinterpret_cast<const char *>(glGetString(GL_VERSION)));
-
-    if constexpr (debugEnabled) {
-        glEnable(GL_DEBUG_OUTPUT);
-        glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-        glDebugMessageCallback(debugMessageCallback, nullptr);
-    }
 }
 
 } // namespace NOX

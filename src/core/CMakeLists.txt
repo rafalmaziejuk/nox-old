@@ -1,7 +1,6 @@
 set(NOX_IMPL_CORE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/core.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/logger.h
     ${CMAKE_CURRENT_SOURCE_DIR}/singleton.h
 )
 
