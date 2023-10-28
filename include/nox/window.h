@@ -64,7 +64,7 @@ class NOX_EXPORT Window {
 
   private:
     struct Impl;
-    std::unique_ptr<Impl> m_impl{nullptr};
+    Impl *m_impl{nullptr};
 };
 
 } // namespace NOX

@@ -10,6 +10,8 @@ target_include_directories(
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
 
+nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_IMPL_LIB_NAME})
+
 # --------------------------------------------------
 # Specify compile options
 # --------------------------------------------------
@@ -73,23 +75,6 @@ target_precompile_headers(
     <utility>
     <vector>
 )
-
-# --------------------------------------------------
-# Link libraries
-# --------------------------------------------------
-add_subdirectory(${NOX_THIRD_PARTY_DIR}/spdlog spdlog)
-set_target_properties(
-    spdlog
-    PROPERTIES
-    FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}"
-)
-
-target_link_libraries(
-    ${NOX_IMPL_LIB_NAME}
-    PUBLIC
-    spdlog
-)
-nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_IMPL_LIB_NAME} spdlog)
 
 # --------------------------------------------------
 # Create nox target

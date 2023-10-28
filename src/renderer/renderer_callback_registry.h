@@ -6,12 +6,14 @@
 #include <nox/renderer.h>
 
 #include <functional>
-#include <unordered_map>
 
 namespace NOX {
 
 class NOX_EXPORT RendererCallbackRegistry : public Singleton<RendererCallbackRegistry> {
   public:
+    RendererCallbackRegistry();
+    ~RendererCallbackRegistry();
+
     using CreateCallback = std::function<Renderer *()>;
     using DestroyCallback = std::function<void(Renderer *)>;
     using Callback = std::pair<CreateCallback, DestroyCallback>;
@@ -20,7 +22,8 @@ class NOX_EXPORT RendererCallbackRegistry : public Singleton<RendererCallbackReg
     [[nodiscard]] Callback getCallback(RendererBackend backend);
 
   private:
-    std::unordered_map<RendererBackend, Callback> m_callbacks;
+    struct Impl;
+    Impl *m_impl{nullptr};
 };
 
 } // namespace NOX

@@ -7,7 +7,6 @@ namespace NOX {
 GLSwapChain::GLSwapChain(const SwapChainDescriptor &descriptor, std::shared_ptr<GLContext> context) : m_context{std::move(context)},
                                                                                                       m_renderTarget{std::make_shared<GLDefaultRenderTarget>()} {
     setVSync(descriptor.isVSync);
-    NOX_LOG_INFO(OPENGL, "Created swap chain");
 }
 
 void GLSwapChain::swap() const {

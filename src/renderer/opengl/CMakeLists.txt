@@ -76,7 +76,6 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_debug_message_callback.inl
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_pipeline_layout.cpp

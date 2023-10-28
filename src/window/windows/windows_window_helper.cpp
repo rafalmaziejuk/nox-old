@@ -6,12 +6,12 @@ namespace NOX::WindowsWindowHelper {
 
 void registerWindowClass(const WNDCLASS &attributes) {
     auto result = RegisterClass(&attributes);
-    NOX_ASSERT_MSG(!result, "Unable to register window class");
+    NOX_ASSERT(!result);
 }
 
 void unregisterWindowClass(std::string_view className) {
     auto result = UnregisterClass(TEXT(className.data()), GetModuleHandle(nullptr));
-    NOX_ASSERT_MSG(!result, "Unable to unregister window class");
+    NOX_ASSERT(!result);
 }
 
 DWORD getWindowStyle(const WindowDescriptor &descriptor) {

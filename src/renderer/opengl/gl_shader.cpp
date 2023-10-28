@@ -67,7 +67,6 @@ void GLShader::compile(const char *source) const {
         log.resize(length);
         glGetShaderInfoLog(m_handle, length, nullptr, log.data());
 
-        NOX_LOG_ERROR(OPENGL, "{} compilation error\n{}", mapShaderStageBitToString(m_stageBit), log);
         glDeleteShader(m_handle);
 
         NOX_ASSERT(true);
