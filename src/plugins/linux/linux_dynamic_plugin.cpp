@@ -4,10 +4,21 @@
 
 namespace NOX {
 
-std::unique_ptr<Plugin> DynamicPlugin::create(std::string_view name, PluginFilenameCreationStrategy createFilename) {
+std::unique_ptr<Plugin> Plugin::create(std::string_view name) {
     constexpr auto extension = "so";
-    const auto filename = createFilename(name, extension);
+    const auto filename = createPluginFilename(name, extension);
     return std::make_unique<LinuxDynamicPlugin>(filename);
+}
+
+LinuxDynamicPlugin::LinuxDynamicPlugin(std::string_view filename) {
+    m_handle = dlopen(filename.data(), RTLD_LAZY);
+    NOX_ASSERT(m_handle == nullptr);
+
+    m_pluginRegisterFunction = reinterpret_cast<void *>(dlsym(m_handle, pluginRegisterFunctionName));
+    NOX_ASSERT(pluginRegister == nullptr);
+
+    m_pluginVersionFunction = reinterpret_cast<void *>(dlsym(m_handle, pluginVersionFunctionName));
+    NOX_ASSERT(pluginVersion == nullptr);
 }
 
 LinuxDynamicPlugin::~LinuxDynamicPlugin() {
@@ -16,38 +27,6 @@ LinuxDynamicPlugin::~LinuxDynamicPlugin() {
         NOX_ASSERT(result == 0);
         m_handle = nullptr;
     }
-}
-
-bool LinuxDynamicPlugin::load() {
-    m_handle = dlopen(m_filename.c_str(), RTLD_LAZY);
-    if (m_handle == nullptr) {
-        NOX_ASSERT(true);
-        return false;
-    }
-
-    PluginVersionFunctionType pluginVersion = getFunction(pluginVersionProcedureName);
-    if (pluginVersion == nullptr) {
-        NOX_ASSERT(true);
-        return false;
-    }
-    m_version = pluginVersion();
-
-    PluginRegisterFunctionType pluginRegister = getFunction(pluginRegisterProcedureName);
-    if (pluginRegister == nullptr) {
-        NOX_ASSERT(true);
-        return false;
-    }
-    pluginRegister();
-
-    return true;
-}
-
-void *LinuxDynamicPlugin::getProcedureAddress(std::string_view procedureName) const {
-    NOX_ASSERT(procedureName.empty());
-
-    auto *address = reinterpret_cast<void *>(dlsym(m_handle, procedureName.data()));
-    NOX_ASSERT(address == nullptr);
-    return address;
 }
 
 } // namespace NOX

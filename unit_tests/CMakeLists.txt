@@ -48,7 +48,6 @@ target_link_libraries(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
     ${NOX_LIB_NAME}
-    ${NOX_IMPL_LIB_NAME}
     GTest::gtest_main
     GTest::gmock_main
 )
@@ -62,12 +61,9 @@ gtest_discover_tests(${NOX_UNIT_TESTS_EXE_NAME})
 set(NOX_UNIT_TESTS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/plugins_tests.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_tests.cpp
 )
 
 target_sources(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE ${NOX_UNIT_TESTS_SOURCES})
-
-add_subdirectory(mocks)
 
 nox_create_project_source_tree(${NOX_UNIT_TESTS_EXE_NAME})

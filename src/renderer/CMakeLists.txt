@@ -1,9 +1,8 @@
 set(NOX_RENDERER_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_callback_registry.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_callback_registry.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_interface.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.h
 )
 
 target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_RENDERER_SOURCES})

@@ -6,17 +6,6 @@ namespace NOX {
 
 namespace {
 
-const char *mapShaderStageBitToString(uint32_t stageBit) {
-    switch (stageBit) {
-        NOX_CASE_RETURN_STRING(GL_VERTEX_SHADER_BIT, GL_VERTEX_SHADER);
-        NOX_CASE_RETURN_STRING(GL_FRAGMENT_SHADER_BIT, GL_FRAGMENT_SHADER);
-
-    default:
-        NOX_ASSERT(true);
-        return nullptr;
-    }
-}
-
 GLenum mapShaderStageToEnum(uint32_t stage) {
     switch (stage) {
     case ShaderStage::VERTEX:
@@ -60,15 +49,7 @@ void GLShader::compile(const char *source) const {
     glGetShaderiv(m_handle, GL_COMPILE_STATUS, &result);
 
     if (result == GL_FALSE) {
-        GLint length = 0;
-        glGetShaderiv(m_handle, GL_INFO_LOG_LENGTH, &length);
-
-        std::string log;
-        log.resize(length);
-        glGetShaderInfoLog(m_handle, length, nullptr, log.data());
-
         glDeleteShader(m_handle);
-
         NOX_ASSERT(true);
     }
 }

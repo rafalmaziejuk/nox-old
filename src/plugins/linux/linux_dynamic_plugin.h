@@ -1,16 +1,11 @@
-#include "plugins/dynamic_plugin.h"
+#include "plugins/plugin.h"
 
 namespace NOX {
 
-class LinuxDynamicPlugin final : public DynamicPlugin {
+class LinuxDynamicPlugin final : public Plugin {
   public:
-    using DynamicPlugin::DynamicPlugin;
+    explicit LinuxDynamicPlugin(std::string_view filename);
     ~LinuxDynamicPlugin() override;
-
-    bool load() override;
-
-  protected:
-    void *getProcedureAddress(std::string_view procedureName) const override;
 
   private:
     void *m_handle{nullptr};

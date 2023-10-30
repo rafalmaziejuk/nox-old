@@ -1,18 +1,13 @@
-#include "plugins/dynamic_plugin.h"
+#include "plugins/plugin.h"
 
 #include <Windows.h>
 
 namespace NOX {
 
-class WindowsDynamicPlugin final : public DynamicPlugin {
+class WindowsDynamicPlugin final : public Plugin {
   public:
-    using DynamicPlugin::DynamicPlugin;
+    explicit WindowsDynamicPlugin(std::string_view filename);
     ~WindowsDynamicPlugin() override;
-
-    bool load() override;
-
-  protected:
-    void *getProcedureAddress(std::string_view procedureName) const override;
 
   private:
     HMODULE m_handle{nullptr};

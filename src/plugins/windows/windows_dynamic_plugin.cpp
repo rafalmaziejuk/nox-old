@@ -2,10 +2,21 @@
 
 namespace NOX {
 
-std::unique_ptr<Plugin> DynamicPlugin::create(std::string_view name, PluginFilenameCreationStrategy createFilename) {
+std::unique_ptr<Plugin> Plugin::create(std::string_view name) {
     constexpr auto extension = "dll";
-    const auto filename = createFilename(name, extension);
+    const auto filename = createPluginFilename(name, extension);
     return std::make_unique<WindowsDynamicPlugin>(filename);
+}
+
+WindowsDynamicPlugin::WindowsDynamicPlugin(std::string_view filename) {
+    m_handle = LoadLibrary(filename.data());
+    NOX_ASSERT(m_handle == nullptr);
+
+    m_pluginRegisterFunction = reinterpret_cast<PluginRegisterFunctionType>(GetProcAddress(m_handle, pluginRegisterFunctionName));
+    NOX_ASSERT(m_pluginRegisterFunction == nullptr);
+
+    m_pluginVersionFunction = reinterpret_cast<PluginVersionFunctionType>(GetProcAddress(m_handle, pluginVersionFunctionName));
+    NOX_ASSERT(m_pluginVersionFunction == nullptr);
 }
 
 WindowsDynamicPlugin::~WindowsDynamicPlugin() {
@@ -14,38 +25,6 @@ WindowsDynamicPlugin::~WindowsDynamicPlugin() {
         NOX_ASSERT(result == 0);
         m_handle = nullptr;
     }
-}
-
-bool WindowsDynamicPlugin::load() {
-    m_handle = LoadLibrary(m_filename.c_str());
-    if (m_handle == nullptr) {
-        NOX_ASSERT(true);
-        return false;
-    }
-
-    PluginVersionFunctionType pluginVersion = getFunction(pluginVersionProcedureName);
-    if (pluginVersion == nullptr) {
-        NOX_ASSERT(true);
-        return false;
-    }
-    m_version = pluginVersion();
-
-    PluginRegisterFunctionType pluginRegister = getFunction(pluginRegisterProcedureName);
-    if (pluginRegister == nullptr) {
-        NOX_ASSERT(true);
-        return false;
-    }
-    pluginRegister();
-
-    return true;
-}
-
-void *WindowsDynamicPlugin::getProcedureAddress(std::string_view procedureName) const {
-    NOX_ASSERT(procedureName.empty());
-
-    auto *address = reinterpret_cast<void *>(GetProcAddress(m_handle, procedureName.data()));
-    NOX_ASSERT(address == nullptr);
-    return address;
 }
 
 } // namespace NOX
