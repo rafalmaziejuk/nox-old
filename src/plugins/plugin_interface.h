@@ -1,6 +1,6 @@
 #pragma once
 
-#include "plugins/plugin_manager.h"
+#include "plugins/plugin.h"
 
 #define NOX_PLUGIN_API_VERSION 1
 
@@ -8,35 +8,35 @@
 #define NOX_PLUGIN_VISIBILITY extern
 
 #define NOX_PLUGIN_REGISTER(pluginName)                                     \
+    bool pluginRegister##pluginName();                                      \
+    uint8_t pluginVersion##pluginName();                                    \
+                                                                            \
     class StaticPlugin##pluginName : public NOX::Plugin {                   \
       public:                                                               \
-        using Plugin::Plugin;                                               \
+        StaticPlugin##pluginName() {                                        \
+            m_pluginRegisterFunction = pluginRegister##pluginName;          \
+            m_pluginVersionFunction = pluginVersion##pluginName;            \
+        }                                                                   \
         ~StaticPlugin##pluginName() override = default;                     \
-                                                                            \
-        void setPluginVersion();                                            \
-        bool load() override;                                               \
     };                                                                      \
+                                                                            \
     [[nodiscard]] std::unique_ptr<NOX::Plugin> createPlugin##pluginName() { \
-        const auto filename = NOX::createPluginFilename(#pluginName);       \
-        auto plugin = std::make_unique<StaticPlugin##pluginName>(filename); \
-        plugin->setPluginVersion();                                         \
-        return plugin;                                                      \
+        return std::make_unique<StaticPlugin##pluginName>();                \
     }                                                                       \
-    bool StaticPlugin##pluginName::load()
+                                                                            \
+    bool pluginRegister##pluginName()
 
 #define NOX_PLUGIN_VERSION(pluginName) \
-    void StaticPlugin##pluginName::setPluginVersion() { m_version = NOX_PLUGIN_API_VERSION; }
+    uint8_t pluginVersion##pluginName() { return NOX_PLUGIN_API_VERSION; }
 
 #define NOX_PLUGIN_IMPORT(pluginName) \
     NOX_PLUGIN_VISIBILITY std::unique_ptr<NOX::Plugin> createPlugin##pluginName()
 
-#define NOX_PLUGIN_LOAD(pluginName) \
-    PluginManager::instance().registerPlugin(createPlugin##pluginName())
+#define NOX_PLUGIN_CREATE(pluginName) \
+    createPlugin##pluginName()
 #endif
 
 #if !defined(NOX_STATIC)
-#include "plugins/dynamic_plugin.h"
-
 #define NOX_PLUGIN_VISIBILITY extern "C"
 
 #define NOX_PLUGIN_REGISTER(pluginName) \
@@ -47,6 +47,6 @@
 
 #define NOX_PLUGIN_IMPORT(pluginName)
 
-#define NOX_PLUGIN_LOAD(pluginName) \
-    PluginManager::instance().registerPlugin(DynamicPlugin::create(#pluginName, createPluginFilenameWithExtension))
+#define NOX_PLUGIN_CREATE(pluginName) \
+    NOX::Plugin::create(#pluginName)
 #endif

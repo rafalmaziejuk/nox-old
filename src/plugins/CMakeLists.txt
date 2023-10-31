@@ -1,12 +1,8 @@
 set(NOX_IMPL_PLUGINS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-    ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_plugin.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/dynamic_plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin.h
     ${CMAKE_CURRENT_SOURCE_DIR}/plugin_interface.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/plugin_manager.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/plugin_manager.h
 )
 
 target_sources(${NOX_IMPL_LIB_NAME} PRIVATE ${NOX_IMPL_PLUGINS_SOURCES})

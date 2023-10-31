@@ -7,7 +7,7 @@ using namespace NOX;
 class RendererTestFixture : public ::testing::TestWithParam<RendererBackend> {
   public:
     void SetUp() override {
-        renderer = RendererFactory::createRenderer(GetParam());
+        renderer = Renderer::create(GetParam());
         ASSERT_NE(renderer, nullptr);
     }
 

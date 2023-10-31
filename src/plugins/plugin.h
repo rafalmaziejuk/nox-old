@@ -7,13 +7,14 @@ namespace NOX {
 
 class Plugin {
   public:
-    Plugin(std::string_view name) : m_filename{name} {}
+    Plugin() = default;
     virtual ~Plugin() = default;
 
-    [[nodiscard]] virtual bool load() = 0;
+    [[nodiscard]] static std::unique_ptr<Plugin> create(std::string_view name);
 
-    [[nodiscard]] std::string getFilename() const { return m_filename; }
-    [[nodiscard]] uint8_t getVersion() const { return m_version; }
+  public:
+    [[nodiscard]] bool pluginRegister() const;
+    [[nodiscard]] uint8_t pluginVersion() const;
 
   public:
     Plugin(const Plugin &) = delete;
@@ -22,10 +23,15 @@ class Plugin {
     Plugin &operator=(Plugin &&) = delete;
 
   protected:
-    std::string m_filename;
-    uint8_t m_version;
+    static constexpr auto pluginRegisterFunctionName = "pluginRegister";
+    static constexpr auto pluginVersionFunctionName = "pluginVersion";
+    using PluginRegisterFunctionType = bool (*)();
+    using PluginVersionFunctionType = uint8_t (*)();
+
+    PluginRegisterFunctionType m_pluginRegisterFunction{nullptr};
+    PluginVersionFunctionType m_pluginVersionFunction{nullptr};
 };
 
-[[nodiscard]] std::string createPluginFilename(std::string_view name);
+[[nodiscard]] std::string createPluginFilename(std::string_view name, std::string_view extension);
 
 } // namespace NOX
