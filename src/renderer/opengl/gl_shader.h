@@ -2,6 +2,8 @@
 
 #include <nox/shader.h>
 
+#include <string_view>
+
 namespace NOX {
 
 class GLShader final : public Shader {

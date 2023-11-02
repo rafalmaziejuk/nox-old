@@ -1,11 +1,12 @@
 #pragma once
 
+#include <nox/pipeline_state.h>
+
 #include <unordered_map>
 
 namespace NOX {
 
 struct PipelineLayoutDescriptor;
-enum class ResourceType : uint8_t;
 
 class GLPipelineLayout {
   public:

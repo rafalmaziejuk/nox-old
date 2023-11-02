@@ -1,3 +1,4 @@
+#include "core/core.h"
 #include "renderer/format_helper.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_texture.h"
@@ -34,18 +35,15 @@ void GLRenderTargetBase::clear(float depth, uint32_t stencil) const {
     glClearNamedFramebufferfi(m_handle, GL_DEPTH_STENCIL, 0, depth, stencil);
 }
 
-void GLDefaultRenderTarget::clear(const Vector4D<float> &color, uint8_t index) const {
-    NOX_ASSERT(index != 0u);
+void GLDefaultRenderTarget::clear(const Vector4D<float> &color, [[maybe_unused]] uint8_t index) const {
     GLRenderTargetBase::clear(color, 0u);
 }
 
-void GLDefaultRenderTarget::clear(const Vector4D<int32_t> &color, uint8_t index) const {
-    NOX_ASSERT(index != 0u);
+void GLDefaultRenderTarget::clear(const Vector4D<int32_t> &color, [[maybe_unused]] uint8_t index) const {
     GLRenderTargetBase::clear(color, 0u);
 }
 
-void GLDefaultRenderTarget::clear(const Vector4D<uint32_t> &color, uint8_t index) const {
-    NOX_ASSERT(index != 0u);
+void GLDefaultRenderTarget::clear(const Vector4D<uint32_t> &color, [[maybe_unused]] uint8_t index) const {
     GLRenderTargetBase::clear(color, 0u);
 }
 
@@ -56,7 +54,6 @@ GLRenderTarget::GLRenderTarget(const RenderTargetDescriptor &descriptor) : m_siz
     m_depthStencilAttachmentsCount = validateDepthStencilAttachments(depthStencilAttachments);
 
     auto attachmentsCount = m_colorAttachmentsCount + m_depthStencilAttachmentsCount;
-    NOX_ASSERT(attachmentsCount == 0u);
     m_attachmentPoints.reserve(attachmentsCount);
 
     glCreateFramebuffers(1, &m_handle);
@@ -79,9 +76,6 @@ GLRenderTarget::GLRenderTarget(const RenderTargetDescriptor &descriptor) : m_siz
             createDepthStencilAttachment(depthStencilAttachments[i]);
         }
     }
-
-    auto result = glCheckNamedFramebufferStatus(m_handle, GL_FRAMEBUFFER);
-    NOX_ASSERT(result != GL_FRAMEBUFFER_COMPLETE);
 }
 
 GLRenderTarget::~GLRenderTarget() {
@@ -101,7 +95,6 @@ uint8_t GLRenderTarget::validateColorAttachments(const ColorAttachmentsContainer
         }
         colorAttachmentsCount++;
     }
-    NOX_ASSERT(colorAttachmentsCount > maxColorAttachments);
 
     return colorAttachmentsCount;
 }
@@ -124,20 +117,6 @@ uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttach
             stencilAttachmentCount++;
         }
     }
-
-    bool isValid = true;
-    if (depthStencilAttachmentCount > 1u) {
-        isValid = false;
-    } else if (depthStencilAttachmentCount == 1u) {
-        if ((depthAttachmentCount != 0u) || (stencilAttachmentCount != 0u)) {
-            isValid = false;
-        }
-    } else if (depthStencilAttachmentCount == 0u) {
-        if ((depthAttachmentCount > 1u) || (stencilAttachmentCount > 1u)) {
-            isValid = false;
-        }
-    }
-    NOX_ASSERT(!isValid);
 
     return (depthStencilAttachmentCount + depthAttachmentCount + stencilAttachmentCount);
 }

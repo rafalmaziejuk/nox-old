@@ -8,25 +8,19 @@ namespace {
 
 GLenum mapShaderStageToEnum(uint32_t stage) {
     switch (stage) {
-    case ShaderStage::VERTEX:
-        return GL_VERTEX_SHADER;
-    case ShaderStage::FRAGMENT:
-        return GL_FRAGMENT_SHADER;
-    default:
-        NOX_ASSERT(true);
-        return 0u;
+    case ShaderStage::VERTEX: return GL_VERTEX_SHADER;
+    case ShaderStage::FRAGMENT: return GL_FRAGMENT_SHADER;
+
+    default: return GL_NONE;
     }
 }
 
 GLbitfield mapShaderStageToBitfield(uint32_t stage) {
     switch (stage) {
-    case ShaderStage::VERTEX:
-        return GL_VERTEX_SHADER_BIT;
-    case ShaderStage::FRAGMENT:
-        return GL_FRAGMENT_SHADER_BIT;
-    default:
-        NOX_ASSERT(true);
-        return 0u;
+    case ShaderStage::VERTEX: return GL_VERTEX_SHADER_BIT;
+    case ShaderStage::FRAGMENT: return GL_FRAGMENT_SHADER_BIT;
+
+    default: return GL_NONE;
     }
 }
 
@@ -50,7 +44,6 @@ void GLShader::compile(const char *source) const {
 
     if (result == GL_FALSE) {
         glDeleteShader(m_handle);
-        NOX_ASSERT(true);
     }
 }
 

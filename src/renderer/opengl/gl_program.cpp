@@ -1,3 +1,4 @@
+#include "core/core.h"
 #include "renderer/opengl/gl_program.h"
 #include "renderer/opengl/gl_shader.h"
 
@@ -25,36 +26,17 @@ uint32_t GLProgram::attachShader(const Shader *shader) {
 void GLProgram::link() {
     glLinkProgram(m_handle);
 
-    auto result = checkLinkStatus();
-    NOX_ASSERT(!result);
-
-    detachShaders();
-}
-
-void GLProgram::detachShaders() {
     for (const auto shaderHandle : m_attachedShaderHandles) {
         glDetachShader(m_handle, shaderHandle);
     }
     m_attachedShaderHandles.clear();
-}
 
-bool GLProgram::checkLinkStatus() {
     GLint result = GL_TRUE;
     glGetProgramiv(m_handle, GL_LINK_STATUS, &result);
 
     if (result == GL_FALSE) {
-        GLint length = 0;
-        glGetProgramiv(m_handle, GL_INFO_LOG_LENGTH, &length);
-
-        std::string log;
-        log.resize(length);
-        glGetProgramInfoLog(m_handle, length, nullptr, log.data());
-
-        detachShaders();
         glDeleteProgram(m_handle);
     }
-
-    return result;
 }
 
 } // namespace NOX

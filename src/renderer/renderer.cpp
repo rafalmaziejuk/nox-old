@@ -14,15 +14,12 @@
 namespace NOX {
 
 RendererPtr Renderer::create(RendererBackend backend) {
-    NOX_ASSERT(backend >= RendererBackend::MAX);
-
     auto &registry = RendererFactoryRegistry::instance();
     if (registry.initializeFactory(backend)) {
         const auto &[createRenderer, destroyRenderer] = registry[backend];
         return {createRenderer(), destroyRenderer};
     }
 
-    NOX_ASSERT(true);
     return nullptr;
 }
 

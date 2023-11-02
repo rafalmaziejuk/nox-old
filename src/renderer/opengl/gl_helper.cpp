@@ -37,8 +37,7 @@ GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size) {
         }
     }
 
-    NOX_ASSERT(true);
-    return 0u;
+    return GL_NONE;
 }
 
 bool isExtensionSupported(std::string_view extensionsList, std::string_view extension) {

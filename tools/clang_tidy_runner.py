@@ -23,10 +23,6 @@ class ClangTidyRunner():
                                  .append(f"-DCMAKE_EXPORT_COMPILE_COMMANDS=ON")\
                                  .append(f"-DBUILD_SHARED_LIBS=OFF") 
 
-        self.build_command = CMakeCommand()\
-                             .append(f"--build {BUILD_DIR}")\
-                             .append(f"--parallel")
-
         self.script_command = CMakeCommand()\
                               .append(f"-DPROJECT_BINARY_DIR={BUILD_DIR}")\
                               .append(f"-P {SCRIPT_FILEPATH}")
@@ -45,7 +41,6 @@ class ClangTidyRunner():
 
     def run(self):
         self.configure_command.run()
-        self.build_command.run()
         self.__prepare_compile_commands_file()
         
         result = self.script_command.run()

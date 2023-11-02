@@ -17,11 +17,9 @@ namespace {
 
 GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
     switch (topology) {
-    case PrimitiveTopology::TRIANGLE_LIST:
-        return GL_TRIANGLES;
-    default:
-        NOX_ASSERT(true);
-        return 0u;
+    case PrimitiveTopology::TRIANGLE_LIST: return GL_TRIANGLES;
+
+    default: return GL_NONE;
     }
 }
 
@@ -90,7 +88,6 @@ std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetD
 }
 
 std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {
-    NOX_ASSERT(descriptor.pipelineState == nullptr);
     return std::make_unique<GLRenderPass>(descriptor);
 }
 

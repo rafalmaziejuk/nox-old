@@ -1,20 +1,19 @@
+#include "core/core.h"
 #include "plugins/plugin.h"
+
+#include <algorithm>
 
 namespace NOX {
 
 bool Plugin::pluginRegister() const {
-    NOX_ASSERT(m_pluginRegisterFunction == nullptr);
     return m_pluginRegisterFunction();
 }
 
 uint8_t Plugin::pluginVersion() const {
-    NOX_ASSERT(m_pluginVersionFunction == nullptr);
     return m_pluginVersionFunction();
 }
 
 std::string createPluginFilename(std::string_view name, std::string_view extension) {
-    NOX_ASSERT(name.empty() || extension.empty());
-
     constexpr auto prefix = (unixEnvironment ? "lib" : "");
     constexpr auto infix = "nox-";
     constexpr auto staticPostfix = (staticEnabled ? "-s" : "");

@@ -19,20 +19,20 @@ class LinuxWindow final : public Window {
     ::Window getWindow() const;
 
   private:
-    WindowDescriptor m_descriptor;
-
-    ::Display *m_display;
-    ::Window m_window;
-
-    mutable ::Atom m_closeWindowAtom;
-
-  private:
     void createWindow();
     void initializeWindowSpecification();
 
     void postEvent(XEvent const &event) const;
     void postCloseEvent() const;
     void postResizeEvent(uint32_t width, uint32_t height) const;
+
+  private:
+    WindowDescriptor m_descriptor;
+
+    ::Display *m_display;
+    ::Window m_window;
+
+    mutable ::Atom m_closeWindowAtom;
 };
 
 } // namespace NOX

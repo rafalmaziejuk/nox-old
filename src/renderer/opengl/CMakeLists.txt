@@ -1,9 +1,12 @@
+# --------------------------------------------------
+# Find required dependencies
+# --------------------------------------------------
 find_package(OpenGL 4.6 REQUIRED)
 if(NOT OPENGL_FOUND)
     message(FATAL_ERROR "OpenGL 4.6 not found")
 endif()
 
-target_compile_definitions(${NOX_IMPL_LIB_NAME} PUBLIC NOX_BUILD_RENDERER_OPENGL)
+target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_BUILD_RENDERER_OPENGL)
 
 # --------------------------------------------------
 # Create OpenGL renderer target
@@ -16,7 +19,16 @@ target_include_directories(
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
 
-target_precompile_headers(${NOX_OPENGL_LIB_NAME} REUSE_FROM ${NOX_IMPL_LIB_NAME})
+# --------------------------------------------------
+# Specify compile options
+# --------------------------------------------------
+target_compile_features(${NOX_OPENGL_LIB_NAME} PRIVATE cxx_std_17)
+
+if(MSVC)
+    target_compile_options(${NOX_OPENGL_LIB_NAME} PRIVATE /W4 /WX)
+else()
+    target_compile_options(${NOX_OPENGL_LIB_NAME} PRIVATE -Wall)
+endif()
 
 # --------------------------------------------------
 # Set properties
@@ -55,7 +67,6 @@ target_link_libraries(
     ${NOX_OPENGL_LIB_NAME}
     PRIVATE
     ${NOX_LIB_NAME}
-    ${NOX_IMPL_LIB_NAME}
     glad
     OpenGL::GL
 )
