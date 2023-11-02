@@ -1,3 +1,4 @@
+#include "core/core.h"
 #include "renderer/opengl/gl_pipeline_layout.h"
 #include "renderer/opengl/gl_pipeline_state.h"
 #include "renderer/opengl/gl_render_pass.h"
@@ -5,9 +6,7 @@
 
 namespace NOX {
 
-GLRenderPass::GLRenderPass(const RenderPassDescriptor &descriptor) : m_pipelineState{std::dynamic_pointer_cast<GLPipelineState>(descriptor.pipelineState)} {
-    NOX_ASSERT(m_pipelineState == nullptr);
-}
+GLRenderPass::GLRenderPass(const RenderPassDescriptor &descriptor) : m_pipelineState{std::dynamic_pointer_cast<GLPipelineState>(descriptor.pipelineState)} {}
 
 void GLRenderPass::setInput(uint32_t binding, const Resource &resource) {
     const auto &pipelineLayout = m_pipelineState->getPipelineLayout();
@@ -18,9 +17,7 @@ void GLRenderPass::setInput(uint32_t binding, const Resource &resource) {
         break;
     }
 
-    default:
-        NOX_ASSERT(true);
-        break;
+    default: break;
     }
 }
 

@@ -6,24 +6,24 @@ namespace {
 
 struct FormatAttribute {
     enum {
-        R = BIT(0),
-        RG = BIT(1),
-        RGB = BIT(2),
-        RGBA = BIT(3),
+        R = (1 << 0),
+        RG = (1 << 1),
+        RGB = (1 << 2),
+        RGBA = (1 << 3),
 
-        BITS8 = BIT(4),
-        BITS16 = BIT(5),
-        BITS24 = BIT(6),
-        BITS32 = BIT(7),
-        BITS64 = BIT(8),
+        BITS8 = (1 << 4),
+        BITS16 = (1 << 5),
+        BITS24 = (1 << 6),
+        BITS32 = (1 << 7),
+        BITS64 = (1 << 8),
 
-        UINT = BIT(9),
-        SINT = BIT(10),
-        FLOAT = BIT(11),
+        UINT = (1 << 9),
+        SINT = (1 << 10),
+        FLOAT = (1 << 11),
 
-        NORMALIZED = BIT(12),
-        DEPTH = BIT(13),
-        STENCIL = BIT(14)
+        NORMALIZED = (1 << 12),
+        DEPTH = (1 << 13),
+        STENCIL = (1 << 14)
     };
 };
 

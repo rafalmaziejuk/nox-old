@@ -9,8 +9,6 @@ namespace NOX {
 
 GLPipelineState::GLPipelineState(const PipelineStateDescriptor &descriptor) : m_pipelineLayout{std::make_unique<GLPipelineLayout>(descriptor.pipelineLayoutDescriptor)},
                                                                               m_renderTarget{std::dynamic_pointer_cast<GLRenderTargetBase>(descriptor.renderTarget)} {
-    NOX_ASSERT(m_renderTarget == nullptr);
-
     GLProgram program{};
     GLbitfield stages = 0u;
 

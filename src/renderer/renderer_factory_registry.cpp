@@ -10,15 +10,12 @@ namespace NOX {
 namespace {
 
 std::unique_ptr<Plugin> createRendererPlugin(RendererBackend backend) {
-    NOX_ASSERT(backend >= RendererBackend::MAX);
-
 #if defined(NOX_BUILD_RENDERER_OPENGL)
     if (backend == RendererBackend::OPENGL) {
         return NOX_PLUGIN_CREATE(OPENGL);
     }
 #endif
 
-    NOX_ASSERT(true);
     return nullptr;
 }
 
@@ -30,8 +27,6 @@ RendererFactoryRegistry &RendererFactoryRegistry::instance() {
 }
 
 bool RendererFactoryRegistry::initializeFactory(RendererBackend backend) {
-    NOX_ASSERT(backend >= RendererBackend::MAX);
-
     if (isFactoryRegistered(backend)) {
         return true;
     }
@@ -47,30 +42,22 @@ bool RendererFactoryRegistry::initializeFactory(RendererBackend backend) {
         }
     }
 
-    NOX_ASSERT(true);
     return false;
 }
 
 bool RendererFactoryRegistry::isFactoryRegistered(RendererBackend backend) const {
-    NOX_ASSERT(backend >= RendererBackend::MAX);
-
     const auto index = static_cast<size_t>(backend);
     const auto &factory = m_factories.at(index);
     return ((factory.first != nullptr) && (factory.second != nullptr));
 }
 
 RendererFactory &RendererFactoryRegistry::operator[](RendererBackend backend) {
-    NOX_ASSERT(backend >= RendererBackend::MAX);
-
     const auto index = static_cast<size_t>(backend);
     auto &factory = m_factories.at(index);
     return factory;
 }
 
 RendererFactory RendererFactoryRegistry::operator[](RendererBackend backend) const {
-    NOX_ASSERT(backend >= RendererBackend::MAX);
-    NOX_ASSERT(!isFactoryRegistered(backend));
-
     const auto index = static_cast<size_t>(backend);
     const auto &factory = m_factories.at(index);
     return factory;

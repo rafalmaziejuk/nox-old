@@ -11,9 +11,6 @@ namespace NOX {
 
 struct GLContext::Impl {
     void setContextPixelFormatAndVisual(const PixelFormatDescriptor &descriptor) {
-        NOX_ASSERT((descriptor.colorBits % 4) != 0);
-        NOX_ASSERT(display == nullptr);
-
         constexpr auto defaultAlphaBits = 8;
         constexpr auto defaultColorBits = 32;
         const int32_t colorChannelBits = descriptor.colorBits / 4;
@@ -37,29 +34,25 @@ struct GLContext::Impl {
             None};
 
         // preparing compatible frame buffer and visual for modern glx context
-        int32_t fbCount;
+        int32_t fbCount{};
         GLXFBConfig *fbConfigArray = glXChooseFBConfig(display, DefaultScreen(display), glxAttributes.data(), &fbCount);
-        NOX_ASSERT(fbConfigArray == nullptr);
-
         frameBufferConfig = getBestFrameBufferConfig(fbConfigArray, fbCount);
-
         visual = glXGetVisualFromFBConfig(display, frameBufferConfig);
-        NOX_ASSERT(visual == nullptr);s
     }
 
-    GLXFBConfig getBestFrameBufferConfig(GLXFBConfig *&fbConfig, const GLint fbCount) {
+    GLXFBConfig getBestFrameBufferConfig(GLXFBConfig *&fbConfig, const GLint fbCount) const {
         // picking the frame buffer config/visual with the most samples per pixel
         int16_t bestFbc{-1}, bestNumSamp{-1};
 
-        for (int8_t i = 0; i < fbCount; ++i) {
+        for (int32_t i = 0; i < fbCount; ++i) {
             XVisualInfo *visual = glXGetVisualFromFBConfig(display, fbConfig[i]);
 
             if (visual != nullptr) {
-                int32_t sampBuf, samples;
+                int32_t sampBuf{}, samples{};
                 glXGetFBConfigAttrib(display, fbConfig[i], GLX_SAMPLE_BUFFERS, &sampBuf);
                 glXGetFBConfigAttrib(display, fbConfig[i], GLX_SAMPLES, &samples);
 
-                if (bestFbc < 0 || (sampBuf && samples > bestNumSamp)) {
+                if ((bestFbc < 0) || (sampBuf && (samples > bestNumSamp))) {
                     bestFbc = i;
                     bestNumSamp = samples;
                 }
@@ -87,33 +80,20 @@ struct GLContext::Impl {
 
 GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     m_impl->display = XOpenDisplay(static_cast<const char *>(nullptr));
-    NOX_ASSERT(m_impl->display == nullptr);
-
     m_impl->screen = DefaultScreenOfDisplay(m_impl->display); // NOLINT
     m_impl->screenId = DefaultScreen(m_impl->display);
 
-    {
-        gladLoaderLoadGLX(m_impl->display, m_impl->screenId);
-        int32_t majorGLX{}, minorGLX{};
-        glXQueryVersion(m_impl->display, &majorGLX, &minorGLX);
-        NOX_ASSERT((majorGLX <= m_impl->glxMajorVersion) && (minorGLX < m_impl->glxMinorVersion));
-    }
+    gladLoaderLoadGLX(m_impl->display, m_impl->screenId);
 
     // creating dummy opengl context for early gl initialization
     const PixelFormatDescriptor defaultPixelFormatDescriptor{};
     m_impl->setContextPixelFormatAndVisual(defaultPixelFormatDescriptor);
 
-    GLXContext dummyContext = glXCreateContext(m_impl->display, m_impl->visual, NULL, GL_TRUE);
-    auto result = glXMakeCurrent(m_impl->display, 0, dummyContext);
-    NOX_ASSERT(!result);
+    GLXContext dummyContext = glXCreateContext(m_impl->display, m_impl->visual, nullptr, GL_TRUE);
+    glXMakeCurrent(m_impl->display, 0, dummyContext);
 
-    {
-        gladLoaderLoadGL();
-        GLint majorVersion, minorVersion;
-        glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
-        glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-        NOX_ASSERT((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion));
-    }
+    gladLoaderLoadGL();
+
     glXDestroyContext(m_impl->display, dummyContext);
 
     XCloseDisplay(m_impl->display);
@@ -130,8 +110,7 @@ GLContext::~GLContext() {
 }
 
 void GLContext::makeCurrent() const {
-    auto result = glXMakeCurrent(m_impl->display, m_impl->window, m_impl->handleRenderingContext);
-    NOX_ASSERT(!result);
+    glXMakeCurrent(m_impl->display, m_impl->window, m_impl->handleRenderingContext);
 }
 
 void GLContext::swapBuffers() const {
@@ -143,23 +122,16 @@ void GLContext::setSwapInterval(bool value) {
 }
 
 void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
+    const auto *linuxWindow = dynamic_cast<const LinuxWindow *>(&window);
     m_impl->display = reinterpret_cast<Display *>(window.getNativeHandle());
-    NOX_ASSERT(m_impl->display == nullptr);
-
-    auto *linuxWindow = static_cast<const LinuxWindow *>(&window);
-    NOX_ASSERT(linuxWindow == nullptr);
-
     m_impl->window = linuxWindow->getWindow();
     m_impl->screen = DefaultScreenOfDisplay(m_impl->display); // NOLINT
     m_impl->screenId = DefaultScreen(m_impl->display);
 
     m_impl->setContextPixelFormatAndVisual(descriptor);
-    NOX_ASSERT(m_impl->screenId != m_impl->visual->screen);
-    NOX_ASSERT(!GLHelper::isExtensionSupported(glXQueryExtensionsString(m_impl->display, m_impl->screenId), "GLX_ARB_create_context"));
 
     constexpr auto attributePairsCount = 3u;
     constexpr auto attributesArraySize = attributePairsCount * 2u + 1u;
-
     std::array<int32_t, attributesArraySize> contextAttributes = {
         GLX_CONTEXT_MAJOR_VERSION_ARB, glMajorVersion,
         GLX_CONTEXT_MINOR_VERSION_ARB, glMinorVersion,
@@ -168,7 +140,7 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
 
     m_impl->handleRenderingContext = glXCreateContextAttribsARB(m_impl->display,
                                                                 m_impl->frameBufferConfig,
-                                                                0,
+                                                                nullptr,
                                                                 true,
                                                                 contextAttributes.data());
     XSync(m_impl->display, False);

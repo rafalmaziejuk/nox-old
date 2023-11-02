@@ -8,75 +8,71 @@ namespace {
 
 GLenum mapTextureTarget(TextureType type) {
     switch (type) {
-        NOX_CASE_RETURN_VALUE(TextureType::TEXTURE2D, GL_TEXTURE_2D);
+    case TextureType::TEXTURE2D: return GL_TEXTURE_2D;
 
-    default:
-        NOX_ASSERT(true);
-        return 0u;
+    default: return GL_NONE;
     }
 }
 
 GLenum mapTextureFormat(Format format) {
     switch (format) {
-        NOX_CASE_RETURN_VALUE(Format::R8UI, GL_R8UI);
-        NOX_CASE_RETURN_VALUE(Format::R16UI, GL_R16UI);
-        NOX_CASE_RETURN_VALUE(Format::R32UI, GL_R32UI);
-        NOX_CASE_RETURN_VALUE(Format::RG8UI, GL_RG8UI);
-        NOX_CASE_RETURN_VALUE(Format::RG16UI, GL_RG16UI);
-        NOX_CASE_RETURN_VALUE(Format::RG32UI, GL_RG32UI);
-        NOX_CASE_RETURN_VALUE(Format::RGB8UI, GL_RGB8UI);
-        NOX_CASE_RETURN_VALUE(Format::RGB16UI, GL_RGB16UI);
-        NOX_CASE_RETURN_VALUE(Format::RGB32UI, GL_RGB32UI);
-        NOX_CASE_RETURN_VALUE(Format::RGBA8UI, GL_RGBA8UI);
-        NOX_CASE_RETURN_VALUE(Format::RGBA16UI, GL_RGBA16UI);
-        NOX_CASE_RETURN_VALUE(Format::RGBA32UI, GL_RGBA32UI);
-        NOX_CASE_RETURN_VALUE(Format::R8I, GL_R8I);
-        NOX_CASE_RETURN_VALUE(Format::R16I, GL_R16I);
-        NOX_CASE_RETURN_VALUE(Format::R32I, GL_R32I);
-        NOX_CASE_RETURN_VALUE(Format::RG8I, GL_RG8I);
-        NOX_CASE_RETURN_VALUE(Format::RG16I, GL_RG16I);
-        NOX_CASE_RETURN_VALUE(Format::RG32I, GL_RG32I);
-        NOX_CASE_RETURN_VALUE(Format::RGB8I, GL_RGB8I);
-        NOX_CASE_RETURN_VALUE(Format::RGB16I, GL_RGB16I);
-        NOX_CASE_RETURN_VALUE(Format::RGB32I, GL_RGB32I);
-        NOX_CASE_RETURN_VALUE(Format::RGBA8I, GL_RGBA8I);
-        NOX_CASE_RETURN_VALUE(Format::RGBA16I, GL_RGBA16I);
-        NOX_CASE_RETURN_VALUE(Format::RGBA32I, GL_RGBA32I);
-        NOX_CASE_RETURN_VALUE(Format::R8_UNORM, GL_R8);
-        NOX_CASE_RETURN_VALUE(Format::R16_UNORM, GL_R16);
-        NOX_CASE_RETURN_VALUE(Format::RG8_UNORM, GL_RG8);
-        NOX_CASE_RETURN_VALUE(Format::RG16_UNORM, GL_RG16);
-        NOX_CASE_RETURN_VALUE(Format::RGB8_UNORM, GL_RGB8);
-        NOX_CASE_RETURN_VALUE(Format::RGB16_UNORM, GL_RGB16);
-        NOX_CASE_RETURN_VALUE(Format::RGBA8_UNORM, GL_RGBA8);
-        NOX_CASE_RETURN_VALUE(Format::RGBA16_UNORM, GL_RGBA16);
-        NOX_CASE_RETURN_VALUE(Format::R8_SNORM, GL_R8_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::R16_SNORM, GL_R16_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::RG8_SNORM, GL_RG8_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::RG16_SNORM, GL_RG16_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::RGB8_SNORM, GL_RGB8_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::RGB16_SNORM, GL_RGB16_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::RGBA8_SNORM, GL_RGBA8_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::RGBA16_SNORM, GL_RGBA16_SNORM);
-        NOX_CASE_RETURN_VALUE(Format::R16F, GL_R16F);
-        NOX_CASE_RETURN_VALUE(Format::R32F, GL_R32F);
-        NOX_CASE_RETURN_VALUE(Format::RG16F, GL_RG16F);
-        NOX_CASE_RETURN_VALUE(Format::RG32F, GL_RG32F);
-        NOX_CASE_RETURN_VALUE(Format::RGB16F, GL_RGB32F);
-        NOX_CASE_RETURN_VALUE(Format::RGB64F, GL_RGBA16F);
-        NOX_CASE_RETURN_VALUE(Format::RGBA16F, GL_RGBA16F);
-        NOX_CASE_RETURN_VALUE(Format::RGBA32F, GL_RGBA32F);
-        NOX_CASE_RETURN_VALUE(Format::DEPTH16I, GL_DEPTH_COMPONENT16);
-        NOX_CASE_RETURN_VALUE(Format::DEPTH24I, GL_DEPTH_COMPONENT24);
-        NOX_CASE_RETURN_VALUE(Format::DEPTH32I, GL_DEPTH_COMPONENT32);
-        NOX_CASE_RETURN_VALUE(Format::DEPTH32F, GL_DEPTH_COMPONENT32F);
-        NOX_CASE_RETURN_VALUE(Format::STENCIL8UI, GL_STENCIL_INDEX8);
-        NOX_CASE_RETURN_VALUE(Format::DEPTH24I_STENCIL8UI, GL_DEPTH24_STENCIL8);
-        NOX_CASE_RETURN_VALUE(Format::DEPTH32F_STENCIL8UI, GL_DEPTH32F_STENCIL8);
+    case Format::R8UI: return GL_R8UI;
+    case Format::R16UI: return GL_R16UI;
+    case Format::R32UI: return GL_R32UI;
+    case Format::RG8UI: return GL_RG8UI;
+    case Format::RG16UI: return GL_RG16UI;
+    case Format::RG32UI: return GL_RG32UI;
+    case Format::RGB8UI: return GL_RGB8UI;
+    case Format::RGB16UI: return GL_RGB16UI;
+    case Format::RGB32UI: return GL_RGB32UI;
+    case Format::RGBA8UI: return GL_RGBA8UI;
+    case Format::RGBA16UI: return GL_RGBA16UI;
+    case Format::RGBA32UI: return GL_RGBA32UI;
+    case Format::R8I: return GL_R8I;
+    case Format::R16I: return GL_R16I;
+    case Format::R32I: return GL_R32I;
+    case Format::RG8I: return GL_RG8I;
+    case Format::RG16I: return GL_RG16I;
+    case Format::RG32I: return GL_RG32I;
+    case Format::RGB8I: return GL_RGB8I;
+    case Format::RGB16I: return GL_RGB16I;
+    case Format::RGB32I: return GL_RGB32I;
+    case Format::RGBA8I: return GL_RGBA8I;
+    case Format::RGBA16I: return GL_RGBA16I;
+    case Format::RGBA32I: return GL_RGBA32I;
+    case Format::R8_UNORM: return GL_R8;
+    case Format::R16_UNORM: return GL_R16;
+    case Format::RG8_UNORM: return GL_RG8;
+    case Format::RG16_UNORM: return GL_RG16;
+    case Format::RGB8_UNORM: return GL_RGB8;
+    case Format::RGB16_UNORM: return GL_RGB16;
+    case Format::RGBA8_UNORM: return GL_RGBA8;
+    case Format::RGBA16_UNORM: return GL_RGBA16;
+    case Format::R8_SNORM: return GL_R8_SNORM;
+    case Format::R16_SNORM: return GL_R16_SNORM;
+    case Format::RG8_SNORM: return GL_RG8_SNORM;
+    case Format::RG16_SNORM: return GL_RG16_SNORM;
+    case Format::RGB8_SNORM: return GL_RGB8_SNORM;
+    case Format::RGB16_SNORM: return GL_RGB16_SNORM;
+    case Format::RGBA8_SNORM: return GL_RGBA8_SNORM;
+    case Format::RGBA16_SNORM: return GL_RGBA16_SNORM;
+    case Format::R16F: return GL_R16F;
+    case Format::R32F: return GL_R32F;
+    case Format::RG16F: return GL_RG16F;
+    case Format::RG32F: return GL_RG32F;
+    case Format::RGB16F: return GL_RGB32F;
+    case Format::RGB64F: return GL_RGBA16F;
+    case Format::RGBA16F: return GL_RGBA16F;
+    case Format::RGBA32F: return GL_RGBA32F;
+    case Format::DEPTH16I: return GL_DEPTH_COMPONENT16;
+    case Format::DEPTH24I: return GL_DEPTH_COMPONENT24;
+    case Format::DEPTH32I: return GL_DEPTH_COMPONENT32;
+    case Format::DEPTH32F: return GL_DEPTH_COMPONENT32F;
+    case Format::STENCIL8UI: return GL_STENCIL_INDEX8;
+    case Format::DEPTH24I_STENCIL8UI: return GL_DEPTH24_STENCIL8;
+    case Format::DEPTH32F_STENCIL8UI: return GL_DEPTH32F_STENCIL8;
 
-    default:
-        NOX_ASSERT(true);
-        return 0u;
+    default: return GL_NONE;
     }
 }
 
@@ -91,9 +87,7 @@ GLTexture::GLTexture(const TextureDescriptor &descriptor) : m_descriptor{descrip
         createTexture2D();
         break;
 
-    default:
-        NOX_ASSERT(true);
-        break;
+    default: break;
     }
 }
 

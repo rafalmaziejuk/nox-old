@@ -1,5 +1,4 @@
 #include "renderer/opengl/gl_context.h"
-#include "window/windows/windows_window_helper.h"
 
 #include <nox/swap_chain.h>
 #include <nox/window.h>
@@ -24,10 +23,7 @@ struct GLContext::Impl {
         pixelFormatDescriptor.cStencilBits = static_cast<BYTE>(descriptor.stencilBits);
 
         auto pixelFormat = ChoosePixelFormat(handleDeviceContext, &pixelFormatDescriptor);
-        NOX_ASSERT(!pixelFormat);
-
-        auto result = SetPixelFormat(handleDeviceContext, pixelFormat, &pixelFormatDescriptor);
-        NOX_ASSERT(!result);
+        SetPixelFormat(handleDeviceContext, pixelFormat, &pixelFormatDescriptor);
     }
 
     HDC handleDeviceContext{nullptr};
@@ -45,7 +41,7 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     attributes.hInstance = GetModuleHandle(nullptr);
     attributes.lpfnWndProc = dummyWindowProcedure;
     attributes.lpszClassName = TEXT(dummyWindowName);
-    WindowsWindowHelper::registerWindowClass(attributes);
+    RegisterClass(&attributes);
 
     HWND dummyWindowHandle = CreateWindow(TEXT(dummyWindowName),
                                           TEXT(dummyWindowName),
@@ -58,16 +54,12 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
                                           nullptr,
                                           GetModuleHandle(nullptr),
                                           nullptr);
-    NOX_ASSERT(dummyWindowHandle == nullptr);
-
     m_impl->handleDeviceContext = GetDC(dummyWindowHandle);
-    NOX_ASSERT(m_impl->handleDeviceContext == nullptr);
 
     const PixelFormatDescriptor defaultPixelFormatDescriptor{};
     m_impl->setContextPixelFormat(defaultPixelFormatDescriptor);
 
     m_impl->handleRenderingContext = wglCreateContext(m_impl->handleDeviceContext);
-    NOX_ASSERT(m_impl->handleRenderingContext == nullptr);
     makeCurrent();
 
     gladLoaderLoadWGL(m_impl->handleDeviceContext);
@@ -76,44 +68,36 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     int32_t majorVersion{}, minorVersion{};
     glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
     glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-    NOX_ASSERT((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion));
 
     wglDeleteContext(m_impl->handleRenderingContext);
     m_impl->handleRenderingContext = nullptr;
     m_impl->handleDeviceContext = nullptr;
 
-    auto result = DestroyWindow(dummyWindowHandle);
-    NOX_ASSERT(!result);
-    WindowsWindowHelper::unregisterWindowClass(dummyWindowName);
+    DestroyWindow(dummyWindowHandle);
+    UnregisterClass(TEXT(dummyWindowName), GetModuleHandle(nullptr));
 }
 
 GLContext::~GLContext() {
     if (m_impl->handleRenderingContext != nullptr) {
-        auto result = wglDeleteContext(m_impl->handleRenderingContext);
-        NOX_ASSERT(!result);
+        wglDeleteContext(m_impl->handleRenderingContext);
     }
 }
 
 void GLContext::makeCurrent() const {
-    auto result = wglMakeCurrent(m_impl->handleDeviceContext, m_impl->handleRenderingContext);
-    NOX_ASSERT(!result);
+    wglMakeCurrent(m_impl->handleDeviceContext, m_impl->handleRenderingContext);
 }
 
 void GLContext::swapBuffers() const {
-    auto result = SwapBuffers(m_impl->handleDeviceContext);
-    NOX_ASSERT(!result);
+    SwapBuffers(m_impl->handleDeviceContext);
 }
 
 void GLContext::setSwapInterval(bool value) {
-    auto result = wglSwapIntervalEXT(static_cast<int32_t>(value));
-    NOX_ASSERT(!result);
+    wglSwapIntervalEXT(static_cast<int32_t>(value));
 }
 
 void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
     auto *windowHandle = static_cast<HWND>(window.getNativeHandle());
     m_impl->handleDeviceContext = GetDC(windowHandle);
-    NOX_ASSERT(m_impl->handleDeviceContext == nullptr);
-
     m_impl->setContextPixelFormat(descriptor);
 
     constexpr auto attributePairsCount = 3u;

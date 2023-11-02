@@ -1,3 +1,4 @@
+#include "core/core.h"
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_pipeline_state.h"
@@ -28,7 +29,7 @@ GLbitfield mapClearMaskToBitfield(uint32_t mask) {
 
 } // namespace
 
-GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/,
+GLCommandList::GLCommandList([[maybe_unused]] const CommandListDescriptor &descriptor,
                              std::shared_ptr<GLState> state) : m_state{std::move(state)} {}
 
 void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
@@ -77,32 +78,26 @@ void GLCommandList::clear(uint32_t mask) {
 }
 
 void GLCommandList::clearColor(const Vector4D<float> &color, uint8_t index) {
-    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
     m_state->currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearColor(const Vector4D<int32_t> &color, uint8_t index) {
-    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
     m_state->currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearColor(const Vector4D<uint32_t> &color, uint8_t index) {
-    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
     m_state->currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearDepth(float depth) {
-    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
     m_state->currentRenderTarget->clear(depth);
 }
 
 void GLCommandList::clearStencil(uint32_t stencil) {
-    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
     m_state->currentRenderTarget->clear(stencil);
 }
 
 void GLCommandList::clearDepthStencil(float depth, uint32_t stencil) {
-    NOX_ASSERT(m_state->currentRenderTarget == nullptr);
     m_state->currentRenderTarget->clear(depth, stencil);
 }
 

@@ -1,7 +1,5 @@
 #include "renderer/opengl/gl_pipeline_layout.h"
 
-#include <nox/pipeline_state.h>
-
 namespace NOX {
 
 GLPipelineLayout::GLPipelineLayout(const PipelineLayoutDescriptor &descriptor) {
@@ -13,7 +11,6 @@ GLPipelineLayout::GLPipelineLayout(const PipelineLayoutDescriptor &descriptor) {
 
 ResourceType GLPipelineLayout::operator[](uint32_t binding) const {
     const auto &it = m_bindingResourceTypes.find(binding);
-    NOX_ASSERT(it == m_bindingResourceTypes.end());
     return it->second;
 }
 

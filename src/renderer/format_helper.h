@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nox/common.h>
+#include <nox/export.h>
 
 namespace NOX {
 
@@ -22,7 +23,7 @@ struct FormatDescriptor {
 
 namespace FormatHelper {
 
-FormatDescriptor getFormatDescriptor(Format format);
+NOX_EXPORT FormatDescriptor getFormatDescriptor(Format format);
 
 } // namespace FormatHelper
 

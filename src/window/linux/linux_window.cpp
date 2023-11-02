@@ -1,10 +1,29 @@
 #include "window/linux/linux_window.h"
-#include "window/linux/linux_window_helper.h"
 
 #include <X11/Xos.h>
 #include <X11/Xutil.h>
 
 namespace NOX {
+
+namespace {
+
+Vector2D<int32_t> getWindowPosition(const WindowDescriptor &descriptor, Display *display) {
+    if (!descriptor.isCentered) {
+        return descriptor.position;
+    }
+
+    const int32_t screenId = DefaultScreen(display);
+    Screen *screen = ScreenOfDisplay(display, screenId);
+    if (screen != nullptr) {
+        auto x = static_cast<int32_t>(screen->width / 2 - descriptor.size.x() / 2);
+        auto y = static_cast<int32_t>(screen->height / 2 - descriptor.size.y() / 2);
+        return {x, y};
+    }
+
+    return {0, 0};
+}
+
+} // namespace
 
 std::unique_ptr<Window> Window::create(const WindowDescriptor &descriptor) {
     return std::make_unique<LinuxWindow>(descriptor);
@@ -24,8 +43,6 @@ LinuxWindow::~LinuxWindow() {
 
 void LinuxWindow::createWindow() {
     m_display = XOpenDisplay(static_cast<char *>(nullptr));
-    NOX_ASSERT(m_display == nullptr);
-
     ::Screen *screen = DefaultScreenOfDisplay(m_display); // NOLINT
     const int32_t screenId = DefaultScreen(m_display);
     const int32_t depth = DefaultDepth(m_display, screenId);
@@ -38,7 +55,7 @@ void LinuxWindow::createWindow() {
     attributes.background_pixel = BlackPixel(m_display, screenId);
     attributes.override_redirect = m_descriptor.isBorderless;
 
-    const Vector2D<int32_t> windowPosition = LinuxWindowHelper::getWindowPosition(m_descriptor, m_display);
+    const Vector2D<int32_t> windowPosition = getWindowPosition(m_descriptor, m_display);
 
     m_window = XCreateWindow(
         m_display,
