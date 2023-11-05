@@ -7,6 +7,8 @@
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
+#include <glad/gl.h>
+
 namespace NOX {
 
 namespace {
@@ -30,22 +32,7 @@ GLbitfield mapClearMaskToBitfield(uint32_t mask) {
 } // namespace
 
 GLCommandList::GLCommandList([[maybe_unused]] const CommandListDescriptor &descriptor,
-                             std::shared_ptr<GLState> state) : m_state{std::move(state)} {}
-
-void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
-    const auto *glVertexBuffer = downcast<GLVertexBuffer>(buffer);
-    auto vertexArrayIndex = glVertexBuffer->getVertexArrayIndex();
-    const auto &vertexArray = m_state->vertexArrays[vertexArrayIndex];
-    vertexArray->bind();
-    m_state->currentVertexArrayIndex = vertexArrayIndex;
-}
-
-void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
-    const auto *glIndexBuffer = downcast<GLIndexBuffer>(buffer);
-    const auto &vertexArray = m_state->vertexArrays[m_state->currentVertexArrayIndex];
-    vertexArray->setIndexBuffer(*glIndexBuffer);
-    m_state->indexType = glIndexBuffer->getIndexType();
-}
+                             GLState &state) : GLWithState{state} {}
 
 void GLCommandList::bindPipelineState(const PipelineState &pipeline) {
     const auto *glPipelineState = downcast<GLPipelineState>(pipeline);
@@ -78,35 +65,35 @@ void GLCommandList::clear(uint32_t mask) {
 }
 
 void GLCommandList::clearColor(const Vector4D<float> &color, uint8_t index) {
-    m_state->currentRenderTarget->clear(color, index);
+    getState().currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearColor(const Vector4D<int32_t> &color, uint8_t index) {
-    m_state->currentRenderTarget->clear(color, index);
+    getState().currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearColor(const Vector4D<uint32_t> &color, uint8_t index) {
-    m_state->currentRenderTarget->clear(color, index);
+    getState().currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearDepth(float depth) {
-    m_state->currentRenderTarget->clear(depth);
+    getState().currentRenderTarget->clear(depth);
 }
 
 void GLCommandList::clearStencil(uint32_t stencil) {
-    m_state->currentRenderTarget->clear(stencil);
+    getState().currentRenderTarget->clear(stencil);
 }
 
 void GLCommandList::clearDepthStencil(float depth, uint32_t stencil) {
-    m_state->currentRenderTarget->clear(depth, stencil);
+    getState().currentRenderTarget->clear(depth, stencil);
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
-    glDrawArrays(m_state->primitiveTopology, static_cast<GLint>(firstVertexIndex), static_cast<GLsizei>(vertexCount));
+    glDrawArrays(getState().primitiveTopology, static_cast<GLint>(firstVertexIndex), static_cast<GLsizei>(vertexCount));
 }
 
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
-    glDrawElements(m_state->primitiveTopology, vertexCount, m_state->indexType, nullptr);
+    glDrawElements(getState().primitiveTopology, vertexCount, getState().indexType, nullptr);
 }
 
 void GLCommandList::beginRenderPass(const RenderPass &renderPass) {
@@ -115,11 +102,11 @@ void GLCommandList::beginRenderPass(const RenderPass &renderPass) {
     const auto &glRenderTarget = glPipelineState.getRenderTarget();
     glPipelineState.bind();
     glRenderTarget.bind();
-    m_state->currentRenderTarget = &glRenderTarget;
+    getState().currentRenderTarget = &glRenderTarget;
 }
 
 void GLCommandList::endRenderPass() {
-    m_state->currentRenderTarget = nullptr;
+    getState().currentRenderTarget = nullptr;
 }
 
 } // namespace NOX

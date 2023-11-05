@@ -4,17 +4,17 @@
 
 namespace NOX {
 
-GLSwapChain::GLSwapChain(const SwapChainDescriptor &descriptor, std::shared_ptr<GLContext> context) : m_context{std::move(context)},
-                                                                                                      m_renderTarget{std::make_shared<GLDefaultRenderTarget>()} {
+GLSwapChain::GLSwapChain(const SwapChainDescriptor &descriptor, GLContext &context) : GLWithContext{context},
+                                                                                      m_renderTarget{std::make_shared<GLDefaultRenderTarget>()} {
     setVSync(descriptor.isVSync);
 }
 
 void GLSwapChain::swap() const {
-    m_context->swapBuffers();
+    getContext().swapBuffers();
 }
 
 void GLSwapChain::setVSync(bool value) {
-    m_context->setSwapInterval(value);
+    getContext().setSwapInterval(value);
 }
 
 std::shared_ptr<RenderTarget> GLSwapChain::getRenderTarget() {

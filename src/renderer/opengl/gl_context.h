@@ -34,4 +34,19 @@ class GLContext {
     std::unique_ptr<Impl> m_impl{nullptr};
 };
 
+class GLWithContext {
+  public:
+    explicit GLWithContext(GLContext &context) : m_context{&context} {}
+    virtual ~GLWithContext() = default;
+
+    GLContext &getContext() const { return *m_context; }
+
+  public:
+    GLWithContext(const GLWithContext &) = delete;
+    GLWithContext &operator=(const GLWithContext &) = delete;
+
+  private:
+    GLContext *m_context{nullptr};
+};
+
 } // namespace NOX
