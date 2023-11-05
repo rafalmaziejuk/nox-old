@@ -86,8 +86,8 @@ void SandboxApplication::run() {
 
         commandList->beginRenderPass(*m_triangleRenderPass);
         {
-            commandList->bindVertexBuffer(*m_triangleVertexBuffer);
-            commandList->bindIndexBuffer(*m_triangleIndexBuffer);
+            m_triangleVertexBuffer->bind();
+            m_triangleIndexBuffer->bind();
 
             commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
             commandList->drawIndexed(0u, 6u);
@@ -97,8 +97,8 @@ void SandboxApplication::run() {
 
         commandList->beginRenderPass(*m_fullscreenRenderPass);
         {
-            commandList->bindVertexBuffer(*m_fullscreenVertexBuffer);
-            commandList->bindIndexBuffer(*m_fullscreenIndexBuffer);
+            m_fullscreenVertexBuffer->bind();
+            m_fullscreenIndexBuffer->bind();
 
             commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
             commandList->drawIndexed(0u, 6u);
@@ -161,8 +161,7 @@ void SandboxApplication::createTriangleVertexBuffer() {
                                  4u, 5u, 7u,
                                  5u, 6u, 7u};
 
-    VertexFormat vertexFormat;
-    vertexFormat.attributes = {
+    VertexFormat vertexFormat{
         {Format::RG32F},
         {Format::RGBA8_UNORM},
     };
@@ -222,8 +221,7 @@ void SandboxApplication::createFullscreenVertexBuffer() {
     constexpr uint32_t indices[] = {0u, 1u, 2u,
                                     2u, 3u, 0u};
 
-    VertexFormat vertexFormat;
-    vertexFormat.attributes = {
+    VertexFormat vertexFormat{
         {Format::RG32F},
         {Format::RG32F},
     };

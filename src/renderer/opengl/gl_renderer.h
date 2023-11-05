@@ -1,24 +1,25 @@
 #pragma once
 
+#include "renderer/opengl/gl_context.h"
+#include "renderer/opengl/gl_state.h"
+
 #include <nox/renderer.h>
 
 namespace NOX {
 
 class GLBuffer;
 class GLCommandList;
-class GLContext;
-struct GLState;
 class GLSwapChain;
 
 class GLRenderer final : public Renderer {
   public:
-    GLRenderer();
+    GLRenderer() = default;
 
     RendererBackend getRendererBackend() const override;
 
     std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) override;
 
-    std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &format) override;
+    std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) override;
 
     std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) override;
 
@@ -35,11 +36,8 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) override;
 
   private:
-    bool isVertexFormatUnique(const VertexFormat &format, uint32_t &index);
-
-  private:
-    std::shared_ptr<GLContext> m_context{nullptr};
-    std::shared_ptr<GLState> m_state{nullptr};
+    GLContext m_context{};
+    GLState m_state{};
 };
 
 } // namespace NOX

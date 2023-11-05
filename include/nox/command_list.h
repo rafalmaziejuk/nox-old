@@ -15,10 +15,6 @@ struct CommandListDescriptor {};
 
 class NOX_EXPORT CommandList {
   public:
-    virtual void bindVertexBuffer(const Buffer &buffer) = 0;
-
-    virtual void bindIndexBuffer(const Buffer &buffer) = 0;
-
     virtual void bindPipelineState(const PipelineState &pipeline) = 0;
 
     virtual void setViewport(const Viewport &viewport) = 0;

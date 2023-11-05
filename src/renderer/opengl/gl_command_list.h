@@ -1,5 +1,7 @@
 #pragma once
 
+#include "renderer/opengl/gl_state.h"
+
 #include <nox/command_list.h>
 
 #include <memory>
@@ -8,12 +10,9 @@ namespace NOX {
 
 struct GLState;
 
-class GLCommandList final : public CommandList {
+class GLCommandList final : public CommandList, public GLWithState {
   public:
-    GLCommandList(const CommandListDescriptor &descriptor, std::shared_ptr<GLState> state);
-
-    void bindVertexBuffer(const Buffer &buffer) override;
-    void bindIndexBuffer(const Buffer &buffer) override;
+    GLCommandList(const CommandListDescriptor &descriptor, GLState &state);
 
     void bindPipelineState(const PipelineState &pipeline) override;
 
@@ -35,9 +34,6 @@ class GLCommandList final : public CommandList {
 
     void beginRenderPass(const RenderPass &renderPass) override;
     void endRenderPass() override;
-
-  private:
-    std::shared_ptr<GLState> m_state{nullptr};
 };
 
 } // namespace NOX
