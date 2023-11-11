@@ -3,21 +3,29 @@
 #include <nox/export.h>
 
 #include <cstdint>
+#include <string>
 
 namespace NOX {
 
-struct ShaderStage {
-    enum {
-        VERTEX = (1 << 0),
-        FRAGMENT = (1 << 1)
-    };
+enum class ShaderType : uint8_t {
+    VERTEX,
+    FRAGMENT,
+    TESS_CONTROL,
+    TESS_EVALUATION,
+    GEOMETRY,
+    COMPUTE,
+    MAX
 };
 
 struct ShaderDescriptor {
-    uint32_t stage;
+    std::string name;
+    ShaderType type;
 };
 
 class NOX_EXPORT Shader {
+  public:
+    virtual ShaderType getType() const = 0;
+
   public:
     Shader(const Shader &) = delete;
     Shader &operator=(const Shader &) = delete;
@@ -27,6 +35,32 @@ class NOX_EXPORT Shader {
 
   protected:
     Shader() = default;
+};
+
+struct ShaderHandle {
+    size_t id;
+    bool isValid;
+};
+
+class NOX_EXPORT ShaderRegistry {
+  public:
+    [[nodiscard]] virtual ShaderHandle registerShader(const ShaderDescriptor &descriptor, std::string_view source) = 0;
+    virtual void unregisterShader(ShaderHandle &handle) = 0;
+
+    [[nodiscard]] virtual bool contains(const ShaderHandle &handle) const = 0;
+
+    [[nodiscard]] virtual Shader &operator[](const ShaderHandle &handle) = 0;
+    [[nodiscard]] virtual const Shader &operator[](const ShaderHandle &handle) const = 0;
+
+  public:
+    ShaderRegistry(const ShaderRegistry &) = delete;
+    ShaderRegistry &operator=(const ShaderRegistry &) = delete;
+    ShaderRegistry(ShaderRegistry &&) = delete;
+    ShaderRegistry &operator=(ShaderRegistry &&) = delete;
+    virtual ~ShaderRegistry() = default;
+
+  protected:
+    ShaderRegistry() = default;
 };
 
 } // namespace NOX

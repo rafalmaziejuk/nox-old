@@ -4,7 +4,7 @@
 #include <nox/common.h>
 #include <nox/command_list.h>
 #include <nox/export.h>
-#include <nox/pipeline_state.h>
+#include <nox/graphics_pipeline_state.h>
 #include <nox/render_target.h>
 #include <nox/shader.h>
 #include <nox/swap_chain.h>
@@ -33,15 +33,17 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual RendererBackend getRendererBackend() const = 0;
 
+    [[nodiscard]] virtual ShaderRegistry &getShaderRegistry() = 0;
+
+    [[nodiscard]] virtual const ShaderRegistry &getShaderRegistry() const = 0;
+
     [[nodiscard]] virtual std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) = 0;
-
-    [[nodiscard]] virtual std::unique_ptr<PipelineState> createPipelineState(const PipelineStateDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) = 0;
 

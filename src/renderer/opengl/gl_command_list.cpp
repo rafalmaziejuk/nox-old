@@ -1,7 +1,6 @@
-#include "core/core.h"
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_command_list.h"
-#include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_graphics_pipeline_state.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_vertex_array.h"
@@ -13,7 +12,7 @@ namespace NOX {
 namespace {
 
 GLbitfield mapClearMaskToBitfield(uint32_t mask) {
-    GLbitfield result = 0u;
+    GLbitfield result = GL_NONE;
 
     if (mask & ClearMask::COLOR) {
         result |= GL_COLOR_BUFFER_BIT;

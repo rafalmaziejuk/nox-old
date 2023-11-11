@@ -2,7 +2,7 @@
 
 #include <nox/buffer.h>
 #include <nox/command_list.h>
-#include <nox/pipeline_state.h>
+#include <nox/graphics_pipeline_state.h>
 #include <nox/render_target.h>
 #include <nox/shader.h>
 #include <nox/swap_chain.h>
@@ -52,7 +52,7 @@ void SandboxApplication::run() {
     while (m_isRunning) {
         m_window->processEvents();
 
-        m_trianglePipelineState->bind();
+        m_triangleGraphicsPipelineState->bind();
         m_triangleVertexBuffer->bind();
         m_triangleIndexBuffer->bind();
 
@@ -130,18 +130,23 @@ void SandboxApplication::createTriangleVertexBuffer() {
     indexBufferDescriptor.data = indices;
     m_triangleIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
 
-    PipelineStateDescriptor pipelineStateDescriptor{};
-    pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
-
     ShaderDescriptor vertexShaderDescriptor{};
-    vertexShaderDescriptor.stage = ShaderStage::VERTEX;
-    pipelineStateDescriptor.vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, Shaders::triangleVertexShaderSource);
+    vertexShaderDescriptor.name = "triangleVertexShader";
+    vertexShaderDescriptor.type = ShaderType::VERTEX;
 
     ShaderDescriptor fragmentShaderDescriptor{};
-    fragmentShaderDescriptor.stage = ShaderStage::FRAGMENT;
-    pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, Shaders::triangleFragmentShaderSource);
+    fragmentShaderDescriptor.name = "triangleFragmentShader";
+    fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
 
-    m_trianglePipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
+    auto &shaderRegistry = m_renderer->getShaderRegistry();
+    GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
+    graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
+    graphicsPipelineStateDescriptor.shaderStages = {
+        shaderRegistry.registerShader(vertexShaderDescriptor, Shaders::triangleVertexShaderSource),
+        shaderRegistry.registerShader(fragmentShaderDescriptor, Shaders::triangleFragmentShaderSource),
+    };
+
+    m_triangleGraphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);
 }
 
 } // namespace NOX

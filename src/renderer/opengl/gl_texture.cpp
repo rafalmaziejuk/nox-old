@@ -78,14 +78,18 @@ GLenum mapTextureFormat(Format format) {
 
 } // namespace
 
-GLTexture::GLTexture(const TextureDescriptor &descriptor) : m_descriptor{descriptor} {
+GLTexture::GLTexture(const TextureDescriptor &descriptor) {
     auto target = mapTextureTarget(descriptor.type);
     glCreateTextures(target, 1, &m_handle);
 
     switch (descriptor.type) {
-    case TextureType::TEXTURE2D:
-        createTexture2D();
+    case TextureType::TEXTURE2D: {
+        auto width = descriptor.size.x();
+        auto height = descriptor.size.y();
+        auto format = mapTextureFormat(descriptor.format);
+        glTextureStorage2D(m_handle, 1, format, width, height);
         break;
+    }
 
     default: break;
     }
@@ -97,13 +101,6 @@ GLTexture::~GLTexture() {
 
 void GLTexture::bind(uint32_t index) const {
     glBindTextureUnit(index, m_handle);
-}
-
-void GLTexture::createTexture2D() const {
-    auto width = m_descriptor.size.x();
-    auto height = m_descriptor.size.y();
-    auto format = mapTextureFormat(m_descriptor.format);
-    glTextureStorage2D(m_handle, 1, format, width, height);
 }
 
 } // namespace NOX
