@@ -16,10 +16,10 @@ class GLSwapChain final : public SwapChain, public GLWithContext {
 
     void setVSync(bool value) override;
 
-    std::shared_ptr<RenderTarget> getRenderTarget() override;
+    const GLDefaultRenderTarget &getDefaultRenderTarget() const { return m_renderTarget; }
 
   private:
-    std::shared_ptr<GLDefaultRenderTarget> m_renderTarget{nullptr};
+    GLDefaultRenderTarget m_renderTarget{};
 };
 
 } // namespace NOX

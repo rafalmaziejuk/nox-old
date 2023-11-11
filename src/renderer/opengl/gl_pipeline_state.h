@@ -4,7 +4,6 @@
 
 namespace NOX {
 
-class GLPipelineLayout;
 class GLRenderTargetBase;
 
 class GLPipelineState final : public PipelineState {
@@ -12,14 +11,9 @@ class GLPipelineState final : public PipelineState {
     explicit GLPipelineState(const PipelineStateDescriptor &descriptor);
     ~GLPipelineState() override;
 
-    const GLPipelineLayout &getPipelineLayout() const { return *m_pipelineLayout; }
-    const GLRenderTargetBase &getRenderTarget() const { return *m_renderTarget; }
-
-    void bind() const;
+    void bind() override;
 
   private:
-    std::unique_ptr<GLPipelineLayout> m_pipelineLayout{nullptr};
-    std::shared_ptr<GLRenderTargetBase> m_renderTarget{nullptr};
     uint32_t m_handle{0u};
 };
 

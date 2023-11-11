@@ -4,8 +4,6 @@
 
 #include <nox/command_list.h>
 
-#include <memory>
-
 namespace NOX {
 
 struct GLState;
@@ -13,8 +11,6 @@ struct GLState;
 class GLCommandList final : public CommandList, public GLWithState {
   public:
     GLCommandList(const CommandListDescriptor &descriptor, GLState &state);
-
-    void bindPipelineState(const PipelineState &pipeline) override;
 
     void setViewport(const Viewport &viewport) override;
     void setClearColor(const Vector4D<float> &color) override;
@@ -31,9 +27,6 @@ class GLCommandList final : public CommandList, public GLWithState {
 
     void draw(uint32_t firstVertexIndex, uint32_t vertexCount) override;
     void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) override;
-
-    void beginRenderPass(const RenderPass &renderPass) override;
-    void endRenderPass() override;
 };
 
 } // namespace NOX

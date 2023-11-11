@@ -3,7 +3,6 @@
 #include <nox/buffer.h>
 #include <nox/command_list.h>
 #include <nox/pipeline_state.h>
-#include <nox/render_pass.h>
 #include <nox/render_target.h>
 #include <nox/shader.h>
 #include <nox/swap_chain.h>
@@ -43,37 +42,6 @@ constexpr auto triangleFragmentShaderSource = R"(
             }
         )";
 
-constexpr auto fullscreenVertexShaderSource = R"(
-            #version 460 core
-
-            out gl_PerVertex {
-	            vec4 gl_Position;
-            };
-
-		    layout (location = 0) in vec2 aPosition;
-		    layout (location = 1) in vec2 aTextureCoordinates;
-
-		    out vec2 textureCoordinates;
-
-		    void main() {
-			    gl_Position = vec4(aPosition, 0.0, 1.0); 
-			    textureCoordinates = aTextureCoordinates;
-		    }
-        )";
-
-constexpr auto fullscreenFragmentShaderSource = R"(
-            #version 460 core
-
-            layout(binding = 0) uniform sampler2D fullscreenTexture;
-
-            in vec2 textureCoordinates;
-            out vec4 fragmentColor;
-
-            void main() {
-                fragmentColor = texture(fullscreenTexture, textureCoordinates);
-            }
-        )";
-
 } // namespace Shaders
 
 void SandboxApplication::run() {
@@ -84,26 +52,13 @@ void SandboxApplication::run() {
     while (m_isRunning) {
         m_window->processEvents();
 
-        commandList->beginRenderPass(*m_triangleRenderPass);
-        {
-            m_triangleVertexBuffer->bind();
-            m_triangleIndexBuffer->bind();
+        m_trianglePipelineState->bind();
+        m_triangleVertexBuffer->bind();
+        m_triangleIndexBuffer->bind();
 
-            commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
-            commandList->drawIndexed(0u, 6u);
-            commandList->drawIndexed(7u, 14u);
-        }
-        commandList->endRenderPass();
-
-        commandList->beginRenderPass(*m_fullscreenRenderPass);
-        {
-            m_fullscreenVertexBuffer->bind();
-            m_fullscreenIndexBuffer->bind();
-
-            commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
-            commandList->drawIndexed(0u, 6u);
-        }
-        commandList->endRenderPass();
+        commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
+        commandList->drawIndexed(0u, 6u);
+        commandList->drawIndexed(7u, 14u);
 
         m_swapChain->swap();
     }
@@ -136,9 +91,6 @@ SandboxApplication::~SandboxApplication() = default;
 
 void SandboxApplication::initialize() {
     createTriangleVertexBuffer();
-    createTriangleRenderPass();
-    createFullscreenVertexBuffer();
-    createFullscreenRenderPass();
 }
 
 void SandboxApplication::createTriangleVertexBuffer() {
@@ -177,23 +129,8 @@ void SandboxApplication::createTriangleVertexBuffer() {
     indexBufferDescriptor.size = sizeof(indices);
     indexBufferDescriptor.data = indices;
     m_triangleIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
-}
-
-void SandboxApplication::createTriangleRenderPass() {
-    TextureDescriptor textureDescriptor{};
-    textureDescriptor.type = TextureType::TEXTURE2D;
-    textureDescriptor.format = Format::RGBA32F;
-    textureDescriptor.size = {m_window->getSize().x(), m_window->getSize().y(), 0u};
-    m_outputTexture = m_renderer->createTexture(textureDescriptor);
-
-    RenderTargetDescriptor renderTargetDescriptor{};
-    renderTargetDescriptor.attachments.colorAttachments = {
-        {m_outputTexture},
-    };
-    renderTargetDescriptor.size = m_window->getSize();
 
     PipelineStateDescriptor pipelineStateDescriptor{};
-    pipelineStateDescriptor.renderTarget = m_renderer->createRenderTarget(renderTargetDescriptor);
     pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
     ShaderDescriptor vertexShaderDescriptor{};
@@ -204,66 +141,7 @@ void SandboxApplication::createTriangleRenderPass() {
     fragmentShaderDescriptor.stage = ShaderStage::FRAGMENT;
     pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, Shaders::triangleFragmentShaderSource);
 
-    RenderPassDescriptor renderPassDescriptor{};
-    renderPassDescriptor.pipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
-    m_triangleRenderPass = m_renderer->createRenderPass(renderPassDescriptor);
-}
-
-void SandboxApplication::createFullscreenVertexBuffer() {
-    struct Vertex {
-        float position[2];
-        float textureCoordinates[2];
-    };
-    constexpr Vertex vertices[] = {{{-1.0f, -1.0f}, {0.0f, 0.0f}}, // bottom left
-                                   {{1.0f, -1.0f}, {1.0f, 0.0f}},  // bottom right
-                                   {{1.0f, 1.0f}, {1.0f, 1.0f}},   // top right
-                                   {{-1.0f, 1.0f}, {0.0f, 1.0f}}}; // top left
-    constexpr uint32_t indices[] = {0u, 1u, 2u,
-                                    2u, 3u, 0u};
-
-    VertexFormat vertexFormat{
-        {Format::RG32F},
-        {Format::RG32F},
-    };
-
-    BufferDescriptor vertexBufferDescriptor{};
-    vertexBufferDescriptor.usage = BufferUsage::STATIC;
-    vertexBufferDescriptor.size = sizeof(vertices);
-    vertexBufferDescriptor.data = vertices;
-    m_fullscreenVertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor, vertexFormat);
-
-    BufferDescriptor indexBufferDescriptor{};
-    indexBufferDescriptor.usage = BufferUsage::STATIC;
-    indexBufferDescriptor.size = sizeof(indices);
-    indexBufferDescriptor.data = indices;
-    m_fullscreenIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
-}
-
-void SandboxApplication::createFullscreenRenderPass() {
-    PipelineStateDescriptor pipelineStateDescriptor{};
-    pipelineStateDescriptor.renderTarget = m_swapChain->getRenderTarget();
-    pipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
-
-    ShaderDescriptor vertexShaderDescriptor{};
-    vertexShaderDescriptor.stage = ShaderStage::VERTEX;
-    pipelineStateDescriptor.vertexShader = m_renderer->createShaderFromString(vertexShaderDescriptor, Shaders::fullscreenVertexShaderSource);
-
-    ShaderDescriptor fragmentShaderDescriptor{};
-    fragmentShaderDescriptor.stage = ShaderStage::FRAGMENT;
-    pipelineStateDescriptor.fragmentShader = m_renderer->createShaderFromString(fragmentShaderDescriptor, Shaders::fullscreenFragmentShaderSource);
-
-    auto &bindingDescriptors = pipelineStateDescriptor.pipelineLayoutDescriptor.bindingDescriptors;
-    BindingDescriptor outputTextureBindingDescriptor{};
-    outputTextureBindingDescriptor.set = 0u;
-    outputTextureBindingDescriptor.binding = 0u;
-    outputTextureBindingDescriptor.shaderStages = ShaderStage::FRAGMENT;
-    outputTextureBindingDescriptor.resourceType = ResourceType::TEXTURE;
-    bindingDescriptors.push_back(outputTextureBindingDescriptor);
-
-    RenderPassDescriptor renderPassDescriptor{};
-    renderPassDescriptor.pipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
-    m_fullscreenRenderPass = m_renderer->createRenderPass(renderPassDescriptor);
-    m_fullscreenRenderPass->setInput(outputTextureBindingDescriptor.binding, *m_outputTexture);
+    m_trianglePipelineState = m_renderer->createPipelineState(pipelineStateDescriptor);
 }
 
 } // namespace NOX

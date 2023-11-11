@@ -2,6 +2,8 @@
 #include "renderer/opengl/gl_helper.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
+#include <algorithm>
+
 namespace NOX {
 
 GLVertexArray::GLVertexArray(const VertexFormat &vertexFormat) {

@@ -1,7 +1,6 @@
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_pipeline_state.h"
-#include "renderer/opengl/gl_render_pass.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_renderer.h"
 #include "renderer/opengl/gl_shader.h"
@@ -31,7 +30,10 @@ RendererBackend GLRenderer::getRendererBackend() const {
 
 std::unique_ptr<SwapChain> GLRenderer::createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) {
     m_context.createExtendedContext(descriptor.pixelFormatDescriptor, window);
-    return std::make_unique<GLSwapChain>(descriptor, m_context);
+    auto swapChain = std::make_unique<GLSwapChain>(descriptor, m_context);
+    m_state.currentRenderTarget = &swapChain->getDefaultRenderTarget();
+
+    return swapChain;
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) {
@@ -74,10 +76,6 @@ std::unique_ptr<Texture> GLRenderer::createTexture(const TextureDescriptor &desc
 
 std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetDescriptor &descriptor) {
     return std::make_unique<GLRenderTarget>(descriptor);
-}
-
-std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {
-    return std::make_unique<GLRenderPass>(descriptor);
 }
 
 } // namespace NOX

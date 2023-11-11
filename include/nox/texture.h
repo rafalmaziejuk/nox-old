@@ -2,7 +2,6 @@
 
 #include <nox/common.h>
 #include <nox/export.h>
-#include <nox/resource.h>
 #include <nox/vector.h>
 
 #include <cstdint>
@@ -20,13 +19,13 @@ struct TextureDescriptor {
     Format format;
 };
 
-class NOX_EXPORT Texture : public Resource {
+class NOX_EXPORT Texture {
   public:
     Texture(const Texture &) = delete;
     Texture &operator=(const Texture &) = delete;
     Texture(Texture &&) = delete;
     Texture &operator=(Texture &&) = delete;
-    ~Texture() override = default;
+    virtual ~Texture() = default;
 
   protected:
     Texture() = default;
