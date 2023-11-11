@@ -2,7 +2,6 @@
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_command_list.h"
 #include "renderer/opengl/gl_pipeline_state.h"
-#include "renderer/opengl/gl_render_pass.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_vertex_array.h"
@@ -33,11 +32,6 @@ GLbitfield mapClearMaskToBitfield(uint32_t mask) {
 
 GLCommandList::GLCommandList([[maybe_unused]] const CommandListDescriptor &descriptor,
                              GLState &state) : GLWithState{state} {}
-
-void GLCommandList::bindPipelineState(const PipelineState &pipeline) {
-    const auto *glPipelineState = downcast<GLPipelineState>(pipeline);
-    glPipelineState->bind();
-}
 
 void GLCommandList::setViewport(const Viewport &viewport) {
     auto x = static_cast<GLint>(viewport.x);
@@ -94,19 +88,6 @@ void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
 
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
     glDrawElements(getState().primitiveTopology, vertexCount, getState().indexType, nullptr);
-}
-
-void GLCommandList::beginRenderPass(const RenderPass &renderPass) {
-    const auto *glRenderPass = downcast<GLRenderPass>(renderPass);
-    const auto &glPipelineState = glRenderPass->getPipelineState();
-    const auto &glRenderTarget = glPipelineState.getRenderTarget();
-    glPipelineState.bind();
-    glRenderTarget.bind();
-    getState().currentRenderTarget = &glRenderTarget;
-}
-
-void GLCommandList::endRenderPass() {
-    getState().currentRenderTarget = nullptr;
 }
 
 } // namespace NOX

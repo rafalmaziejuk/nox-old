@@ -1,4 +1,3 @@
-#include "renderer/opengl/gl_pipeline_layout.h"
 #include "renderer/opengl/gl_pipeline_state.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_program.h"
@@ -7,8 +6,7 @@
 
 namespace NOX {
 
-GLPipelineState::GLPipelineState(const PipelineStateDescriptor &descriptor) : m_pipelineLayout{std::make_unique<GLPipelineLayout>(descriptor.pipelineLayoutDescriptor)},
-                                                                              m_renderTarget{std::dynamic_pointer_cast<GLRenderTargetBase>(descriptor.renderTarget)} {
+GLPipelineState::GLPipelineState(const PipelineStateDescriptor &descriptor) {
     GLProgram program{};
     GLbitfield stages = 0u;
 
@@ -24,7 +22,7 @@ GLPipelineState::~GLPipelineState() {
     glDeleteProgramPipelines(1, &m_handle);
 }
 
-void GLPipelineState::bind() const {
+void GLPipelineState::bind() {
     glBindProgramPipeline(m_handle);
 }
 

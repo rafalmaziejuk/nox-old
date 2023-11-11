@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/render_target.h>
 
 #include <cstdint>
 #include <memory>
@@ -25,8 +24,6 @@ class NOX_EXPORT SwapChain {
     virtual void swap() const = 0;
 
     virtual void setVSync(bool value) = 0;
-
-    [[nodiscard]] virtual std::shared_ptr<RenderTarget> getRenderTarget() = 0;
 
   public:
     SwapChain(const SwapChain &) = delete;

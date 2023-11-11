@@ -5,7 +5,6 @@
 #include <nox/command_list.h>
 #include <nox/export.h>
 #include <nox/pipeline_state.h>
-#include <nox/render_pass.h>
 #include <nox/render_target.h>
 #include <nox/shader.h>
 #include <nox/swap_chain.h>
@@ -49,8 +48,6 @@ class NOX_EXPORT Renderer {
     [[nodiscard]] virtual std::unique_ptr<Texture> createTexture(const TextureDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) = 0;
-
-    [[nodiscard]] virtual std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) = 0;
 
   public:
     Renderer(const Renderer &) = delete;

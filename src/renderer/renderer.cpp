@@ -4,9 +4,7 @@
 #include <nox/command_list.h>
 #include <nox/pipeline_state.h>
 #include <nox/renderer.h>
-#include <nox/render_pass.h>
 #include <nox/render_target.h>
-#include <nox/resource.h>
 #include <nox/shader.h>
 #include <nox/swap_chain.h>
 #include <nox/texture.h>

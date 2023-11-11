@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/resource.h>
 
 #include <cstdint>
 
@@ -20,7 +19,7 @@ struct BufferDescriptor {
     const void *data;
 };
 
-class NOX_EXPORT Buffer : public Resource {
+class NOX_EXPORT Buffer {
   public:
     virtual void bind() = 0;
 
@@ -29,7 +28,7 @@ class NOX_EXPORT Buffer : public Resource {
     Buffer &operator=(const Buffer &) = delete;
     Buffer(Buffer &&) = delete;
     Buffer &operator=(Buffer &&) = delete;
-    ~Buffer() override = default;
+    virtual ~Buffer() = default;
 
   protected:
     Buffer() = default;
