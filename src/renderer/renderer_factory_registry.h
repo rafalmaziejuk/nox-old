@@ -15,13 +15,13 @@ class NOX_EXPORT RendererFactoryRegistry {
   public:
     static RendererFactoryRegistry &instance();
 
-    bool initializeFactory(RendererBackend backend);
+    bool registerFactory(RendererBackend backend);
 
     [[nodiscard]] RendererFactory &operator[](RendererBackend backend);
-    [[nodiscard]] RendererFactory operator[](RendererBackend backend) const;
+    [[nodiscard]] const RendererFactory &operator[](RendererBackend backend) const;
 
   private:
-    [[nodiscard]] bool isFactoryRegistered(RendererBackend backend) const;
+    [[nodiscard]] bool contains(RendererBackend backend) const;
 
   public:
     RendererFactoryRegistry(const RendererFactoryRegistry &) = delete;
