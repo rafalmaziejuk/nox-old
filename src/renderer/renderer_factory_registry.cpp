@@ -26,8 +26,8 @@ RendererFactoryRegistry &RendererFactoryRegistry::instance() {
     return registry;
 }
 
-bool RendererFactoryRegistry::initializeFactory(RendererBackend backend) {
-    if (isFactoryRegistered(backend)) {
+bool RendererFactoryRegistry::registerFactory(RendererBackend backend) {
+    if (contains(backend)) {
         return true;
     }
 
@@ -45,10 +45,13 @@ bool RendererFactoryRegistry::initializeFactory(RendererBackend backend) {
     return false;
 }
 
-bool RendererFactoryRegistry::isFactoryRegistered(RendererBackend backend) const {
+bool RendererFactoryRegistry::contains(RendererBackend backend) const {
     const auto index = static_cast<size_t>(backend);
-    const auto &factory = m_factories.at(index);
-    return ((factory.first != nullptr) && (factory.second != nullptr));
+    if (index < m_factories.size()) {
+        const auto &factory = m_factories.at(index);
+        return ((factory.first != nullptr) && (factory.second != nullptr));
+    }
+    return false;
 }
 
 RendererFactory &RendererFactoryRegistry::operator[](RendererBackend backend) {
@@ -57,7 +60,7 @@ RendererFactory &RendererFactoryRegistry::operator[](RendererBackend backend) {
     return factory;
 }
 
-RendererFactory RendererFactoryRegistry::operator[](RendererBackend backend) const {
+const RendererFactory &RendererFactoryRegistry::operator[](RendererBackend backend) const {
     const auto index = static_cast<size_t>(backend);
     const auto &factory = m_factories.at(index);
     return factory;

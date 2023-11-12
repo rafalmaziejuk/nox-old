@@ -13,7 +13,7 @@ namespace NOX {
 
 RendererPtr Renderer::create(RendererBackend backend) {
     auto &registry = RendererFactoryRegistry::instance();
-    if (registry.initializeFactory(backend)) {
+    if (registry.registerFactory(backend)) {
         const auto &[createRenderer, destroyRenderer] = registry[backend];
         return {createRenderer(), destroyRenderer};
     }
