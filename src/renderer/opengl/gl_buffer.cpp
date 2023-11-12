@@ -7,7 +7,7 @@ namespace NOX {
 namespace {
 
 GLbitfield mapBufferUsageToBitfield(uint32_t usage) {
-    GLbitfield flags = 0u;
+    GLbitfield flags = GL_NONE;
 
     if (usage & BufferUsage::STATIC) {
         flags |= 0u;

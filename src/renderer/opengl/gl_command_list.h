@@ -6,8 +6,6 @@
 
 namespace NOX {
 
-struct GLState;
-
 class GLCommandList final : public CommandList, public GLWithState {
   public:
     GLCommandList(const CommandListDescriptor &descriptor, GLState &state);

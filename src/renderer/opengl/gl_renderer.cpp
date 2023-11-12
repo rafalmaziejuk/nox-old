@@ -1,6 +1,6 @@
 #include "renderer/opengl/gl_buffer.h"
 #include "renderer/opengl/gl_command_list.h"
-#include "renderer/opengl/gl_pipeline_state.h"
+#include "renderer/opengl/gl_graphics_pipeline_state.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_renderer.h"
 #include "renderer/opengl/gl_shader.h"
@@ -12,20 +12,16 @@
 
 namespace NOX {
 
-namespace {
-
-GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
-    switch (topology) {
-    case PrimitiveTopology::TRIANGLE_LIST: return GL_TRIANGLES;
-
-    default: return GL_NONE;
-    }
-}
-
-} // namespace
-
 RendererBackend GLRenderer::getRendererBackend() const {
     return RendererBackend::OPENGL;
+}
+
+ShaderRegistry &GLRenderer::getShaderRegistry() {
+    return m_state.shaderRegistry;
+}
+
+const ShaderRegistry &GLRenderer::getShaderRegistry() const {
+    return m_state.shaderRegistry;
 }
 
 std::unique_ptr<SwapChain> GLRenderer::createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) {
@@ -54,16 +50,13 @@ std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &de
     return buffer;
 }
 
-std::unique_ptr<Shader> GLRenderer::createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) {
-    auto shader = std::make_unique<GLShader>(descriptor);
-    shader->compileFromString(source);
+std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) {
+    auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor, m_state);
+    if (!pipeline->bindShaderStages(descriptor.shaderStages)) {
+        return nullptr;
+    }
 
-    return shader;
-}
-
-std::unique_ptr<PipelineState> GLRenderer::createPipelineState(const PipelineStateDescriptor &descriptor) {
-    m_state.primitiveTopology = mapPrimitiveTopologyToEnum(descriptor.primitiveTopology);
-    return std::make_unique<GLPipelineState>(descriptor);
+    return pipeline;
 }
 
 std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDescriptor &descriptor) {

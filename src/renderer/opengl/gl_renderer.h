@@ -17,15 +17,17 @@ class GLRenderer final : public Renderer {
 
     RendererBackend getRendererBackend() const override;
 
+    ShaderRegistry &getShaderRegistry() override;
+
+    const ShaderRegistry &getShaderRegistry() const override;
+
     std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) override;
 
     std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) override;
 
     std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) override;
 
-    std::unique_ptr<Shader> createShaderFromString(const ShaderDescriptor &descriptor, std::string_view source) override;
-
-    std::unique_ptr<PipelineState> createPipelineState(const PipelineStateDescriptor &descriptor) override;
+    std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) override;
 
     std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) override;
 
