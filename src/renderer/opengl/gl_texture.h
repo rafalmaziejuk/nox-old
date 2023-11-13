@@ -13,6 +13,8 @@ class GLTexture final : public Texture {
 
     void bind(uint32_t index) const;
 
+    void accept(TextureVisitor &visitor) const override;
+
   private:
     uint32_t m_handle{0u};
 };

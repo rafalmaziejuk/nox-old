@@ -131,19 +131,16 @@ void SandboxApplication::createTriangleVertexBuffer() {
     m_triangleIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
 
     ShaderDescriptor vertexShaderDescriptor{};
-    vertexShaderDescriptor.name = "triangleVertexShader";
     vertexShaderDescriptor.type = ShaderType::VERTEX;
 
     ShaderDescriptor fragmentShaderDescriptor{};
-    fragmentShaderDescriptor.name = "triangleFragmentShader";
     fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
 
-    auto &shaderRegistry = m_renderer->getShaderRegistry();
     GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
     graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
     graphicsPipelineStateDescriptor.shaderStages = {
-        shaderRegistry.registerShader(vertexShaderDescriptor, Shaders::triangleVertexShaderSource),
-        shaderRegistry.registerShader(fragmentShaderDescriptor, Shaders::triangleFragmentShaderSource),
+        m_renderer->createShader(vertexShaderDescriptor, Shaders::triangleVertexShaderSource),
+        m_renderer->createShader(fragmentShaderDescriptor, Shaders::triangleFragmentShaderSource),
     };
 
     m_triangleGraphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);

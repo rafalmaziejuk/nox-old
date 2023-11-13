@@ -1,4 +1,5 @@
 #include "renderer/opengl/gl_texture.h"
+#include "renderer/opengl/gl_texture_visitor.h"
 
 #include <glad/gl.h>
 
@@ -101,6 +102,10 @@ GLTexture::~GLTexture() {
 
 void GLTexture::bind(uint32_t index) const {
     glBindTextureUnit(index, m_handle);
+}
+
+void GLTexture::accept(TextureVisitor &visitor) const {
+    visitor.visit(*this);
 }
 
 } // namespace NOX

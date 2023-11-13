@@ -1,7 +1,7 @@
-#include "core/core.h"
 #include "renderer/format_helper.h"
 #include "renderer/opengl/gl_render_target.h"
 #include "renderer/opengl/gl_texture.h"
+#include "renderer/opengl/gl_texture_visitor.h"
 
 #include <glad/gl.h>
 
@@ -122,8 +122,10 @@ uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttach
 }
 
 void GLRenderTarget::createColorAttachment(const Texture &texture, uint32_t attachmentPoint) {
-    const auto *glTexture = downcast<GLTexture>(texture);
-    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture->getHandle(), 0);
+    GLTextureVisitor visitor{};
+    texture.accept(visitor);
+
+    glNamedFramebufferTexture(m_handle, attachmentPoint, visitor.getHandle(), 0);
 }
 
 void GLRenderTarget::createDepthStencilAttachment(Format format) {

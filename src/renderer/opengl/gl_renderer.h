@@ -7,25 +7,19 @@
 
 namespace NOX {
 
-class GLBuffer;
-class GLCommandList;
-class GLSwapChain;
-
 class GLRenderer final : public Renderer {
   public:
     GLRenderer() = default;
 
     RendererBackend getRendererBackend() const override;
 
-    ShaderRegistry &getShaderRegistry() override;
-
-    const ShaderRegistry &getShaderRegistry() const override;
-
     std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) override;
 
     std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) override;
 
     std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) override;
+
+    std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) override;
 
     std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) override;
 

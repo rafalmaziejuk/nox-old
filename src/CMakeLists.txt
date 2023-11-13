@@ -75,7 +75,6 @@ target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_PUBLIC_HEADERS})
 # --------------------------------------------------
 # Add subdirectories with sources
 # --------------------------------------------------
-add_subdirectory(core)
 add_subdirectory(plugins)
 add_subdirectory(renderer)
 add_subdirectory(window)

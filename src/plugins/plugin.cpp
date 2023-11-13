@@ -1,7 +1,24 @@
-#include "core/core.h"
 #include "plugins/plugin.h"
 
 #include <algorithm>
+
+#if defined(NOX_STATIC)
+static constexpr auto staticEnabled = true;
+#else
+static constexpr auto staticEnabled = false;
+#endif
+
+#if defined(NOX_DEBUG)
+static constexpr auto debugEnabled = true;
+#else
+static constexpr auto debugEnabled = false;
+#endif
+
+#if (defined(__GNUC__) || defined(NOX_UNIX))
+static constexpr auto unixEnvironment = true;
+#else
+static constexpr auto unixEnvironment = false;
+#endif
 
 namespace NOX {
 
