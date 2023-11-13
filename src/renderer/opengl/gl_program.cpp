@@ -3,6 +3,8 @@
 
 #include <glad/gl.h>
 
+#include <vector>
+
 namespace NOX {
 
 GLProgram::GLProgram() {
@@ -14,8 +16,8 @@ GLProgram::~GLProgram() {
     glDeleteProgram(m_handle);
 }
 
-void GLProgram::attachShader(const GLShader &shader) const {
-    glAttachShader(m_handle, shader.getHandle());
+void GLProgram::attachShader(uint32_t shaderHandle) const {
+    glAttachShader(m_handle, shaderHandle);
 }
 
 bool GLProgram::link() const {

@@ -16,14 +16,6 @@ RendererBackend GLRenderer::getRendererBackend() const {
     return RendererBackend::OPENGL;
 }
 
-ShaderRegistry &GLRenderer::getShaderRegistry() {
-    return m_state.shaderRegistry;
-}
-
-const ShaderRegistry &GLRenderer::getShaderRegistry() const {
-    return m_state.shaderRegistry;
-}
-
 std::unique_ptr<SwapChain> GLRenderer::createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) {
     m_context.createExtendedContext(descriptor.pixelFormatDescriptor, window);
     auto swapChain = std::make_unique<GLSwapChain>(descriptor, m_context);
@@ -48,6 +40,15 @@ std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &de
     buffer->setIndexType(format);
 
     return buffer;
+}
+
+std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descriptor, std::string_view source) {
+    auto shader = std::make_unique<GLShader>(descriptor);
+    if (!shader->compile(source.data())) {
+        return nullptr;
+    }
+
+    return shader;
 }
 
 std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) {

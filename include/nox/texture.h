@@ -8,6 +8,8 @@
 
 namespace NOX {
 
+class TextureVisitor;
+
 enum class TextureType : uint8_t {
     TEXTURE2D
 };
@@ -19,6 +21,9 @@ struct TextureDescriptor {
 };
 
 class NOX_EXPORT Texture {
+  public:
+    virtual void accept(TextureVisitor &visitor) const = 0;
+
   public:
     Texture(const Texture &) = delete;
     Texture &operator=(const Texture &) = delete;

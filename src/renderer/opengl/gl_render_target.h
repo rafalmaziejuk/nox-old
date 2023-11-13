@@ -5,7 +5,6 @@
 namespace NOX {
 
 class GLTexture;
-class Texture;
 
 class GLRenderTargetBase : public RenderTarget {
   public:

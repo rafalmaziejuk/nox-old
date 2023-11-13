@@ -3,7 +3,6 @@
 #include "renderer/opengl/gl_state.h"
 
 #include <nox/buffer.h>
-#include <nox/common.h>
 
 namespace NOX {
 

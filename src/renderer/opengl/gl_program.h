@@ -4,8 +4,6 @@
 
 namespace NOX {
 
-class GLShader;
-
 class GLProgram {
   public:
     GLProgram();
@@ -13,7 +11,7 @@ class GLProgram {
 
     uint32_t getHandle() const { return m_handle; }
 
-    void attachShader(const GLShader &shader) const;
+    void attachShader(uint32_t shaderHandle) const;
     bool link() const;
 
   public:

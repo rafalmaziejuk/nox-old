@@ -4,12 +4,12 @@
 #include <nox/shader.h>
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 
 namespace NOX {
 
-using ShaderStage = ShaderType;
-using ShaderStages = std::vector<ShaderHandle>;
+using ShaderStages = std::vector<std::shared_ptr<Shader>>;
 
 enum class PrimitiveTopology : uint8_t {
     TRIANGLE_LIST

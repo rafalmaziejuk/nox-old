@@ -1,6 +1,7 @@
 #include "renderer/opengl/gl_graphics_pipeline_state.h"
 #include "renderer/opengl/gl_program.h"
 #include "renderer/opengl/gl_shader.h"
+#include "renderer/opengl/gl_shader_visitor.h"
 
 #include <glad/gl.h>
 
@@ -48,12 +49,13 @@ void GLGraphicsPipelineState::bind() {
 }
 
 bool GLGraphicsPipelineState::bindShaderStages(const ShaderStages &shaderStages) {
-    const auto &shaderRegistry = getState().shaderRegistry;
     GLbitfield stages = GL_NONE;
-    for (const auto &shaderHandle : shaderStages) {
-        const auto &shader = shaderRegistry.getShader(shaderHandle);
-        m_program.attachShader(shader);
-        stages |= mapShaderTypeToBitfield(shader.getType());
+    for (const auto &shader : shaderStages) {
+        GLShaderVisitor visitor{};
+        shader->accept(visitor);
+
+        m_program.attachShader(visitor.getHandle());
+        stages |= mapShaderTypeToBitfield(visitor.getType());
     }
 
     if (!m_program.link()) {

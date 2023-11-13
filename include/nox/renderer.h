@@ -33,15 +33,13 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual RendererBackend getRendererBackend() const = 0;
 
-    [[nodiscard]] virtual ShaderRegistry &getShaderRegistry() = 0;
-
-    [[nodiscard]] virtual const ShaderRegistry &getShaderRegistry() const = 0;
-
     [[nodiscard]] virtual std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) = 0;
 
