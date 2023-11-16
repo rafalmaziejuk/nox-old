@@ -3,6 +3,8 @@
 #include "renderer/opengl/gl_texture.h"
 #include "renderer/opengl/gl_texture_visitor.h"
 
+#include <nox/config.h>
+
 #include <glad/gl.h>
 
 namespace NOX {
@@ -76,6 +78,8 @@ GLRenderTarget::GLRenderTarget(const RenderTargetDescriptor &descriptor) : m_siz
             createDepthStencilAttachment(depthStencilAttachments[i]);
         }
     }
+
+    NOX_ASSERT_MSG(glCheckNamedFramebufferStatus(m_handle, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE, "OpenGL render target is not complete");
 }
 
 GLRenderTarget::~GLRenderTarget() {
@@ -95,6 +99,7 @@ uint8_t GLRenderTarget::validateColorAttachments(const ColorAttachmentsContainer
         }
         colorAttachmentsCount++;
     }
+    NOX_ASSERT(colorAttachmentsCount > maxColorAttachments);
 
     return colorAttachmentsCount;
 }
@@ -117,6 +122,20 @@ uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttach
             stencilAttachmentCount++;
         }
     }
+
+    bool isValid = true;
+    if (depthStencilAttachmentCount > 1u) {
+        isValid = false;
+    } else if (depthStencilAttachmentCount == 1u) {
+        if ((depthAttachmentCount != 0u) || (stencilAttachmentCount != 0u)) {
+            isValid = false;
+        }
+    } else if (depthStencilAttachmentCount == 0u) {
+        if ((depthAttachmentCount > 1u) || (stencilAttachmentCount > 1u)) {
+            isValid = false;
+        }
+    }
+    NOX_ASSERT(isValid);
 
     return (depthStencilAttachmentCount + depthAttachmentCount + stencilAttachmentCount);
 }

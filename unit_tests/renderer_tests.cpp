@@ -24,8 +24,3 @@ TEST_P(RendererTestFixture, GivenRendererBackendWhenCallingCreateRendererThenRen
 INSTANTIATE_TEST_SUITE_P(RendererTests,
                          RendererTestFixture,
                          ::testing::Values(RendererBackend::OPENGL));
-
-TEST(RendererTest, GivenInvalidRendererBackendWhenCallingCreateRendererThenNullptrIsReturned) {
-    auto renderer = Renderer::create(RendererBackend::MAX);
-    EXPECT_EQ(nullptr, renderer);
-}

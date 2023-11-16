@@ -42,6 +42,10 @@ if(NOT BUILD_SHARED_LIBS)
     target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_STATIC)
 endif()
 
+if(NOX_DISABLE_ASSERTS)
+    target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_DISABLE_ASSERTS)
+endif()
+
 # --------------------------------------------------
 # Set properties
 # --------------------------------------------------

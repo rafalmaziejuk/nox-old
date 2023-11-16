@@ -1,5 +1,7 @@
 #include "window/windows/windows_window.h"
 
+#include <nox/config.h>
+
 namespace NOX {
 
 namespace {
@@ -124,12 +126,17 @@ WindowsWindow::WindowsWindow(const WindowDescriptor &descriptor) : m_descriptor{
                             nullptr,
                             GetModuleHandle(nullptr),
                             nullptr);
+    NOX_ASSERT_MSG(m_handle != nullptr, "Couldn't create window");
 
     SetWindowLongPtr(m_handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 }
 
 WindowsWindow::~WindowsWindow() {
+    NOX_ASSERT(m_handle != nullptr);
+
     DestroyWindow(m_handle);
+    m_handle = nullptr;
+
     UnregisterClass(TEXT(windowClassName), GetModuleHandle(nullptr));
 }
 

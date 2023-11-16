@@ -8,6 +8,8 @@
 #include "renderer/opengl/gl_texture.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
+#include <nox/config.h>
+
 #include <glad/gl.h>
 
 namespace NOX {
@@ -45,6 +47,7 @@ std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &de
 std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descriptor, std::string_view source) {
     auto shader = std::make_unique<GLShader>(descriptor);
     if (!shader->compile(source.data())) {
+        NOX_ASSERT(false);
         return nullptr;
     }
 
@@ -54,6 +57,7 @@ std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descrip
 std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) {
     auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor, m_state);
     if (!pipeline->bindShaderStages(descriptor.shaderStages)) {
+        NOX_ASSERT(false);
         return nullptr;
     }
 

@@ -1,6 +1,8 @@
 #include "renderer/opengl/gl_shader.h"
 #include "renderer/opengl/gl_shader_visitor.h"
 
+#include <nox/config.h>
+
 #include <glad/gl.h>
 
 namespace NOX {
@@ -16,8 +18,11 @@ GLenum mapShaderTypeToEnum(ShaderType type) {
     case ShaderType::GEOMETRY: return GL_GEOMETRY_SHADER;
     case ShaderType::COMPUTE: return GL_COMPUTE_SHADER;
 
-    default: return GL_NONE;
+    default: break;
     }
+
+    NOX_ASSERT(false);
+    return GL_NONE;
 }
 
 } // namespace
