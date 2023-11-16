@@ -1,6 +1,8 @@
 #include "renderer/opengl/gl_texture.h"
 #include "renderer/opengl/gl_texture_visitor.h"
 
+#include <nox/config.h>
+
 #include <glad/gl.h>
 
 namespace NOX {
@@ -11,8 +13,11 @@ GLenum mapTextureTarget(TextureType type) {
     switch (type) {
     case TextureType::TEXTURE2D: return GL_TEXTURE_2D;
 
-    default: return GL_NONE;
+    default: break;
     }
+
+    NOX_ASSERT(false);
+    return GL_NONE;
 }
 
 GLenum mapTextureFormat(Format format) {
@@ -73,8 +78,11 @@ GLenum mapTextureFormat(Format format) {
     case Format::DEPTH24I_STENCIL8UI: return GL_DEPTH24_STENCIL8;
     case Format::DEPTH32F_STENCIL8UI: return GL_DEPTH32F_STENCIL8;
 
-    default: return GL_NONE;
+    default: break;
     }
+
+    NOX_ASSERT(false);
+    return GL_NONE;
 }
 
 } // namespace

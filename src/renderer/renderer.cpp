@@ -1,23 +1,20 @@
 #include "renderer/renderer_factory_registry.h"
 
-#include <nox/buffer.h>
-#include <nox/command_list.h>
-#include <nox/graphics_pipeline_state.h>
+#include <nox/config.h>
 #include <nox/renderer.h>
-#include <nox/render_target.h>
-#include <nox/shader.h>
-#include <nox/swap_chain.h>
-#include <nox/texture.h>
 
 namespace NOX {
 
 RendererPtr Renderer::create(RendererBackend backend) {
+    NOX_ASSERT(backend < RendererBackend::MAX);
+
     auto &registry = RendererFactoryRegistry::instance();
     if (registry.registerFactory(backend)) {
         const auto &[createRenderer, destroyRenderer] = registry[backend];
         return {createRenderer(), destroyRenderer};
     }
 
+    NOX_ASSERT_MSG(false, "Couldn't create Renderer instance");
     return nullptr;
 }
 

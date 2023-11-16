@@ -1,5 +1,6 @@
 #include "renderer/opengl/gl_context.h"
 
+#include <nox/config.h>
 #include <nox/swap_chain.h>
 #include <nox/window.h>
 
@@ -60,6 +61,7 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     m_impl->setContextPixelFormat(defaultPixelFormatDescriptor);
 
     m_impl->handleRenderingContext = wglCreateContext(m_impl->handleDeviceContext);
+    NOX_ASSERT_MSG(m_impl->handleRenderingContext != nullptr, "Couldn't create default OpenGL context");
     makeCurrent();
 
     gladLoaderLoadWGL(m_impl->handleDeviceContext);
@@ -68,6 +70,7 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
     int32_t majorVersion{}, minorVersion{};
     glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
     glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+    NOX_ASSERT_MSG((majorVersion == glMajorVersion) && (minorVersion == glMinorVersion), "NOX currently supports only OpenGL 4.6");
 
     wglDeleteContext(m_impl->handleRenderingContext);
     m_impl->handleRenderingContext = nullptr;
@@ -80,6 +83,7 @@ GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
 GLContext::~GLContext() {
     if (m_impl->handleRenderingContext != nullptr) {
         wglDeleteContext(m_impl->handleRenderingContext);
+        m_impl->handleRenderingContext = nullptr;
     }
 }
 
@@ -97,6 +101,8 @@ void GLContext::setSwapInterval(bool value) {
 
 void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
     auto *windowHandle = static_cast<HWND>(window.getNativeHandle());
+    NOX_ASSERT(windowHandle != nullptr);
+
     m_impl->handleDeviceContext = GetDC(windowHandle);
     m_impl->setContextPixelFormat(descriptor);
 
@@ -107,6 +113,8 @@ void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, c
                                                         WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
                                                         0};
     m_impl->handleRenderingContext = wglCreateContextAttribsARB(m_impl->handleDeviceContext, nullptr, attributes.data());
+    NOX_ASSERT_MSG(m_impl->handleRenderingContext != nullptr, "Couldn't create extended OpenGL context");
+
     makeCurrent();
 }
 

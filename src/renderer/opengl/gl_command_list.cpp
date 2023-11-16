@@ -5,6 +5,8 @@
 #include "renderer/opengl/gl_state.h"
 #include "renderer/opengl/gl_vertex_array.h"
 
+#include <nox/config.h>
+
 #include <glad/gl.h>
 
 namespace NOX {
@@ -24,6 +26,7 @@ GLbitfield mapClearMaskToBitfield(uint32_t mask) {
         result |= GL_STENCIL_BUFFER_BIT;
     }
 
+    NOX_ASSERT(result != GL_NONE);
     return result;
 }
 
@@ -58,26 +61,38 @@ void GLCommandList::clear(uint32_t mask) {
 }
 
 void GLCommandList::clearColor(const Vector4D<float> &color, uint8_t index) {
+    NOX_ASSERT(getState().currentRenderTarget != nullptr);
+
     getState().currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearColor(const Vector4D<int32_t> &color, uint8_t index) {
+    NOX_ASSERT(getState().currentRenderTarget != nullptr);
+
     getState().currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearColor(const Vector4D<uint32_t> &color, uint8_t index) {
+    NOX_ASSERT(getState().currentRenderTarget != nullptr);
+
     getState().currentRenderTarget->clear(color, index);
 }
 
 void GLCommandList::clearDepth(float depth) {
+    NOX_ASSERT(getState().currentRenderTarget != nullptr);
+
     getState().currentRenderTarget->clear(depth);
 }
 
 void GLCommandList::clearStencil(uint32_t stencil) {
+    NOX_ASSERT(getState().currentRenderTarget != nullptr);
+
     getState().currentRenderTarget->clear(stencil);
 }
 
 void GLCommandList::clearDepthStencil(float depth, uint32_t stencil) {
+    NOX_ASSERT(getState().currentRenderTarget != nullptr);
+
     getState().currentRenderTarget->clear(depth, stencil);
 }
 

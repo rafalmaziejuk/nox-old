@@ -3,6 +3,8 @@
 #include "renderer/opengl/gl_shader.h"
 #include "renderer/opengl/gl_shader_visitor.h"
 
+#include <nox/config.h>
+
 #include <glad/gl.h>
 
 namespace NOX {
@@ -18,16 +20,22 @@ GLbitfield mapShaderTypeToBitfield(ShaderType type) {
     case ShaderType::GEOMETRY: return GL_GEOMETRY_SHADER_BIT;
     case ShaderType::COMPUTE: return GL_COMPUTE_SHADER_BIT;
 
-    default: return GL_NONE;
+    default: break;
     }
+
+    NOX_ASSERT(false);
+    return GL_NONE;
 }
 
 GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
     switch (topology) {
     case PrimitiveTopology::TRIANGLE_LIST: return GL_TRIANGLES;
 
-    default: return GL_NONE;
+    default: break;
     }
+
+    NOX_ASSERT(false);
+    return GL_NONE;
 }
 
 } // namespace
