@@ -1,6 +1,7 @@
 #pragma once
 
 #include "texture_visitor.h"
+#include "opengl/gl_texture.h"
 
 namespace NOX {
 

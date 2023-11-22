@@ -11,7 +11,7 @@ GLVertexArray::GLVertexArray(const VertexFormat &vertexFormat) {
 
     for (size_t i = 0u; i < vertexFormat.size(); i++) {
         const auto &format = vertexFormat[i];
-        auto formatDescriptor = FormatHelper::getFormatDescriptor(format);
+        auto formatDescriptor = Helpers::getFormatDescriptor(format);
         auto index = static_cast<GLuint>(i);
         auto componentCount = static_cast<GLint>(formatDescriptor.componentCount);
         auto dataType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);

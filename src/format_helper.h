@@ -21,10 +21,10 @@ struct FormatDescriptor {
     bool hasStencil;
 };
 
-namespace FormatHelper {
+namespace Helpers {
 
 NOX_EXPORT FormatDescriptor getFormatDescriptor(Format format);
 
-} // namespace FormatHelper
+} // namespace Helpers
 
 } // namespace NOX

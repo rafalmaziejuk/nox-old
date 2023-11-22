@@ -1,50 +1,30 @@
 #pragma once
 
+#include <nox/surface.h>
+
 #include <memory>
 
 namespace NOX {
 
-struct PixelFormatDescriptor;
+class GLContext : public Surface {
+  public:
+    [[nodiscard]] static std::shared_ptr<GLContext> create(const SurfaceDescriptor &descriptor);
 
-class GLContext {
-    static constexpr auto glMajorVersion = 4u;
-    static constexpr auto glMinorVersion = 6u;
+    [[nodiscard]] virtual bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) = 0;
+
+    virtual void swapBuffers() const = 0;
+    virtual void setSwapInterval(bool value) const = 0;
 
   public:
-    GLContext();
-    ~GLContext();
-
-    void createExtendedContext(const PixelFormatDescriptor &descriptor);
-
-    void makeCurrent() const;
-
-    void swapBuffers() const;
-    void setSwapInterval(bool value);
-
-  public:
+    GLContext() = default;
     GLContext(const GLContext &) = delete;
     GLContext &operator=(const GLContext &) = delete;
     GLContext(GLContext &&) = delete;
     GLContext &operator=(GLContext &&) = delete;
 
-  private:
-    struct Impl;
-    std::unique_ptr<Impl> m_impl{nullptr};
-};
-
-class GLWithContext {
-  public:
-    explicit GLWithContext(GLContext &context) : m_context{&context} {}
-    virtual ~GLWithContext() = default;
-
-    GLContext &getContext() const { return *m_context; }
-
-  public:
-    GLWithContext(const GLWithContext &) = delete;
-    GLWithContext &operator=(const GLWithContext &) = delete;
-
-  private:
-    GLContext *m_context{nullptr};
+  protected:
+    static constexpr auto glMajorVersion = 4u;
+    static constexpr auto glMinorVersion = 6u;
 };
 
 } // namespace NOX

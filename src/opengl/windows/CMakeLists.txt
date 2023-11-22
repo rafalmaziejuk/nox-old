@@ -1,6 +1,7 @@
 set(NOX_OPENGL_WINDOWS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/windows_gl_context.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/windows_gl_context.h
 )
 
 target_sources(${NOX_OPENGL_LIB_NAME} PRIVATE ${NOX_OPENGL_WINDOWS_SOURCES})

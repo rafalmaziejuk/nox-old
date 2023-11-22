@@ -2,28 +2,23 @@
 
 #include <nox/export.h>
 
-#include <cstdint>
-#include <memory>
+#include <variant>
 
 namespace NOX {
 
-struct PixelFormatDescriptor {
-    uint8_t colorBits{32u};
-    uint8_t depthBits{24u};
-    uint8_t stencilBits{8u};
+struct OpenGLPresentMode {
+    bool vSync;
 };
 
-struct SwapchainDescriptor {
-    PixelFormatDescriptor pixelFormatDescriptor;
+using PresentMode = std::variant<OpenGLPresentMode>;
 
-    bool isVSync;
+struct SwapchainDescriptor {
+    PresentMode presentMode;
 };
 
 class NOX_EXPORT Swapchain {
   public:
-    virtual void swap() const = 0;
-
-    virtual void setVSync(bool value) = 0;
+    virtual void present() const = 0;
 
   public:
     Swapchain(const Swapchain &) = delete;

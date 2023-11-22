@@ -1,17 +1,20 @@
 #pragma once
 
-#include "opengl/gl_context.h"
 #include "opengl/gl_state.h"
 
 #include <nox/renderer.h>
 
 namespace NOX {
 
+class GLContext;
+
 class GLRenderer final : public Renderer {
   public:
     GLRenderer() = default;
 
     RendererBackend getRendererBackend() const override;
+
+    std::shared_ptr<Surface> createSurface(const SurfaceDescriptor &descriptor) override;
 
     std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescriptor &descriptor) override;
 
@@ -30,7 +33,7 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) override;
 
   private:
-    GLContext m_context{};
+    std::shared_ptr<GLContext> m_context{nullptr};
     GLState m_state{};
 };
 

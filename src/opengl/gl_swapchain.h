@@ -1,24 +1,23 @@
 #pragma once
 
-#include "opengl/gl_context.h"
+#include "opengl/gl_render_target.h"
 
 #include <nox/swapchain.h>
 
 namespace NOX {
 
-class GLDefaultRenderTarget;
+class GLContext;
 
-class GLSwapchain final : public Swapchain, public GLWithContext {
+class GLSwapchain final : public Swapchain {
   public:
-    GLSwapchain(const SwapchainDescriptor &descriptor, GLContext &context);
+    GLSwapchain(const SwapchainDescriptor &descriptor, std::shared_ptr<GLContext> context);
 
-    void swap() const override;
+    void present() const override;
 
-    void setVSync(bool value) override;
-
-    const GLDefaultRenderTarget &getDefaultRenderTarget() const { return m_renderTarget; }
+    GLDefaultRenderTarget &getDefaultRenderTarget() { return m_renderTarget; }
 
   private:
+    std::shared_ptr<GLContext> m_context{nullptr};
     GLDefaultRenderTarget m_renderTarget{};
 };
 

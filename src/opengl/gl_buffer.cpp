@@ -51,7 +51,7 @@ void GLIndexBuffer::bind() {
 }
 
 void GLIndexBuffer::setIndexType(Format format) {
-    auto formatDescriptor = FormatHelper::getFormatDescriptor(format);
+    auto formatDescriptor = Helpers::getFormatDescriptor(format);
     m_indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
 }
 

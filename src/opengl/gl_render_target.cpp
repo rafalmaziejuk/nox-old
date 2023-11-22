@@ -113,7 +113,7 @@ uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttach
             break;
         }
 
-        auto formatDescriptor = FormatHelper::getFormatDescriptor(attachment);
+        auto formatDescriptor = Helpers::getFormatDescriptor(attachment);
         if (formatDescriptor.hasDepth && formatDescriptor.hasStencil) {
             depthStencilAttachmentCount++;
         } else if (formatDescriptor.hasDepth) {
@@ -154,7 +154,7 @@ void GLRenderTarget::createDepthStencilAttachment(Format format) {
     textureDescriptor.size = {m_size.x(), m_size.y(), 0u};
     m_depthStencilAttachments.emplace_back(std::make_unique<GLTexture>(textureDescriptor));
 
-    auto formatDescriptor = FormatHelper::getFormatDescriptor(format);
+    auto formatDescriptor = Helpers::getFormatDescriptor(format);
     uint32_t attachmentPoint = 0u;
     if (formatDescriptor.hasDepth && formatDescriptor.hasStencil) {
         attachmentPoint = GL_DEPTH_STENCIL_ATTACHMENT;
