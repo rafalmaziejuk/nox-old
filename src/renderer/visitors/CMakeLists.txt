@@ -1,7 +1,0 @@
-set(NOX_RENDERER_VISITORS_SOURCES
-    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-    ${CMAKE_CURRENT_SOURCE_DIR}/shader_visitor.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/texture_visitor.h
-)
-
-target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_RENDERER_VISITORS_SOURCES})

@@ -5,13 +5,13 @@
 #include <nox/graphics_pipeline_state.h>
 #include <nox/render_target.h>
 #include <nox/shader.h>
-#include <nox/swap_chain.h>
+#include <nox/swapchain.h>
 #include <nox/texture.h>
 #include <nox/window.h>
 
 namespace NOX {
 
-namespace Shaders {
+namespace {
 
 constexpr auto triangleVertexShaderSource = R"(
             #version 460 core
@@ -42,16 +42,14 @@ constexpr auto triangleFragmentShaderSource = R"(
             }
         )";
 
-} // namespace Shaders
+} // namespace
 
 void SandboxApplication::run() {
     CommandListDescriptor commandListDescriptor{};
     auto commandList = m_renderer->createCommandList(commandListDescriptor);
-    commandList->setViewport(m_window->getSize());
+    commandList->setViewport({800, 600});
 
     while (m_isRunning) {
-        m_window->processEvents();
-
         m_triangleGraphicsPipelineState->bind();
         m_triangleVertexBuffer->bind();
         m_triangleIndexBuffer->bind();
@@ -60,31 +58,16 @@ void SandboxApplication::run() {
         commandList->drawIndexed(0u, 6u);
         commandList->drawIndexed(7u, 14u);
 
-        m_swapChain->swap();
+        m_swapchain->swap();
     }
 }
 
 SandboxApplication::SandboxApplication() {
-    WindowDescriptor windowDescriptor{};
-    windowDescriptor.title = "Sandbox Example";
-    windowDescriptor.size = {800u, 600u};
-    windowDescriptor.isVisible = true;
-    windowDescriptor.isCentered = true;
-    windowDescriptor.isResizable = true;
-    m_window = Window::create(windowDescriptor);
-
-    EventDispatcher eventDispatcher;
-    eventDispatcher.closeEventCallback = [this]() {
-        m_isRunning = false;
-        return true;
-    };
-    m_window->pushBackEventDispatcher(eventDispatcher);
-
     m_renderer = Renderer::create(RendererBackend::OPENGL);
 
-    SwapChainDescriptor swapChainDescriptor{};
-    swapChainDescriptor.isVSync = true;
-    m_swapChain = m_renderer->createSwapChain(swapChainDescriptor, *m_window);
+    SwapchainDescriptor swapchainDescriptor{};
+    swapchainDescriptor.isVSync = true;
+    m_swapchain = m_renderer->createSwapchain(swapchainDescriptor);
 }
 
 SandboxApplication::~SandboxApplication() = default;
@@ -139,8 +122,8 @@ void SandboxApplication::createTriangleVertexBuffer() {
     GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
     graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
     graphicsPipelineStateDescriptor.shaderStages = {
-        m_renderer->createShader(vertexShaderDescriptor, Shaders::triangleVertexShaderSource),
-        m_renderer->createShader(fragmentShaderDescriptor, Shaders::triangleFragmentShaderSource),
+        m_renderer->createShader(vertexShaderDescriptor, triangleVertexShaderSource),
+        m_renderer->createShader(fragmentShaderDescriptor, triangleFragmentShaderSource),
     };
 
     m_triangleGraphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);

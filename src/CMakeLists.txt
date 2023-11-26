@@ -71,16 +71,34 @@ generate_export_header(
 )
 
 # --------------------------------------------------
-# Add public headers to sources (for IDE)
+# Add sources
 # --------------------------------------------------
-file(GLOB_RECURSE NOX_PUBLIC_HEADERS "${PROJECT_SOURCE_DIR}/include/nox/*.h")
-target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_PUBLIC_HEADERS})
+set(NOX_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/shader_visitor.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/texture_visitor.h
+)
+
+target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_SOURCES})
 
 # --------------------------------------------------
 # Add subdirectories with sources
 # --------------------------------------------------
 add_subdirectory(plugins)
-add_subdirectory(renderer)
-add_subdirectory(window)
+
+if(NOX_BUILD_RENDERER_OPENGL)
+    add_subdirectory(opengl)
+endif()
+
+# --------------------------------------------------
+# Add public headers to sources (for IDE)
+# --------------------------------------------------
+file(GLOB_RECURSE NOX_PUBLIC_HEADERS "${PROJECT_SOURCE_DIR}/include/nox/*.h")
+target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_PUBLIC_HEADERS})
 
 nox_create_project_source_tree(${NOX_LIB_NAME})
