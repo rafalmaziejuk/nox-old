@@ -7,7 +7,7 @@
 #include <nox/graphics_pipeline_state.h>
 #include <nox/render_target.h>
 #include <nox/shader.h>
-#include <nox/swap_chain.h>
+#include <nox/swapchain.h>
 #include <nox/texture.h>
 #include <nox/window.h>
 
@@ -33,7 +33,7 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual RendererBackend getRendererBackend() const = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<SwapChain> createSwapChain(const SwapChainDescriptor &descriptor, const Window &window) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) = 0;
 
