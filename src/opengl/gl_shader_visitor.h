@@ -1,6 +1,7 @@
 #pragma once
 
 #include "shader_visitor.h"
+#include "opengl/gl_shader.h"
 
 namespace NOX {
 

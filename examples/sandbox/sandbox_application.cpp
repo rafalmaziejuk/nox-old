@@ -1,17 +1,18 @@
 #include "sandbox_application.h"
 
-#include <nox/buffer.h>
-#include <nox/command_list.h>
-#include <nox/graphics_pipeline_state.h>
-#include <nox/render_target.h>
-#include <nox/shader.h>
-#include <nox/swapchain.h>
-#include <nox/texture.h>
-#include <nox/window.h>
+#include <nox/config.h>
+
+#include <GLFW/glfw3.h>
+
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 namespace NOX {
 
 namespace {
+
+constexpr std::string_view windowTitle = "Sandbox Example";
+constexpr Vector2D<int32_t> windowSize = {800, 600};
 
 constexpr auto triangleVertexShaderSource = R"(
             #version 460 core
@@ -44,12 +45,52 @@ constexpr auto triangleFragmentShaderSource = R"(
 
 } // namespace
 
+SandboxApplication::SandboxApplication() {
+    auto result = glfwInit();
+    NOX_ASSERT(result);
+
+    glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+    m_window = glfwCreateWindow(windowSize.x(), windowSize.y(), windowTitle.data(), nullptr, nullptr);
+    NOX_ASSERT(m_window != nullptr);
+
+    m_renderer = Renderer::create(RendererBackend::OPENGL);
+
+    WindowsSurfaceBackendDescriptor surfaceBackendDescriptor{};
+    surfaceBackendDescriptor.windowHandle = static_cast<void *>(glfwGetWin32Window(m_window));
+
+    OpenGLSurfaceAttributesDescriptor surfaceAttributesDescriptor{};
+    SurfaceDescriptor surfaceDescriptor{};
+    surfaceDescriptor.surfaceBackendDescriptor = surfaceBackendDescriptor;
+    surfaceDescriptor.surfaceAttributesDescriptor = surfaceAttributesDescriptor;
+    m_surface = m_renderer->createSurface(surfaceDescriptor);
+
+    SwapchainDescriptor swapchainDescriptor{};
+    swapchainDescriptor.presentMode = OpenGLPresentMode{true};
+    m_swapchain = m_renderer->createSwapchain(swapchainDescriptor);
+}
+
+SandboxApplication::~SandboxApplication() {
+    if (!m_surface->destroy()) {
+        NOX_ASSERT_MSG(false, "Couldn't destroy surface");
+    }
+
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
+    m_window = nullptr;
+}
+
+void SandboxApplication::initialize() {
+    createTriangleVertexBuffer();
+}
+
 void SandboxApplication::run() {
     CommandListDescriptor commandListDescriptor{};
     auto commandList = m_renderer->createCommandList(commandListDescriptor);
-    commandList->setViewport({800, 600});
+    commandList->setViewport(windowSize);
 
-    while (m_isRunning) {
+    while (!glfwWindowShouldClose(m_window)) {
+        glfwPollEvents();
+
         m_triangleGraphicsPipelineState->bind();
         m_triangleVertexBuffer->bind();
         m_triangleIndexBuffer->bind();
@@ -58,22 +99,8 @@ void SandboxApplication::run() {
         commandList->drawIndexed(0u, 6u);
         commandList->drawIndexed(7u, 14u);
 
-        m_swapchain->swap();
+        m_swapchain->present();
     }
-}
-
-SandboxApplication::SandboxApplication() {
-    m_renderer = Renderer::create(RendererBackend::OPENGL);
-
-    SwapchainDescriptor swapchainDescriptor{};
-    swapchainDescriptor.isVSync = true;
-    m_swapchain = m_renderer->createSwapchain(swapchainDescriptor);
-}
-
-SandboxApplication::~SandboxApplication() = default;
-
-void SandboxApplication::initialize() {
-    createTriangleVertexBuffer();
 }
 
 void SandboxApplication::createTriangleVertexBuffer() {

@@ -1,5 +1,6 @@
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_command_list.h"
+#include "opengl/gl_context.h"
 #include "opengl/gl_graphics_pipeline_state.h"
 #include "opengl/gl_render_target.h"
 #include "opengl/gl_renderer.h"
@@ -10,16 +11,23 @@
 
 #include <nox/config.h>
 
-#include <glad/gl.h>
-
 namespace NOX {
 
 RendererBackend GLRenderer::getRendererBackend() const {
     return RendererBackend::OPENGL;
 }
 
+std::shared_ptr<Surface> GLRenderer::createSurface(const SurfaceDescriptor &descriptor) {
+    m_context = GLContext::create(descriptor);
+    return m_context;
+}
+
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
-    m_context.createExtendedContext(descriptor.pixelFormatDescriptor);
+    if (m_context == nullptr) {
+        NOX_ASSERT_MSG(false, "Surface needs to be created before swapchain");
+        return nullptr;
+    }
+
     auto swapchain = std::make_unique<GLSwapchain>(descriptor, m_context);
     m_state.currentRenderTarget = &swapchain->getDefaultRenderTarget();
 

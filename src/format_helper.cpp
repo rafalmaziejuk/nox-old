@@ -1,6 +1,6 @@
 #include "format_helper.h"
 
-namespace NOX::FormatHelper {
+namespace NOX::Helpers {
 
 namespace {
 
@@ -199,4 +199,4 @@ FormatDescriptor getFormatDescriptor(Format format) {
     return descriptor;
 }
 
-} // namespace NOX::FormatHelper
+} // namespace NOX::Helpers
