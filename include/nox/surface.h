@@ -2,6 +2,7 @@
 
 #include <nox/export.h>
 
+#include <cstdint>
 #include <variant>
 
 namespace NOX {
@@ -10,18 +11,12 @@ struct WindowsSurfaceBackendDescriptor {
     void *windowHandle;
 };
 
-struct WaylandSurfaceBackendDescriptor {
-    void *displayHandle;
-    void *surfaceHandle;
-};
-
 struct X11SurfaceBackendDescriptor {
-    void *windowHandle;
+    uint64_t windowHandle;
     void *displayHandle;
 };
 
 using SurfaceBackendDescriptor = std::variant<WindowsSurfaceBackendDescriptor,
-                                              WaylandSurfaceBackendDescriptor,
                                               X11SurfaceBackendDescriptor>;
 
 struct OpenGLSurfaceAttributesDescriptor {

@@ -3,6 +3,7 @@
 
 #include <glad/gl.h>
 
+#include <cstddef>
 #include <vector>
 
 namespace NOX {

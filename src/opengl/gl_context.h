@@ -10,8 +10,6 @@ class GLContext : public Surface {
   public:
     [[nodiscard]] static std::shared_ptr<GLContext> create(const SurfaceDescriptor &descriptor);
 
-    [[nodiscard]] virtual bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) = 0;
-
     virtual void swapBuffers() const = 0;
     virtual void setSwapInterval(bool value) const = 0;
 
