@@ -30,8 +30,12 @@ GLVertexArray::~GLVertexArray() {
 }
 
 void GLVertexArray::setVertexBuffer(uint32_t vertexBufferHandle) {
-    constexpr GLuint offsetToFirstElementInsideBuffer = 0u;
-    glVertexArrayVertexBuffer(m_handle, m_currentBindingIndex, vertexBufferHandle, offsetToFirstElementInsideBuffer, m_stride);
+    constexpr GLintptr offsetToFirstElementInsideBuffer = 0;
+    glVertexArrayVertexBuffer(m_handle,
+                              m_currentBindingIndex,
+                              vertexBufferHandle,
+                              offsetToFirstElementInsideBuffer,
+                              static_cast<GLsizei>(m_stride));
     m_currentBindingIndex++;
 }
 

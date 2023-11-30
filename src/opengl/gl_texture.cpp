@@ -66,8 +66,8 @@ GLenum mapTextureFormat(Format format) {
     case Format::R32F: return GL_R32F;
     case Format::RG16F: return GL_RG16F;
     case Format::RG32F: return GL_RG32F;
-    case Format::RGB16F: return GL_RGB32F;
-    case Format::RGB64F: return GL_RGBA16F;
+    case Format::RGB16F: return GL_RGB16F;
+    case Format::RGB32F: return GL_RGB32F;
     case Format::RGBA16F: return GL_RGBA16F;
     case Format::RGBA32F: return GL_RGBA32F;
     case Format::DEPTH16I: return GL_DEPTH_COMPONENT16;
@@ -96,7 +96,11 @@ GLTexture::GLTexture(const TextureDescriptor &descriptor) {
         auto width = descriptor.size.x();
         auto height = descriptor.size.y();
         auto format = mapTextureFormat(descriptor.format);
-        glTextureStorage2D(m_handle, 1, format, width, height);
+        glTextureStorage2D(m_handle,
+                           1,
+                           format,
+                           static_cast<GLsizei>(width),
+                           static_cast<GLsizei>(height));
         break;
     }
 
