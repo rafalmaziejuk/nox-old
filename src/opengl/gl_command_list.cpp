@@ -53,7 +53,7 @@ void GLCommandList::setClearDepth(float depth) {
 }
 
 void GLCommandList::setClearStencil(uint32_t stencil) {
-    glClearStencil(stencil);
+    glClearStencil(static_cast<GLint>(stencil));
 }
 
 void GLCommandList::clear(uint32_t mask) {
@@ -101,7 +101,10 @@ void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
 }
 
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
-    glDrawElements(getState().primitiveTopology, vertexCount, getState().indexType, nullptr);
+    glDrawElements(getState().primitiveTopology,
+                   static_cast<GLsizei>(vertexCount),
+                   getState().indexType,
+                   nullptr);
 }
 
 } // namespace NOX

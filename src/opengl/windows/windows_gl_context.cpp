@@ -10,7 +10,7 @@ namespace NOX {
 
 namespace {
 
-[[nodiscard]] bool loadOpenGL(int32_t glMajorVersion, int32_t glMinorVersion) {
+[[nodiscard]] bool loadOpenGL() {
     constexpr auto dummyWindowName = "__NOX_DUMMY_WINDOW_CLASS__";
 
     WNDCLASS attributes{};
@@ -67,14 +67,6 @@ namespace {
         return false;
     }
 
-    int32_t majorVersion{}, minorVersion{};
-    glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
-    glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
-    if ((majorVersion != glMajorVersion) || (minorVersion != glMinorVersion)) {
-        NOX_ASSERT_MSG(false, "NOX currently supports only OpenGL 4.6");
-        return false;
-    }
-
     wglMakeCurrent(dummyDC, nullptr);
     wglDeleteContext(dummyHGLRC);
     ReleaseDC(dummyHWND, dummyDC);
@@ -104,7 +96,7 @@ std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor
         return nullptr;
     }
 
-    if (!loadOpenGL(glMajorVersion, glMinorVersion)) {
+    if (!loadOpenGL()) {
         return nullptr;
     }
 

@@ -34,7 +34,11 @@ void GLRenderTargetBase::clear(uint32_t stencil) const {
 }
 
 void GLRenderTargetBase::clear(float depth, uint32_t stencil) const {
-    glClearNamedFramebufferfi(m_handle, GL_DEPTH_STENCIL, 0, depth, stencil);
+    glClearNamedFramebufferfi(m_handle,
+                              GL_DEPTH_STENCIL,
+                              0,
+                              depth,
+                              static_cast<GLint>(stencil));
 }
 
 void GLDefaultRenderTarget::clear(const Vector4D<float> &color, [[maybe_unused]] uint8_t index) const {
