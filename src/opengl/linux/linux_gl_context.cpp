@@ -1,150 +1,148 @@
-#include "renderer/opengl/gl_context.h"
-#include "renderer/opengl/gl_helper.h"
-#include "window/linux/linux_window.h"
+#include "opengl/linux/linux_gl_context.h"
+#include "opengl/linux/x11_gl_context.h"
 
-#include <nox/swap_chain.h>
-#include <nox/window.h>
+#include <nox/config.h>
 
-#include <glad/glx.h>
+#include <glad/egl.h>
+#include <glad/gl.h>
+
+#include <array>
 
 namespace NOX {
 
-struct GLContext::Impl {
-    void setContextPixelFormatAndVisual(const PixelFormatDescriptor &descriptor) {
-        constexpr auto defaultAlphaBits = 8;
-        constexpr auto defaultColorBits = 32;
-        const int32_t colorChannelBits = descriptor.colorBits / 4;
-
-        constexpr auto attributePairsCount = 11u;
-        constexpr auto attributesArraySize = attributePairsCount * 2u + 1u;
-
-        // glx attributes for modern context
-        std::array<int32_t, attributesArraySize> glxAttributes = {
-            GLX_X_RENDERABLE, True,
-            GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
-            GLX_RENDER_TYPE, GLX_RGBA_BIT,
-            GLX_X_VISUAL_TYPE, GLX_TRUE_COLOR,
-            GLX_RED_SIZE, colorChannelBits,
-            GLX_GREEN_SIZE, colorChannelBits,
-            GLX_BLUE_SIZE, colorChannelBits,
-            GLX_ALPHA_SIZE, static_cast<int32_t>((descriptor.colorBits == defaultColorBits) ? defaultAlphaBits : 0),
-            GLX_DEPTH_SIZE, static_cast<int32_t>(descriptor.depthBits),
-            GLX_STENCIL_SIZE, static_cast<int32_t>(descriptor.stencilBits),
-            GLX_DOUBLEBUFFER, True,
-            None};
-
-        // preparing compatible frame buffer and visual for modern glx context
-        int32_t fbCount{};
-        GLXFBConfig *fbConfigArray = glXChooseFBConfig(display, DefaultScreen(display), glxAttributes.data(), &fbCount);
-        frameBufferConfig = getBestFrameBufferConfig(fbConfigArray, fbCount);
-        visual = glXGetVisualFromFBConfig(display, frameBufferConfig);
+std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
+    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
+    if (surfaceAttributesDescriptor == nullptr) {
+        NOX_ASSERT(false);
+        return nullptr;
     }
 
-    GLXFBConfig getBestFrameBufferConfig(GLXFBConfig *&fbConfig, const GLint fbCount) const {
-        // picking the frame buffer config/visual with the most samples per pixel
-        int16_t bestFbc{-1}, bestNumSamp{-1};
+    if (!gladLoaderLoadEGL(nullptr)) {
+        NOX_ASSERT_MSG(false, "Couldn't load EGL");
+        return nullptr;
+    }
 
-        for (int32_t i = 0; i < fbCount; ++i) {
-            XVisualInfo *visual = glXGetVisualFromFBConfig(display, fbConfig[i]);
-
-            if (visual != nullptr) {
-                int32_t sampBuf{}, samples{};
-                glXGetFBConfigAttrib(display, fbConfig[i], GLX_SAMPLE_BUFFERS, &sampBuf);
-                glXGetFBConfigAttrib(display, fbConfig[i], GLX_SAMPLES, &samples);
-
-                if ((bestFbc < 0) || (sampBuf && (samples > bestNumSamp))) {
-                    bestFbc = i;
-                    bestNumSamp = samples;
-                }
-            }
-            XFree(visual);
+    std::shared_ptr<LinuxGLContext> context{nullptr};
+    const auto *x11SurfaceBackendDescriptor = std::get_if<X11SurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
+    if (x11SurfaceBackendDescriptor != nullptr) {
+        if (x11SurfaceBackendDescriptor->windowHandle == 0u) {
+            NOX_ASSERT(false);
+            return nullptr;
         }
-        GLXFBConfig bestFbConfig = fbConfig[bestFbc];
-        XFree(fbConfig);
-        fbConfig = nullptr;
 
-        return bestFbConfig;
+        if (x11SurfaceBackendDescriptor->displayHandle == nullptr) {
+            NOX_ASSERT(false);
+            return nullptr;
+        }
+
+        context = std::make_shared<X11GLContext>(*x11SurfaceBackendDescriptor);
     }
 
-    static constexpr auto glxMajorVersion = 1u;
-    static constexpr auto glxMinorVersion = 4u;
-
-    ::Window window{0};
-    XVisualInfo *visual{nullptr};
-    Display *display{nullptr};
-    Screen *screen{nullptr};
-    GLXFBConfig frameBufferConfig{nullptr};
-    GLXContext handleRenderingContext{nullptr};
-    XID screenId;
-};
-
-GLContext::GLContext() : m_impl{std::make_unique<Impl>()} {
-    m_impl->display = XOpenDisplay(static_cast<const char *>(nullptr));
-    m_impl->screen = DefaultScreenOfDisplay(m_impl->display); // NOLINT
-    m_impl->screenId = DefaultScreen(m_impl->display);
-
-    gladLoaderLoadGLX(m_impl->display, m_impl->screenId);
-
-    // creating dummy opengl context for early gl initialization
-    const PixelFormatDescriptor defaultPixelFormatDescriptor{};
-    m_impl->setContextPixelFormatAndVisual(defaultPixelFormatDescriptor);
-
-    GLXContext dummyContext = glXCreateContext(m_impl->display, m_impl->visual, nullptr, GL_TRUE);
-    glXMakeCurrent(m_impl->display, 0, dummyContext);
-
-    gladLoaderLoadGL();
-
-    glXDestroyContext(m_impl->display, dummyContext);
-
-    XCloseDisplay(m_impl->display);
-    m_impl->display = nullptr;
-    m_impl->frameBufferConfig = nullptr;
-    m_impl->screen = nullptr;
-    m_impl->visual = nullptr;
-}
-
-GLContext::~GLContext() {
-    if (m_impl->display != nullptr && m_impl->handleRenderingContext != nullptr) {
-        glXDestroyContext(m_impl->display, m_impl->handleRenderingContext);
+    if (!context->initialize(*surfaceAttributesDescriptor)) {
+        return nullptr;
     }
+
+    return context;
 }
 
-void GLContext::makeCurrent() const {
-    glXMakeCurrent(m_impl->display, m_impl->window, m_impl->handleRenderingContext);
+LinuxGLContext::~LinuxGLContext() {
+    NOX_ASSERT_MSG((m_handleDisplay == nullptr) && (m_handleSurface == nullptr) && (m_handleRenderingContext == nullptr),
+                   "OpenGL surface should be destroyed via destroy() method");
+
+    gladLoaderUnloadEGL();
+    gladLoaderUnloadGL();
 }
 
-void GLContext::swapBuffers() const {
-    glXSwapBuffers(m_impl->display, m_impl->window);
+bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
+    if (!setDisplayHandle()) {
+        return false;
+    }
+
+    if (!eglInitialize(m_handleDisplay, nullptr, nullptr)) {
+        NOX_ASSERT_MSG(false, "Couldn't initialize EGL");
+        return false;
+    }
+
+    if (!gladLoaderLoadEGL(m_handleDisplay)) {
+        NOX_ASSERT_MSG(false, "Couldn't load EGL");
+        return false;
+    }
+
+    if (!eglBindAPI(EGL_OPENGL_API)) {
+        NOX_ASSERT_MSG(false, "Couldn't bind EGL OpenGL API");
+        return false;
+    }
+
+    std::array<int32_t, 13> framebufferConfigAttributes{EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+                                                        EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
+                                                        EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
+                                                        EGL_BUFFER_SIZE, descriptor.pixelFormatDescriptor.colorBits,
+                                                        EGL_DEPTH_SIZE, descriptor.pixelFormatDescriptor.depthBits,
+                                                        EGL_STENCIL_SIZE, descriptor.pixelFormatDescriptor.stencilBits,
+                                                        EGL_NONE};
+    EGLConfig framebufferConfig{};
+    EGLint framebufferConfigsCount{};
+    if (!eglChooseConfig(m_handleDisplay, framebufferConfigAttributes.data(), &framebufferConfig, 1, &framebufferConfigsCount)) {
+        NOX_ASSERT_MSG(false, "Couldn't choose framebuffer config");
+        return false;
+    }
+    NOX_ASSERT_MSG(framebufferConfigsCount == 1, "Couldn't choose only one framebuffer config");
+
+    if (!setSurfaceHandle(framebufferConfig)) {
+        return false;
+    }
+
+    constexpr std::array<int32_t, 7> contextAttributes{EGL_CONTEXT_MAJOR_VERSION, glMajorVersion,
+                                                       EGL_CONTEXT_MINOR_VERSION, glMinorVersion,
+                                                       EGL_CONTEXT_OPENGL_PROFILE_MASK, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT,
+                                                       EGL_NONE};
+    m_handleRenderingContext = eglCreateContext(m_handleDisplay, framebufferConfig, EGL_NO_CONTEXT, contextAttributes.data());
+    if (m_handleRenderingContext == nullptr) {
+        NOX_ASSERT_MSG(false, "Couldn't create OpenGL 4.6 context");
+        return false;
+    }
+
+    if (!eglMakeCurrent(m_handleDisplay, m_handleSurface, m_handleSurface, m_handleRenderingContext)) {
+        NOX_ASSERT_MSG(false, "Couldn't make OpenGL context current");
+        return false;
+    }
+
+    if (!gladLoaderLoadGL()) {
+        NOX_ASSERT_MSG(false, "Couldn't load OpenGL");
+        return false;
+    }
+
+    return true;
 }
 
-void GLContext::setSwapInterval(bool value) {
-    glXSwapIntervalEXT(m_impl->display, m_impl->window, static_cast<int32_t>(value));
+bool LinuxGLContext::destroy() {
+    eglMakeCurrent(m_handleDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    if (!eglDestroyContext(m_handleDisplay, m_handleRenderingContext)) {
+        NOX_ASSERT_MSG(false, "Couldn't destroy OpenGL context");
+        return false;
+    }
+    if (!eglDestroySurface(m_handleDisplay, m_handleSurface)) {
+        NOX_ASSERT_MSG(false, "Couldn't destroy EGL surface");
+        return false;
+    }
+    if (!eglTerminate(m_handleDisplay)) {
+        NOX_ASSERT_MSG(false, "Couldn't destroy EGL display");
+        return false;
+    }
+
+    m_handleDisplay = nullptr;
+    m_handleSurface = nullptr;
+    m_handleRenderingContext = nullptr;
+
+    return true;
 }
 
-void GLContext::createExtendedContext(const PixelFormatDescriptor &descriptor, const Window &window) {
-    const auto *linuxWindow = dynamic_cast<const LinuxWindow *>(&window);
-    m_impl->display = reinterpret_cast<Display *>(window.getNativeHandle());
-    m_impl->window = linuxWindow->getWindow();
-    m_impl->screen = DefaultScreenOfDisplay(m_impl->display); // NOLINT
-    m_impl->screenId = DefaultScreen(m_impl->display);
+void LinuxGLContext::swapBuffers() const {
+    eglSwapBuffers(m_handleDisplay, m_handleSurface);
+}
 
-    m_impl->setContextPixelFormatAndVisual(descriptor);
-
-    constexpr auto attributePairsCount = 3u;
-    constexpr auto attributesArraySize = attributePairsCount * 2u + 1u;
-    std::array<int32_t, attributesArraySize> contextAttributes = {
-        GLX_CONTEXT_MAJOR_VERSION_ARB, glMajorVersion,
-        GLX_CONTEXT_MINOR_VERSION_ARB, glMinorVersion,
-        GLX_CONTEXT_FLAGS_ARB, GLX_CONTEXT_FORWARD_COMPATIBLE_BIT_ARB,
-        None};
-
-    m_impl->handleRenderingContext = glXCreateContextAttribsARB(m_impl->display,
-                                                                m_impl->frameBufferConfig,
-                                                                nullptr,
-                                                                true,
-                                                                contextAttributes.data());
-    XSync(m_impl->display, False);
-    makeCurrent();
+void LinuxGLContext::setSwapInterval(bool value) const {
+    eglSwapInterval(m_handleDisplay, static_cast<EGLint>(value));
 }
 
 } // namespace NOX

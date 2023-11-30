@@ -4,7 +4,11 @@
 
 #include <GLFW/glfw3.h>
 
+#if defined(NOX_WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
+#elif defined(NOX_UNIX)
+#define GLFW_EXPOSE_NATIVE_X11
+#endif
 #include <GLFW/glfw3native.h>
 
 namespace NOX {
@@ -55,8 +59,14 @@ SandboxApplication::SandboxApplication() {
 
     m_renderer = Renderer::create(RendererBackend::OPENGL);
 
+#if defined(NOX_WIN32)
     WindowsSurfaceBackendDescriptor surfaceBackendDescriptor{};
     surfaceBackendDescriptor.windowHandle = static_cast<void *>(glfwGetWin32Window(m_window));
+#elif defined(NOX_UNIX)
+    X11SurfaceBackendDescriptor surfaceBackendDescriptor{};
+    surfaceBackendDescriptor.displayHandle = static_cast<void *>(glfwGetX11Display());
+    surfaceBackendDescriptor.windowHandle = static_cast<uint64_t>(glfwGetX11Window(m_window));
+#endif
 
     OpenGLSurfaceAttributesDescriptor surfaceAttributesDescriptor{};
     SurfaceDescriptor surfaceDescriptor{};

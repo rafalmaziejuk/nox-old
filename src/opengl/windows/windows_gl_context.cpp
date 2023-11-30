@@ -10,7 +10,7 @@ namespace NOX {
 
 namespace {
 
-[[nodiscard]] bool initializeExtensions(int32_t glMajorVersion, int32_t glMinorVersion) {
+[[nodiscard]] bool loadOpenGL(int32_t glMajorVersion, int32_t glMinorVersion) {
     constexpr auto dummyWindowName = "__NOX_DUMMY_WINDOW_CLASS__";
 
     WNDCLASS attributes{};
@@ -57,7 +57,12 @@ namespace {
     }
     wglMakeCurrent(dummyDC, dummyHGLRC);
 
-    if (!gladLoaderLoadWGL(dummyDC) || !gladLoaderLoadGL()) {
+    if (!gladLoaderLoadWGL(dummyDC)) {
+        NOX_ASSERT_MSG(false, "Couldn't load WGL");
+        return false;
+    }
+
+    if (!gladLoaderLoadGL()) {
         NOX_ASSERT_MSG(false, "Couldn't load OpenGL");
         return false;
     }
@@ -99,7 +104,7 @@ std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor
         return nullptr;
     }
 
-    if (!initializeExtensions(glMajorVersion, glMinorVersion)) {
+    if (!loadOpenGL(glMajorVersion, glMinorVersion)) {
         return nullptr;
     }
 
@@ -122,6 +127,8 @@ WindowsGLContext::WindowsGLContext(const WindowsSurfaceBackendDescriptor &descri
 WindowsGLContext::~WindowsGLContext() {
     NOX_ASSERT_MSG((m_handleWindow == nullptr) && (m_handleDeviceContext == nullptr) && (m_handleRenderingContext == nullptr),
                    "OpenGL surface should be destroyed via destroy() method");
+
+    gladLoaderUnloadGL();
 }
 
 bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
@@ -136,12 +143,16 @@ bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descr
                                                   0};
     int32_t pixelFormat{};
     UINT formatsCount{};
-    wglChoosePixelFormatARB(m_handleDeviceContext,
-                            pixelFormatAttributes.data(),
-                            nullptr,
-                            1,
-                            &pixelFormat,
-                            &formatsCount);
+    if (!wglChoosePixelFormatARB(m_handleDeviceContext,
+                                 pixelFormatAttributes.data(),
+                                 nullptr,
+                                 1,
+                                 &pixelFormat,
+                                 &formatsCount)) {
+        NOX_ASSERT_MSG(false, "Couldn't choose pixel format");
+        return false;
+    }
+    NOX_ASSERT_MSG(formatsCount == 1u, "Couldn't choose only one pixel format");
 
     PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
     DescribePixelFormat(m_handleDeviceContext, pixelFormat, sizeof(pixelFormatDescriptor), &pixelFormatDescriptor);
@@ -173,7 +184,7 @@ bool WindowsGLContext::destroy() {
 
     wglMakeCurrent(nullptr, nullptr);
     if (!wglDeleteContext(m_handleRenderingContext)) {
-        NOX_ASSERT_MSG(false, "Couldn't delete OpenGL context");
+        NOX_ASSERT_MSG(false, "Couldn't destroy OpenGL context");
         return false;
     }
     if (!ReleaseDC(m_handleWindow, m_handleDeviceContext)) {

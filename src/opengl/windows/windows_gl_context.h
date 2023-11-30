@@ -9,7 +9,7 @@ class WindowsGLContext final : public GLContext {
     explicit WindowsGLContext(const WindowsSurfaceBackendDescriptor &descriptor);
     ~WindowsGLContext() override;
 
-    bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) override;
+    [[nodiscard]] bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor);
 
     bool destroy() override;
 

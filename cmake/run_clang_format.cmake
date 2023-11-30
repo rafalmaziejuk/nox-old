@@ -15,4 +15,6 @@ foreach (DIRECTORY IN ITEMS include src examples)
     list(APPEND SOURCES ${FILES})
 endforeach()
 
+list(FILTER SOURCES EXCLUDE REGEX "third_party")
+
 execute_process(COMMAND ${CLANG_FORMAT_EXECUTABLE} -i ${SOURCES})
