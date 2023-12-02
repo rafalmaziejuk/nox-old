@@ -1,7 +1,6 @@
+#include "assertion.h"
 #include "opengl/gl_texture.h"
 #include "opengl/gl_texture_visitor.h"
-
-#include <nox/config.h>
 
 #include <glad/gl.h>
 

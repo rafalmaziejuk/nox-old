@@ -1,9 +1,8 @@
+#include "assertion.h"
 #include "opengl/gl_graphics_pipeline_state.h"
 #include "opengl/gl_program.h"
 #include "opengl/gl_shader.h"
 #include "opengl/gl_shader_visitor.h"
-
-#include <nox/config.h>
 
 #include <glad/gl.h>
 

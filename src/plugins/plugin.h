@@ -13,7 +13,6 @@ class Plugin {
 
     [[nodiscard]] static std::unique_ptr<Plugin> create(std::string_view name);
 
-  public:
     [[nodiscard]] bool pluginRegister() const;
     [[nodiscard]] uint8_t pluginVersion() const;
 

@@ -1,7 +1,5 @@
 #include "sandbox_application.h"
 
-#include <nox/config.h>
-
 #include <GLFW/glfw3.h>
 
 #if defined(NOX_WIN32)
@@ -51,11 +49,9 @@ constexpr auto triangleFragmentShaderSource = R"(
 
 SandboxApplication::SandboxApplication() {
     auto result = glfwInit();
-    NOX_ASSERT(result);
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
     m_window = glfwCreateWindow(windowSize.x(), windowSize.y(), windowTitle.data(), nullptr, nullptr);
-    NOX_ASSERT(m_window != nullptr);
 
     m_renderer = Renderer::create(RendererBackend::OPENGL);
 
@@ -80,13 +76,11 @@ SandboxApplication::SandboxApplication() {
 }
 
 SandboxApplication::~SandboxApplication() {
-    if (!m_surface->destroy()) {
-        NOX_ASSERT_MSG(false, "Couldn't destroy surface");
+    if (m_surface->destroy()) {
+        glfwDestroyWindow(m_window);
+        glfwTerminate();
+        m_window = nullptr;
     }
-
-    glfwDestroyWindow(m_window);
-    glfwTerminate();
-    m_window = nullptr;
 }
 
 void SandboxApplication::initialize() {

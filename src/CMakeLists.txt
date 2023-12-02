@@ -32,6 +32,7 @@ target_compile_definitions(${NOX_LIB_NAME} PUBLIC $<$<CONFIG:Debug>:NOX_DEBUG>)
 
 if(NOX_PLATFORM_WINDOWS)
     target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_WIN32)
+    target_compile_definitions(${NOX_LIB_NAME} PRIVATE WIN32_LEAN_AND_MEAN)
 endif()
 
 if(NOX_PLATFORM_LINUX)
@@ -75,6 +76,7 @@ generate_export_header(
 # --------------------------------------------------
 set(NOX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/assertion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp

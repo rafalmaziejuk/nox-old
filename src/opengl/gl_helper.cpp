@@ -1,6 +1,5 @@
+#include "assertion.h"
 #include "opengl/gl_helper.h"
-
-#include <nox/config.h>
 
 namespace NOX::GLHelper {
 

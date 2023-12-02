@@ -1,7 +1,6 @@
+#include "assertion.h"
 #include "opengl/gl_context.h"
 #include "opengl/gl_swapchain.h"
-
-#include <nox/config.h>
 
 namespace NOX {
 
