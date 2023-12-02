@@ -1,3 +1,4 @@
+#include "assertion.h"
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_command_list.h"
 #include "opengl/gl_context.h"
@@ -8,8 +9,6 @@
 #include "opengl/gl_swapchain.h"
 #include "opengl/gl_texture.h"
 #include "opengl/gl_vertex_array.h"
-
-#include <nox/config.h>
 
 namespace NOX {
 
@@ -23,10 +22,7 @@ std::shared_ptr<Surface> GLRenderer::createSurface(const SurfaceDescriptor &desc
 }
 
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
-    if (m_context == nullptr) {
-        NOX_ASSERT_MSG(false, "Surface needs to be created before swapchain");
-        return nullptr;
-    }
+    NOX_ASSERT_RETURN_NULLPTR_MSG(m_context != nullptr, "Surface needs to be created before swapchain");
 
     auto swapchain = std::make_unique<GLSwapchain>(descriptor, m_context);
     m_state.currentRenderTarget = &swapchain->getDefaultRenderTarget();
@@ -54,20 +50,14 @@ std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &de
 
 std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descriptor, std::string_view source) {
     auto shader = std::make_unique<GLShader>(descriptor);
-    if (!shader->compile(source.data())) {
-        NOX_ASSERT(false);
-        return nullptr;
-    }
+    NOX_ASSERT_RETURN_NULLPTR_MSG(shader->compile(source.data()), "Couldn't compile shader");
 
     return shader;
 }
 
 std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) {
     auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor, m_state);
-    if (!pipeline->bindShaderStages(descriptor.shaderStages)) {
-        NOX_ASSERT(false);
-        return nullptr;
-    }
+    NOX_ASSERT_RETURN_NULLPTR_MSG(pipeline->bindShaderStages(descriptor.shaderStages), "Couldn't bind graphics pipeline shader stages");
 
     return pipeline;
 }

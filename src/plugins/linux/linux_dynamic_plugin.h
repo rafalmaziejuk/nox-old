@@ -4,8 +4,9 @@ namespace NOX {
 
 class LinuxDynamicPlugin final : public Plugin {
   public:
-    explicit LinuxDynamicPlugin(std::string_view filename);
     ~LinuxDynamicPlugin() override;
+
+    [[nodiscard]] bool load(std::string_view filename);
 
   private:
     void *m_handle{nullptr};

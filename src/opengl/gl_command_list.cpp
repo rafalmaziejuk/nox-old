@@ -1,11 +1,10 @@
+#include "assertion.h"
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_command_list.h"
 #include "opengl/gl_graphics_pipeline_state.h"
 #include "opengl/gl_render_target.h"
 #include "opengl/gl_state.h"
 #include "opengl/gl_vertex_array.h"
-
-#include <nox/config.h>
 
 #include <glad/gl.h>
 

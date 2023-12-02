@@ -31,6 +31,13 @@ else()
 endif()
 
 # --------------------------------------------------
+# Specify compile definitions
+# --------------------------------------------------
+if(NOX_PLATFORM_WINDOWS)
+    target_compile_definitions(${NOX_OPENGL_LIB_NAME} PRIVATE WIN32_LEAN_AND_MEAN)
+endif()
+
+# --------------------------------------------------
 # Set properties
 # --------------------------------------------------
 set_target_properties(
