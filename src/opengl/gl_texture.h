@@ -6,6 +6,8 @@ namespace NOX {
 
 class GLTexture final : public Texture {
   public:
+    [[nodiscard]] static bool validateInput(const TextureDescriptor &descriptor);
+
     explicit GLTexture(const TextureDescriptor &descriptor);
     ~GLTexture() override;
 

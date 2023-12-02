@@ -1,6 +1,11 @@
 # --------------------------------------------------
 # Find required dependencies
 # --------------------------------------------------
+find_package(OpenGL REQUIRED COMPONENTS EGL)
+if (NOT OpenGL_EGL_FOUND)
+    message(FATAL_ERROR "EGL not found")
+endif()
+
 find_package(X11 REQUIRED)
 if(NOT X11_FOUND)
     message(FATAL_ERROR "X11 not found")
@@ -12,6 +17,7 @@ endif()
 target_link_libraries(
     ${NOX_LIB_NAME}
     PRIVATE
+    OpenGL::EGL
     X11::X11
 )
 

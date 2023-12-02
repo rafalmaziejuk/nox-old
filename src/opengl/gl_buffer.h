@@ -13,12 +13,18 @@ class GLBuffer : public Buffer, public GLWithState {
 
     uint32_t getHandle() const { return m_handle; }
 
+  protected:
+    [[nodiscard]] static bool validateInput(const BufferDescriptor &descriptor);
+
   private:
     uint32_t m_handle{0u};
 };
 
 class GLVertexBuffer final : public GLBuffer {
   public:
+    [[nodiscard]] static bool validateInput(const BufferDescriptor &descriptor,
+                                            const VertexFormat &vertexFormat);
+
     using GLBuffer::GLBuffer;
 
     void bind() override;
@@ -31,6 +37,9 @@ class GLVertexBuffer final : public GLBuffer {
 
 class GLIndexBuffer final : public GLBuffer {
   public:
+    [[nodiscard]] static bool validateInput(const BufferDescriptor &descriptor,
+                                            Format format);
+
     using GLBuffer::GLBuffer;
 
     void bind() override;

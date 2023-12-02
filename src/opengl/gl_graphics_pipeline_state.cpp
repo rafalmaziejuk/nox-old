@@ -1,10 +1,12 @@
-#include "assertion.h"
+#include "nox_assert.h"
 #include "opengl/gl_graphics_pipeline_state.h"
 #include "opengl/gl_program.h"
 #include "opengl/gl_shader.h"
 #include "opengl/gl_shader_visitor.h"
 
 #include <glad/gl.h>
+
+#include <algorithm>
 
 namespace NOX {
 
@@ -39,8 +41,24 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
 
 } // namespace
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state},
-                                                                                                                      m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
+bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescriptor &descriptor) {
+    auto validateShader = [](const auto &shader) -> bool {
+        if (shader == nullptr) {
+            return false;
+        }
+
+        GLShaderVisitor visitor{};
+        shader->accept(visitor);
+        return (mapShaderTypeToBitfield(visitor.getType()) != GL_NONE);
+    };
+
+    return (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE) &&
+           (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
+}
+
+GLGraphicsPipelineState::GLGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state} {
+    m_primitiveTopology = mapPrimitiveTopologyToEnum(descriptor.primitiveTopology);
+
     glCreateProgramPipelines(1, &m_handle);
 }
 

@@ -1,4 +1,4 @@
-#include "assertion.h"
+#include "nox_assert.h"
 #include "renderer_factory_registry.h"
 #include "plugins/plugin_interface.h"
 
@@ -28,16 +28,16 @@ RendererFactoryRegistry &RendererFactoryRegistry::instance() {
 }
 
 bool RendererFactoryRegistry::registerFactory(RendererBackend backend) {
-    NOX_ASSERT_RETURN_FALSE(backend < RendererBackend::MAX);
+    NOX_ASSERT(backend < RendererBackend::MAX);
 
     if (contains(backend)) {
         return true;
     }
 
     auto plugin = createRendererPlugin(backend);
-    NOX_ASSERT_RETURN_FALSE_MSG(plugin != nullptr, "Couldn't create renderer plugin");
-    NOX_ASSERT_RETURN_FALSE_MSG(plugin->pluginVersion() == NOX_PLUGIN_API_VERSION, "Plugin API version mismatch");
-    NOX_ASSERT_RETURN_FALSE_MSG(plugin->pluginRegister(), "Couldn't register renderer plugin");
+    NOX_ENSURE_RETURN_FALSE_MSG(plugin != nullptr, "Couldn't create renderer plugin");
+    NOX_ENSURE_RETURN_FALSE_MSG(plugin->pluginRegister(), "Couldn't register renderer plugin");
+    NOX_ASSERT_MSG(plugin->pluginVersion() == NOX_PLUGIN_API_VERSION, "Plugin API version mismatch");
 
     const auto index = static_cast<size_t>(backend);
     m_plugins.at(index) = std::move(plugin);

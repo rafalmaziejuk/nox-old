@@ -10,6 +10,8 @@ class GLContext;
 
 class GLSwapchain final : public Swapchain {
   public:
+    [[nodiscard]] static bool validateInput(const SwapchainDescriptor &descriptor);
+
     GLSwapchain(const SwapchainDescriptor &descriptor, std::shared_ptr<GLContext> context);
 
     void present() const override;

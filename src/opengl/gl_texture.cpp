@@ -1,4 +1,4 @@
-#include "assertion.h"
+#include "nox_assert.h"
 #include "opengl/gl_texture.h"
 #include "opengl/gl_texture_visitor.h"
 
@@ -85,6 +85,11 @@ GLenum mapTextureFormat(Format format) {
 }
 
 } // namespace
+
+bool GLTexture::validateInput(const TextureDescriptor &descriptor) {
+    return (mapTextureTarget(descriptor.type) != GL_NONE) &&
+           (mapTextureFormat(descriptor.format) != GL_NONE);
+}
 
 GLTexture::GLTexture(const TextureDescriptor &descriptor) {
     auto target = mapTextureTarget(descriptor.type);

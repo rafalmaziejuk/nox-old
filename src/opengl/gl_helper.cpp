@@ -1,4 +1,4 @@
-#include "assertion.h"
+#include "nox_assert.h"
 #include "opengl/gl_helper.h"
 
 namespace NOX::GLHelper {
@@ -40,10 +40,6 @@ GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size) {
 
     NOX_ASSERT(false);
     return GL_NONE;
-}
-
-bool isExtensionSupported(std::string_view extensionsList, std::string_view extension) {
-    return (extensionsList.find(extension) != std::string::npos);
 }
 
 } // namespace NOX::GLHelper

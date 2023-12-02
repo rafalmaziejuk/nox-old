@@ -11,25 +11,25 @@
 
 #define NOX_ASSERT_MSG(condition, message) NOX_ASSERT((condition) && (message))
 
-#define NOX_ASSERT_RETURN_FALSE(condition) \
+#define NOX_ENSURE_RETURN_FALSE(condition) \
     if (!(condition)) {                    \
         NOX_ASSERT(condition);             \
         return false;                      \
     }
 
-#define NOX_ASSERT_RETURN_FALSE_MSG(condition, message) \
+#define NOX_ENSURE_RETURN_FALSE_MSG(condition, message) \
     if (!(condition)) {                                 \
         NOX_ASSERT_MSG(condition, message);             \
         return false;                                   \
     }
 
-#define NOX_ASSERT_RETURN_NULLPTR(condition) \
+#define NOX_ENSURE_RETURN_NULLPTR(condition) \
     if (!(condition)) {                      \
         NOX_ASSERT(condition);               \
         return nullptr;                      \
     }
 
-#define NOX_ASSERT_RETURN_NULLPTR_MSG(condition, message) \
+#define NOX_ENSURE_RETURN_NULLPTR_MSG(condition, message) \
     if (!(condition)) {                                   \
         NOX_ASSERT_MSG(condition, message);               \
         return nullptr;                                   \

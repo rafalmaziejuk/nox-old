@@ -2,10 +2,14 @@
 
 #include <nox/shader.h>
 
+#include <string_view>
+
 namespace NOX {
 
 class GLShader final : public Shader {
   public:
+    [[nodiscard]] static bool validateInput(const ShaderDescriptor &descriptor, std::string_view source);
+
     explicit GLShader(const ShaderDescriptor &descriptor);
     ~GLShader() override;
 

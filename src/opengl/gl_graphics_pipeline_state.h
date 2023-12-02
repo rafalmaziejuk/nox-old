@@ -9,6 +9,8 @@ namespace NOX {
 
 class GLGraphicsPipelineState final : public GraphicsPipelineState, public GLWithState {
   public:
+    [[nodiscard]] static bool validateInput(const GraphicsPipelineStateDescriptor &descriptor);
+
     GLGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor, GLState &state);
     ~GLGraphicsPipelineState() override;
 

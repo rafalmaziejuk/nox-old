@@ -8,19 +8,18 @@ namespace NOX {
 
 class Plugin {
   public:
-    Plugin() = default;
-    virtual ~Plugin() = default;
-
     [[nodiscard]] static std::unique_ptr<Plugin> create(std::string_view name);
 
     [[nodiscard]] bool pluginRegister() const;
     [[nodiscard]] uint8_t pluginVersion() const;
 
   public:
+    Plugin() = default;
     Plugin(const Plugin &) = delete;
     Plugin &operator=(const Plugin &) = delete;
     Plugin(Plugin &&) = delete;
     Plugin &operator=(Plugin &&) = delete;
+    virtual ~Plugin() = default;
 
   protected:
     static constexpr auto pluginRegisterFunctionName = "pluginRegister";
