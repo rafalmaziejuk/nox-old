@@ -76,9 +76,9 @@ generate_export_header(
 # --------------------------------------------------
 set(NOX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-    ${CMAKE_CURRENT_SOURCE_DIR}/assertion.h
     ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/nox_assert.h
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.h

@@ -1,4 +1,4 @@
-#include "assertion.h"
+#include "nox_assert.h"
 #include "opengl/gl_shader.h"
 #include "opengl/gl_shader_visitor.h"
 
@@ -25,6 +25,11 @@ GLenum mapShaderTypeToEnum(ShaderType type) {
 }
 
 } // namespace
+
+bool GLShader::validateInput(const ShaderDescriptor &descriptor, std::string_view source) {
+    return (!source.empty()) &&
+           (mapShaderTypeToEnum(descriptor.type) != GL_NONE);
+}
 
 GLShader::GLShader(const ShaderDescriptor &descriptor) : m_type{descriptor.type} {
     m_handle = glCreateShader(mapShaderTypeToEnum(m_type));

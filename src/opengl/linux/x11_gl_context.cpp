@@ -1,6 +1,5 @@
+#include "nox_assert.h"
 #include "opengl/linux/x11_gl_context.h"
-
-#include <nox/config.h>
 
 #define USE_X11
 #include <glad/egl.h>
@@ -18,11 +17,8 @@ X11GLContext::~X11GLContext() {
 
 bool X11GLContext::destroy() {
     XWindowAttributes windowAttributes;
-    auto result = XGetWindowAttributes(m_handleDisplayX11, m_handleWindowX11, &windowAttributes);
-    if (result == 0) {
-        NOX_ASSERT_MSG(false, "The window handle associated with OpenGL context is invalid");
-        return false;
-    }
+    NOX_ENSURE_RETURN_FALSE_MSG(XGetWindowAttributes(m_handleDisplayX11, m_handleWindowX11, &windowAttributes),
+                                "The window handle associated with OpenGL context is invalid");
 
     m_handleDisplayX11 = nullptr;
     m_handleWindowX11 = 0u;
@@ -32,22 +28,12 @@ bool X11GLContext::destroy() {
 
 bool X11GLContext::setDisplayHandle() {
     m_handleDisplay = eglGetDisplay(static_cast<EGLNativeDisplayType>(m_handleDisplayX11));
-    if (m_handleDisplay == EGL_NO_DISPLAY) {
-        NOX_ASSERT_MSG(false, "Couldn't get EGL display");
-        return false;
-    }
-
-    return true;
+    return (m_handleDisplay != EGL_NO_DISPLAY);
 }
 
 bool X11GLContext::setSurfaceHandle(EGLConfig framebufferConfig) {
     m_handleSurface = eglCreateWindowSurface(m_handleDisplay, framebufferConfig, m_handleWindowX11, nullptr);
-    if (m_handleSurface == EGL_NO_SURFACE) {
-        NOX_ASSERT_MSG(false, "Couldn't create EGL window surface");
-        return false;
-    }
-
-    return true;
+    return (m_handleSurface != EGL_NO_SURFACE);
 }
 
 } // namespace NOX

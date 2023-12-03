@@ -1,9 +1,9 @@
 # --------------------------------------------------
 # Find required dependencies
 # --------------------------------------------------
-find_package(OpenGL 4.6 REQUIRED)
+find_package(OpenGL REQUIRED)
 if(NOT OPENGL_FOUND)
-    message(FATAL_ERROR "OpenGL 4.6 not found")
+    message(FATAL_ERROR "OpenGL not found")
 endif()
 
 target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_BUILD_RENDERER_OPENGL)

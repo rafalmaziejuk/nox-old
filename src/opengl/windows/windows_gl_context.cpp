@@ -1,4 +1,4 @@
-#include "assertion.h"
+#include "nox_assert.h"
 #include "opengl/windows/windows_gl_context.h"
 
 #include <glad/wgl.h>
@@ -30,7 +30,7 @@ namespace {
                                   nullptr,
                                   attributes.hInstance,
                                   nullptr);
-    NOX_ASSERT_RETURN_FALSE_MSG(dummyHWND != nullptr, "Couldn't create dummy window");
+    NOX_ENSURE_RETURN_FALSE_MSG(dummyHWND != nullptr, "Couldn't create dummy window");
 
     HDC dummyDC = GetDC(dummyHWND);
     PIXELFORMATDESCRIPTOR pixelFormatDescriptor{};
@@ -47,12 +47,12 @@ namespace {
     SetPixelFormat(dummyDC, pixelFormat, &pixelFormatDescriptor);
 
     HGLRC dummyHGLRC = wglCreateContext(dummyDC);
-    NOX_ASSERT_RETURN_FALSE_MSG(dummyHGLRC != nullptr, "Couldn't create dummy OpenGL context");
+    NOX_ENSURE_RETURN_FALSE_MSG(dummyHGLRC != nullptr, "Couldn't create dummy OpenGL context");
 
     wglMakeCurrent(dummyDC, dummyHGLRC);
 
-    NOX_ASSERT_RETURN_FALSE_MSG(gladLoaderLoadWGL(dummyDC), "Couldn't load WGL");
-    NOX_ASSERT_RETURN_FALSE_MSG(gladLoaderLoadGL(), "Couldn't load OpenGL");
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadWGL(dummyDC), "Couldn't load WGL");
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadGL(), "Couldn't load OpenGL");
 
     wglMakeCurrent(dummyDC, nullptr);
     wglDeleteContext(dummyHGLRC);
@@ -65,18 +65,22 @@ namespace {
 
 } // namespace
 
-std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
+bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
     const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
-    NOX_ASSERT_RETURN_NULLPTR(surfaceBackendDescriptor != nullptr);
-
     const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
-    NOX_ASSERT_RETURN_NULLPTR(surfaceAttributesDescriptor != nullptr);
-    NOX_ASSERT_RETURN_NULLPTR(surfaceBackendDescriptor->windowHandle != nullptr);
 
+    return (surfaceBackendDescriptor != nullptr) &&
+           (surfaceBackendDescriptor->windowHandle != nullptr) &&
+           (surfaceAttributesDescriptor != nullptr);
+}
+
+std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
     if (!loadOpenGL()) {
         return nullptr;
     }
 
+    const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
+    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
     auto context = std::make_shared<WindowsGLContext>(*surfaceBackendDescriptor);
     if (!context->initialize(*surfaceAttributesDescriptor)) {
         return nullptr;
@@ -110,38 +114,36 @@ bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descr
                                                   0};
     int32_t pixelFormat{};
     UINT formatsCount{};
-    NOX_ASSERT_RETURN_FALSE_MSG(wglChoosePixelFormatARB(m_handleDeviceContext,
-                                                        pixelFormatAttributes.data(),
-                                                        nullptr,
-                                                        1,
-                                                        &pixelFormat,
-                                                        &formatsCount),
-                                "Couldn't choose pixel format");
-    NOX_ASSERT_RETURN_FALSE_MSG(formatsCount == 1u, "Couldn't choose only one pixel format");
+    wglChoosePixelFormatARB(m_handleDeviceContext,
+                            pixelFormatAttributes.data(),
+                            nullptr,
+                            1,
+                            &pixelFormat,
+                            &formatsCount);
+    NOX_ENSURE_RETURN_FALSE_MSG(formatsCount == 1u, "Couldn't choose only one pixel format");
 
     PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
     DescribePixelFormat(m_handleDeviceContext, pixelFormat, sizeof(pixelFormatDescriptor), &pixelFormatDescriptor);
-    NOX_ASSERT_RETURN_FALSE_MSG(SetPixelFormat(m_handleDeviceContext, pixelFormat, &pixelFormatDescriptor),
-                                "Couldn't set pixel format");
+    SetPixelFormat(m_handleDeviceContext, pixelFormat, &pixelFormatDescriptor);
 
     constexpr std::array<int32_t, 7> contextAttributes{WGL_CONTEXT_MAJOR_VERSION_ARB, glMajorVersion,
                                                        WGL_CONTEXT_MINOR_VERSION_ARB, glMinorVersion,
                                                        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
                                                        0};
     m_handleRenderingContext = wglCreateContextAttribsARB(m_handleDeviceContext, nullptr, contextAttributes.data());
-    NOX_ASSERT_RETURN_FALSE_MSG(m_handleRenderingContext != nullptr, "Couldn't create OpenGL 4.6 context");
-    NOX_ASSERT_RETURN_FALSE_MSG(wglMakeCurrent(m_handleDeviceContext, m_handleRenderingContext), "Couldn't make OpenGL context current");
+    NOX_ENSURE_RETURN_FALSE_MSG(m_handleRenderingContext != nullptr, "Couldn't create OpenGL 4.6 context");
+
+    wglMakeCurrent(m_handleDeviceContext, m_handleRenderingContext);
 
     return true;
 }
 
 bool WindowsGLContext::destroy() {
-    NOX_ASSERT_RETURN_FALSE_MSG(IsWindow(m_handleWindow), "The window handle associated with OpenGL context is invalid");
+    NOX_ENSURE_RETURN_FALSE_MSG(IsWindow(m_handleWindow), "The window handle associated with OpenGL context is invalid");
 
     wglMakeCurrent(nullptr, nullptr);
-    NOX_ASSERT_RETURN_FALSE_MSG(wglDeleteContext(m_handleRenderingContext), "Couldn't destroy OpenGL context");
-    NOX_ASSERT_RETURN_FALSE_MSG(ReleaseDC(m_handleWindow, m_handleDeviceContext),
-                                "Couldn't release device context associated with OpenGL context");
+    wglDeleteContext(m_handleRenderingContext);
+    ReleaseDC(m_handleWindow, m_handleDeviceContext);
 
     m_handleWindow = nullptr;
     m_handleDeviceContext = nullptr;

@@ -2,6 +2,8 @@
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_helper.h"
 
+#include <algorithm>
+
 namespace NOX {
 
 namespace {
@@ -21,6 +23,11 @@ GLbitfield mapBufferUsageToBitfield(uint32_t usage) {
 
 } // namespace
 
+bool GLBuffer::validateInput(const BufferDescriptor &descriptor) {
+    return (descriptor.size > 0u) &&
+           (descriptor.data != nullptr);
+}
+
 GLBuffer::GLBuffer(const BufferDescriptor &descriptor, GLState &state) : GLWithState{state} {
     auto flags = mapBufferUsageToBitfield(descriptor.usage);
     glCreateBuffers(1, &m_handle);
@@ -31,6 +38,18 @@ GLBuffer::~GLBuffer() {
     glDeleteBuffers(1, &m_handle);
 }
 
+bool GLVertexBuffer::validateInput(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) {
+    auto validateFormat = [](Format format) -> bool {
+        auto formatDescriptor = Helpers::getFormatDescriptor(format);
+        auto indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
+        return (indexType != GL_NONE);
+    };
+
+    return (GLBuffer::validateInput(descriptor)) &&
+           (!vertexFormat.empty()) &&
+           (std::all_of(vertexFormat.begin(), vertexFormat.end(), validateFormat));
+}
+
 void GLVertexBuffer::bind() {
     auto &vertexArrayRegistry = getState().vertexArrayRegistry;
     vertexArrayRegistry[m_vertexArrayIndex].bind();
@@ -39,6 +58,14 @@ void GLVertexBuffer::bind() {
 
 void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
     m_vertexArrayIndex = index;
+}
+
+bool GLIndexBuffer::validateInput(const BufferDescriptor &descriptor, Format format) {
+    auto formatDescriptor = Helpers::getFormatDescriptor(format);
+    auto indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
+
+    return (GLBuffer::validateInput(descriptor)) &&
+           (indexType != GL_NONE);
 }
 
 void GLIndexBuffer::bind() {

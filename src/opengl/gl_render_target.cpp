@@ -1,4 +1,4 @@
-#include "assertion.h"
+#include "nox_assert.h"
 #include "format_helper.h"
 #include "opengl/gl_render_target.h"
 #include "opengl/gl_texture.h"

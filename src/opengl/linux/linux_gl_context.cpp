@@ -1,7 +1,6 @@
+#include "nox_assert.h"
 #include "opengl/linux/linux_gl_context.h"
 #include "opengl/linux/x11_gl_context.h"
-
-#include <nox/config.h>
 
 #include <glad/egl.h>
 #include <glad/gl.h>
@@ -10,33 +9,33 @@
 
 namespace NOX {
 
-std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
+bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
     const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
-    if (surfaceAttributesDescriptor == nullptr) {
-        NOX_ASSERT(false);
-        return nullptr;
-    }
+    auto validateSurfaceBackendDescriptor = [&descriptor]() -> bool {
+        const auto *x11SurfaceBackendDescriptor = std::get_if<X11SurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
+        if (x11SurfaceBackendDescriptor != nullptr) {
+            return (x11SurfaceBackendDescriptor->windowHandle == 0u) &&
+                   (x11SurfaceBackendDescriptor->displayHandle == nullptr);
+        }
 
-    if (!gladLoaderLoadEGL(nullptr)) {
-        NOX_ASSERT_MSG(false, "Couldn't load EGL");
-        return nullptr;
-    }
+        return false;
+    };
+
+    return (surfaceAttributesDescriptor != nullptr) &&
+           (validateSurfaceBackendDescriptor());
+}
+
+std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
+    NOX_ENSURE_RETURN_NULLPTR_MSG(gladLoaderLoadEGL(nullptr), "Couldn't preload EGL");
 
     std::shared_ptr<LinuxGLContext> context{nullptr};
+    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
     const auto *x11SurfaceBackendDescriptor = std::get_if<X11SurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
     if (x11SurfaceBackendDescriptor != nullptr) {
-        if (x11SurfaceBackendDescriptor->windowHandle == 0u) {
-            NOX_ASSERT(false);
-            return nullptr;
-        }
-
-        if (x11SurfaceBackendDescriptor->displayHandle == nullptr) {
-            NOX_ASSERT(false);
-            return nullptr;
-        }
-
         context = std::make_shared<X11GLContext>(*x11SurfaceBackendDescriptor);
     }
+
+    NOX_ENSURE_RETURN_NULLPTR(context != nullptr);
 
     if (!context->initialize(*surfaceAttributesDescriptor)) {
         return nullptr;
@@ -54,24 +53,12 @@ LinuxGLContext::~LinuxGLContext() {
 }
 
 bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
-    if (!setDisplayHandle()) {
-        return false;
-    }
+    NOX_ENSURE_RETURN_FALSE_MSG(setDisplayHandle(), "Couldn't get EGL display");
 
-    if (!eglInitialize(m_handleDisplay, nullptr, nullptr)) {
-        NOX_ASSERT_MSG(false, "Couldn't initialize EGL");
-        return false;
-    }
+    NOX_ENSURE_RETURN_FALSE_MSG(eglInitialize(m_handleDisplay, nullptr, nullptr), "Couldn't initialize EGL");
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadEGL(m_handleDisplay), "Couldn't load EGL");
 
-    if (!gladLoaderLoadEGL(m_handleDisplay)) {
-        NOX_ASSERT_MSG(false, "Couldn't load EGL");
-        return false;
-    }
-
-    if (!eglBindAPI(EGL_OPENGL_API)) {
-        NOX_ASSERT_MSG(false, "Couldn't bind EGL OpenGL API");
-        return false;
-    }
+    eglBindAPI(EGL_OPENGL_API);
 
     std::array<int32_t, 13> framebufferConfigAttributes{EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                                         EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
@@ -82,53 +69,33 @@ bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descrip
                                                         EGL_NONE};
     EGLConfig framebufferConfig{};
     EGLint framebufferConfigsCount{};
-    if (!eglChooseConfig(m_handleDisplay, framebufferConfigAttributes.data(), &framebufferConfig, 1, &framebufferConfigsCount)) {
-        NOX_ASSERT_MSG(false, "Couldn't choose framebuffer config");
-        return false;
-    }
-    NOX_ASSERT_MSG(framebufferConfigsCount == 1, "Couldn't choose only one framebuffer config");
-
-    if (!setSurfaceHandle(framebufferConfig)) {
-        return false;
-    }
+    eglChooseConfig(m_handleDisplay,
+                    framebufferConfigAttributes.data(),
+                    &framebufferConfig,
+                    1,
+                    &framebufferConfigsCount);
+    NOX_ENSURE_RETURN_FALSE_MSG(framebufferConfigsCount == 1, "Couldn't choose only one framebuffer config");
 
     constexpr std::array<int32_t, 7> contextAttributes{EGL_CONTEXT_MAJOR_VERSION, glMajorVersion,
                                                        EGL_CONTEXT_MINOR_VERSION, glMinorVersion,
                                                        EGL_CONTEXT_OPENGL_PROFILE_MASK, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT,
                                                        EGL_NONE};
     m_handleRenderingContext = eglCreateContext(m_handleDisplay, framebufferConfig, EGL_NO_CONTEXT, contextAttributes.data());
-    if (m_handleRenderingContext == nullptr) {
-        NOX_ASSERT_MSG(false, "Couldn't create OpenGL 4.6 context");
-        return false;
-    }
+    NOX_ENSURE_RETURN_FALSE_MSG(m_handleRenderingContext != nullptr, "Couldn't create OpenGL 4.6 context");
 
-    if (!eglMakeCurrent(m_handleDisplay, m_handleSurface, m_handleSurface, m_handleRenderingContext)) {
-        NOX_ASSERT_MSG(false, "Couldn't make OpenGL context current");
-        return false;
-    }
+    NOX_ENSURE_RETURN_FALSE_MSG(setSurfaceHandle(framebufferConfig), "Couldn't create EGL window surface");
+    eglMakeCurrent(m_handleDisplay, m_handleSurface, m_handleSurface, m_handleRenderingContext);
 
-    if (!gladLoaderLoadGL()) {
-        NOX_ASSERT_MSG(false, "Couldn't load OpenGL");
-        return false;
-    }
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadGL(), "Couldn't load OpenGL");
 
     return true;
 }
 
 bool LinuxGLContext::destroy() {
     eglMakeCurrent(m_handleDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    if (!eglDestroyContext(m_handleDisplay, m_handleRenderingContext)) {
-        NOX_ASSERT_MSG(false, "Couldn't destroy OpenGL context");
-        return false;
-    }
-    if (!eglDestroySurface(m_handleDisplay, m_handleSurface)) {
-        NOX_ASSERT_MSG(false, "Couldn't destroy EGL surface");
-        return false;
-    }
-    if (!eglTerminate(m_handleDisplay)) {
-        NOX_ASSERT_MSG(false, "Couldn't destroy EGL display");
-        return false;
-    }
+    eglDestroyContext(m_handleDisplay, m_handleRenderingContext);
+    eglDestroySurface(m_handleDisplay, m_handleSurface);
+    NOX_ENSURE_RETURN_FALSE_MSG(eglTerminate(m_handleDisplay), "Couldn't terminate EGL display connection");
 
     m_handleDisplay = nullptr;
     m_handleSurface = nullptr;
