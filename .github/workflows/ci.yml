@@ -69,7 +69,7 @@ jobs:
       run: git diff --exit-code
 
   clang-tidy-check:
-    name: clang-tidy ${{ matrix.platform.name }} ${{ matrix.config.name }} ${{ matrix.type.name }}
+    name: clang-tidy ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.os }}
 
     strategy:

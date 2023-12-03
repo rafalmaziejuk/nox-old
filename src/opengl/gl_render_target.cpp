@@ -8,6 +8,51 @@
 
 namespace NOX {
 
+namespace {
+
+using ColorAttachmentsContainer = AttachmentsContainer::ColorAttachmentsContainer;
+using DepthStencilAttachmentsContainer = AttachmentsContainer::DepthStencilAttachmentsContainer;
+
+uint8_t validateColorAttachments(const ColorAttachmentsContainer &attachments) {
+    int32_t maxColorAttachments = 0;
+    glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
+
+    uint8_t colorAttachmentsCount = 0u;
+    for (const auto &attachment : attachments) {
+        if (attachment == nullptr) {
+            break;
+        }
+        colorAttachmentsCount++;
+    }
+    NOX_ASSERT(colorAttachmentsCount > maxColorAttachments);
+
+    return colorAttachmentsCount;
+}
+
+uint8_t validateDepthStencilAttachments(const DepthStencilAttachmentsContainer &attachments) {
+    uint8_t depthStencilAttachmentCount = 0u;
+    uint8_t depthAttachmentCount = 0u;
+    uint8_t stencilAttachmentCount = 0u;
+    for (const auto &attachment : attachments) {
+        if (attachment == Format::NONE) {
+            break;
+        }
+
+        auto formatDescriptor = Helpers::getFormatDescriptor(attachment);
+        if (formatDescriptor.hasDepth && formatDescriptor.hasStencil) {
+            depthStencilAttachmentCount++;
+        } else if (formatDescriptor.hasDepth) {
+            depthAttachmentCount++;
+        } else if (formatDescriptor.hasStencil) {
+            stencilAttachmentCount++;
+        }
+    }
+
+    return (depthStencilAttachmentCount + depthAttachmentCount + stencilAttachmentCount);
+}
+
+} // namespace
+
 void GLRenderTargetBase::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
 }
@@ -89,58 +134,6 @@ GLRenderTarget::~GLRenderTarget() {
     auto attachmentsCount = m_colorAttachmentsCount + m_depthStencilAttachmentsCount;
     glInvalidateNamedFramebufferData(m_handle, attachmentsCount, m_attachmentPoints.data());
     glDeleteFramebuffers(1, &m_handle);
-}
-
-uint8_t GLRenderTarget::validateColorAttachments(const ColorAttachmentsContainer &attachments) {
-    int32_t maxColorAttachments = 0;
-    glGetIntegerv(GL_MAX_COLOR_ATTACHMENTS, &maxColorAttachments);
-
-    uint8_t colorAttachmentsCount = 0u;
-    for (const auto &attachment : attachments) {
-        if (attachment == nullptr) {
-            break;
-        }
-        colorAttachmentsCount++;
-    }
-    NOX_ASSERT(colorAttachmentsCount > maxColorAttachments);
-
-    return colorAttachmentsCount;
-}
-
-uint8_t GLRenderTarget::validateDepthStencilAttachments(const DepthStencilAttachmentsContainer &attachments) {
-    uint8_t depthStencilAttachmentCount = 0u;
-    uint8_t depthAttachmentCount = 0u;
-    uint8_t stencilAttachmentCount = 0u;
-    for (const auto &attachment : attachments) {
-        if (attachment == Format::NONE) {
-            break;
-        }
-
-        auto formatDescriptor = Helpers::getFormatDescriptor(attachment);
-        if (formatDescriptor.hasDepth && formatDescriptor.hasStencil) {
-            depthStencilAttachmentCount++;
-        } else if (formatDescriptor.hasDepth) {
-            depthAttachmentCount++;
-        } else if (formatDescriptor.hasStencil) {
-            stencilAttachmentCount++;
-        }
-    }
-
-    bool isValid = true;
-    if (depthStencilAttachmentCount > 1u) {
-        isValid = false;
-    } else if (depthStencilAttachmentCount == 1u) {
-        if ((depthAttachmentCount != 0u) || (stencilAttachmentCount != 0u)) {
-            isValid = false;
-        }
-    } else if (depthStencilAttachmentCount == 0u) {
-        if ((depthAttachmentCount > 1u) || (stencilAttachmentCount > 1u)) {
-            isValid = false;
-        }
-    }
-    NOX_ASSERT(isValid);
-
-    return (depthStencilAttachmentCount + depthAttachmentCount + stencilAttachmentCount);
 }
 
 void GLRenderTarget::createColorAttachment(const Texture &texture, uint32_t attachmentPoint) {

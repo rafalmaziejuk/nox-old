@@ -29,17 +29,11 @@ class GLDefaultRenderTarget final : public GLRenderTargetBase {
 };
 
 class GLRenderTarget final : public GLRenderTargetBase {
-    using ColorAttachmentsContainer = AttachmentsContainer::ColorAttachmentsContainer;
-    using DepthStencilAttachmentsContainer = AttachmentsContainer::DepthStencilAttachmentsContainer;
-
   public:
     explicit GLRenderTarget(const RenderTargetDescriptor &descriptor);
     ~GLRenderTarget() override;
 
   private:
-    uint8_t validateColorAttachments(const ColorAttachmentsContainer &attachments);
-    uint8_t validateDepthStencilAttachments(const DepthStencilAttachmentsContainer &attachments);
-
     void createColorAttachment(const Texture &texture, uint32_t attachmentPoint);
     void createDepthStencilAttachment(Format format);
 
