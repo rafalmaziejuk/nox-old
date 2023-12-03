@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "master" ]
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     name: ${{ matrix.platform.name }} ${{ matrix.config.name }} ${{ matrix.type.name }}
@@ -14,10 +18,11 @@ jobs:
     strategy:
       matrix:
         platform:
-        - { name: Windows VS2022, os: windows-latest, flags: -G"Visual Studio 17 2022" }
-        - { name: Windows Clang,  os: windows-latest, flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja }
-        #- { name: Linux Clang,    os: ubuntu-latest,  flags: -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -GNinja }
-        #- { name: Linux GCC,      os: ubuntu-latest,  flags: -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -GNinja }
+        - { name: Windows VS2022, os: windows-latest, flags: -G"Visual Studio 17 2022"                                     }
+        - { name: Windows Clang,  os: windows-latest, flags: -GNinja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Windows GCC,    os: windows-latest, flags: -GNinja -DCMAKE_C_COMPILER=gcc   -DCMAKE_CXX_COMPILER=g++     }
+        - { name: Linux Clang,    os: ubuntu-latest,  flags: -GNinja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ }
+        - { name: Linux GCC,      os: ubuntu-latest,  flags: -GNinja -DCMAKE_C_COMPILER=gcc   -DCMAKE_CXX_COMPILER=g++     }
 
         config:
         - { name: Static, flags: -DBUILD_SHARED_LIBS=OFF }
@@ -28,19 +33,21 @@ jobs:
         - { name: Debug,   flags: -DCMAKE_BUILD_TYPE=Debug }
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
-    #- name: Install dependencies
-    #  run: |
-    #       if [ "$RUNNER_OS" == "Linux" ]; then
-    #          sudo apt-get update && sudo apt-get install ninja-build libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libgl1-mesa-dev
-    #       else
-    #          echo "$RUNNER_OS not supported"
-    #          exit 1
-    #       fi
-    #  shell: bash
+    - name: Install CMake and Ninja
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: latest
+        ninjaVersion: latest
+
+    - name: Install dependencies
+      run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update && sudo apt-get install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libgl1-mesa-dev
+          fi
 
     - name: Configure
       run: cmake -S . -B build ${{ matrix.platform.flags }} ${{ matrix.config.flags }} ${{ matrix.type.flags }}
@@ -53,10 +60,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Install dependencies
-      run: sudo apt-get install clang-format-14
+    - uses: actions/checkout@v4
 
     - name: Format code
       run: cmake -P cmake/run_clang_format.cmake
@@ -65,22 +69,37 @@ jobs:
       run: git diff --exit-code
 
   clang-tidy-check:
-    name: clang-tidy check
-    runs-on: windows-latest
+    name: clang-tidy ${{ matrix.platform.name }} ${{ matrix.config.name }} ${{ matrix.type.name }}
+    runs-on: ${{ matrix.platform.os }}
+
+    strategy:
+      matrix:
+        platform:
+        - { name: Windows,  os: windows-latest }
+        - { name: Linux,    os: ubuntu-latest  }
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         submodules: recursive
 
+    - name: Install CMake and Ninja
+      uses: lukka/get-cmake@latest
+      with:
+        cmakeVersion: latest
+        ninjaVersion: latest
+
+    - name: Install dependencies
+      run: |
+          if [ "$RUNNER_OS" == "Linux" ]; then
+            sudo apt-get update && sudo apt-get install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libgl1-mesa-dev
+          fi
+
     - name: Configure
-      shell: bash
-      run: cmake -S . -B build -GNinja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_CXX_FLAGS=-std=c++17 -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
+      run: cmake -S . -B build -GNinja -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_EXPORT_COMPILE_COMMANDS=ON
 
     - name: Prepare compile_commands.json
-      shell: bash
       run: sed -i -E 's|(-I)([^ ]*third_party[^ ]*include\b)|-isystem \2|g' build/compile_commands.json
 
     - name: Analyse code
-      shell: bash
       run: cmake -DPROJECT_BINARY_DIR=build -P cmake/run_clang_tidy.cmake

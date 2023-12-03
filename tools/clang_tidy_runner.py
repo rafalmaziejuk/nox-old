@@ -20,8 +20,7 @@ class ClangTidyRunner():
                                  .append(f"-G {GENERATOR}")\
                                  .append(f"-DCMAKE_C_COMPILER={C_COMPILER}")\
                                  .append(f"-DCMAKE_CXX_COMPILER={CXX_COMPILER}")\
-                                 .append(f"-DCMAKE_EXPORT_COMPILE_COMMANDS=ON")\
-                                 .append(f"-DBUILD_SHARED_LIBS=OFF") 
+                                 .append(f"-DCMAKE_EXPORT_COMPILE_COMMANDS=ON")
 
         self.script_command = CMakeCommand()\
                               .append(f"-DPROJECT_BINARY_DIR={BUILD_DIR}")\
