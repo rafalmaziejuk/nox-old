@@ -6,8 +6,6 @@ if(NOT OPENGL_FOUND)
     message(FATAL_ERROR "OpenGL not found")
 endif()
 
-target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_BUILD_RENDERER_OPENGL)
-
 # --------------------------------------------------
 # Create OpenGL renderer target
 # --------------------------------------------------
@@ -20,29 +18,18 @@ target_include_directories(
 )
 
 # --------------------------------------------------
-# Specify compile options
-# --------------------------------------------------
-target_compile_features(${NOX_OPENGL_LIB_NAME} PRIVATE cxx_std_17)
-
-if(MSVC)
-    target_compile_options(${NOX_OPENGL_LIB_NAME} PRIVATE /W4 /WX)
-else()
-    target_compile_options(${NOX_OPENGL_LIB_NAME} PRIVATE -Wall)
-endif()
-
-# --------------------------------------------------
-# Specify compile definitions
-# --------------------------------------------------
-if(NOX_PLATFORM_WINDOWS)
-    target_compile_definitions(${NOX_OPENGL_LIB_NAME} PRIVATE WIN32_LEAN_AND_MEAN)
-endif()
-
-# --------------------------------------------------
 # Set properties
 # --------------------------------------------------
+get_target_property(NOX_COMPILE_FEATURES ${NOX_LIB_NAME} COMPILE_FEATURES)
+get_target_property(NOX_COMPILE_OPTIONS ${NOX_LIB_NAME} COMPILE_OPTIONS)
+get_target_property(NOX_COMPILE_DEFINITIONS ${NOX_LIB_NAME} COMPILE_DEFINITIONS)
+
 set_target_properties(
     ${NOX_OPENGL_LIB_NAME}
     PROPERTIES
+    COMPILE_FEATURES "${NOX_COMPILE_FEATURES}"
+    COMPILE_OPTIONS "${NOX_COMPILE_OPTIONS}"
+    COMPILE_DEFINITIONS "${NOX_COMPILE_DEFINITIONS}"
     VERSION "${NOX_VERSION}"
     SOVERSION "${NOX_VERSION_MAJOR}.${NOX_VERSION_MINOR}"
     DEBUG_POSTFIX "${NOX_DEBUG_POSTFIX}"

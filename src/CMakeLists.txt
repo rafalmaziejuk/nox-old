@@ -19,33 +19,33 @@ nox_list_append_global(NOX_INSTALLATION_TARGETS ${NOX_LIB_NAME})
 # --------------------------------------------------
 target_compile_features(${NOX_LIB_NAME} PRIVATE cxx_std_17)
 
-if(MSVC)
-    target_compile_options(${NOX_LIB_NAME} PRIVATE /W4 /WX)
-else()
-    target_compile_options(${NOX_LIB_NAME} PRIVATE -Wall)
-endif()
+target_compile_options(
+    ${NOX_LIB_NAME}
+    PRIVATE
+    $<$<CXX_COMPILER_ID:MSVC>: /W4>
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>: -Wall>
+)
 
 # --------------------------------------------------
 # Specify compile definitions
 # --------------------------------------------------
-target_compile_definitions(${NOX_LIB_NAME} PUBLIC $<$<CONFIG:Debug>:NOX_DEBUG>)
+target_compile_definitions(
+    ${NOX_LIB_NAME}
+    PRIVATE
+    # Platform specific definitions
+    $<$<PLATFORM_ID:Windows>: WIN32_LEAN_AND_MEAN>
 
-if(NOX_PLATFORM_WINDOWS)
-    target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_WIN32)
-    target_compile_definitions(${NOX_LIB_NAME} PRIVATE WIN32_LEAN_AND_MEAN)
-endif()
+    # Compiler specific definitions
+    $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>: NOX_USE_PLUGIN_PREFIX>
 
-if(NOX_PLATFORM_LINUX)
-    target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_UNIX)
-endif()
+    # Configuration specific definitions
+    $<$<CONFIG:Debug>: NOX_USE_PLUGIN_POSTFIX>
 
-if(NOT BUILD_SHARED_LIBS)
-    target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_STATIC)
-endif()
-
-if(NOX_DISABLE_ASSERTS)
-    target_compile_definitions(${NOX_LIB_NAME} PUBLIC NOX_DISABLE_ASSERTS)
-endif()
+    # Options specific definitions
+    $<$<BOOL:${BUILD_SHARED_LIBS}>: NOX_SHARED>
+    $<$<BOOL:${NOX_DISABLE_ASSERTS}>: NOX_DISABLE_ASSERTS>
+    $<$<BOOL:${NOX_BUILD_RENDERER_OPENGL}>: NOX_BUILD_RENDERER_OPENGL>
+)
 
 # --------------------------------------------------
 # Set properties

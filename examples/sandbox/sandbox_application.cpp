@@ -2,9 +2,9 @@
 
 #include <GLFW/glfw3.h>
 
-#if defined(NOX_WIN32)
+#if defined(WIN32)
 #define GLFW_EXPOSE_NATIVE_WIN32
-#elif defined(NOX_UNIX)
+#elif defined(__linux__)
 #define GLFW_EXPOSE_NATIVE_X11
 #endif
 #include <GLFW/glfw3native.h>
@@ -55,7 +55,7 @@ SandboxApplication::SandboxApplication() {
 
     m_renderer = Renderer::create(RendererBackend::OPENGL);
 
-#if defined(NOX_WIN32)
+#if defined(WIN32)
     WindowsSurfaceBackendDescriptor surfaceBackendDescriptor{};
     surfaceBackendDescriptor.windowHandle = static_cast<void *>(glfwGetWin32Window(m_window));
 #elif defined(NOX_UNIX)
