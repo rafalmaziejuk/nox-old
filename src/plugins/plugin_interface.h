@@ -4,7 +4,7 @@
 
 #define NOX_PLUGIN_API_VERSION 1
 
-#if defined(NOX_STATIC)
+#if !defined(NOX_SHARED)
 #define NOX_PLUGIN_VISIBILITY extern
 
 #define NOX_PLUGIN_REGISTER(pluginName)                                     \
@@ -36,7 +36,7 @@
     createPlugin##pluginName()
 #endif
 
-#if !defined(NOX_STATIC)
+#if defined(NOX_SHARED)
 #define NOX_PLUGIN_VISIBILITY extern "C"
 
 #define NOX_PLUGIN_REGISTER(pluginName) \

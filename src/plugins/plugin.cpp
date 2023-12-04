@@ -6,16 +6,16 @@ namespace NOX {
 
 namespace {
 
-#if defined(NOX_DEBUG)
-constexpr auto debugEnabled = true;
+#if defined(NOX_USE_PLUGIN_PREFIX)
+constexpr auto usePrefix = true;
 #else
-constexpr auto debugEnabled = false;
+constexpr auto usePrefix = false;
 #endif
 
-#if (defined(__GNUC__) || defined(NOX_UNIX))
-constexpr auto unixEnvironment = true;
+#if defined(NOX_USE_PLUGIN_POSTFIX)
+constexpr auto usePostfix = true;
 #else
-constexpr auto unixEnvironment = false;
+constexpr auto usePostfix = false;
 #endif
 
 } // namespace
@@ -29,11 +29,11 @@ uint8_t Plugin::pluginVersion() const {
 }
 
 std::string createPluginFilename(std::string_view name, std::string_view extension) {
-    constexpr auto prefix = (unixEnvironment ? "lib" : "");
+    constexpr auto prefix = (usePrefix ? "lib" : "");
     constexpr auto infix = "nox-";
-    constexpr auto debugPostfix = (debugEnabled ? "-d" : "");
+    constexpr auto postfix = (usePostfix ? "-d" : "");
     auto toLower = [](std::string str) {
-        std::transform(str.begin(), str.end(), str.begin(), [](uint8_t c) { return static_cast<uint8_t>(std::tolower(c)); });
+        std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
         return str;
     };
 
@@ -41,7 +41,7 @@ std::string createPluginFilename(std::string_view name, std::string_view extensi
     result += prefix;
     result += infix;
     result += name.data();
-    result += debugPostfix;
+    result += postfix;
     result += '.';
     result += extension;
     return toLower(result);
