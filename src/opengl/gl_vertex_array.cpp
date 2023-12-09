@@ -75,8 +75,8 @@ uint32_t GLVertexArrayRegistry::getBoundVertexArrayIndex() const {
 }
 
 uint32_t GLVertexArrayRegistry::find(const VertexFormat &vertexFormat) const {
-    auto it = std::find_if(m_vertexFormats.begin(), m_vertexFormats.end(), [&](const VertexFormat &other) {
-        return (other == vertexFormat);
+    auto it = std::find_if(m_vertexFormats.begin(), m_vertexFormats.end(), [&vertexFormat](const VertexFormat &format) {
+        return (format == vertexFormat);
     });
     if (it != m_vertexFormats.end()) {
         return static_cast<uint32_t>(std::distance(m_vertexFormats.begin(), it));

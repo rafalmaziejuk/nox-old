@@ -8,13 +8,13 @@ namespace NOX {
 class GLTextureVisitor final : public TextureVisitor {
   public:
     void visit(const GLTexture &texture) override {
-        m_texture = &texture;
+        m_handle = texture.getHandle();
     }
 
-    const GLTexture &get() const { return *m_texture; }
+    uint32_t getHandle() const { return m_handle; }
 
   private:
-    const GLTexture *m_texture{nullptr};
+    uint32_t m_handle{0u};
 };
 
 } // namespace NOX

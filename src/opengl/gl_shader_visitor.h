@@ -8,13 +8,17 @@ namespace NOX {
 class GLShaderVisitor final : public ShaderVisitor {
   public:
     void visit(const GLShader &shader) override {
-        m_shader = &shader;
+        m_type = shader.getType();
+        m_handle = shader.getHandle();
     }
 
-    const GLShader &get() const { return *m_shader; }
+    ShaderType getType() const { return m_type; }
+
+    uint32_t getHandle() const { return m_handle; }
 
   private:
-    const GLShader *m_shader{nullptr};
+    ShaderType m_type;
+    uint32_t m_handle{0u};
 };
 
 } // namespace NOX
