@@ -6,15 +6,11 @@
 
 namespace NOX {
 
-class GLContext;
-
 class GLRenderer final : public Renderer {
   public:
     GLRenderer() = default;
 
     RendererBackend getRendererBackend() const override;
-
-    std::shared_ptr<Surface> createSurface(const SurfaceDescriptor &descriptor) override;
 
     std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescriptor &descriptor) override;
 
@@ -33,7 +29,6 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) override;
 
   private:
-    std::shared_ptr<GLContext> m_context{nullptr};
     GLState m_state{};
 };
 

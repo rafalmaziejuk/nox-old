@@ -74,14 +74,14 @@ bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
            (surfaceAttributesDescriptor != nullptr);
 }
 
-std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
+std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
     if (!loadOpenGL()) {
         return nullptr;
     }
 
     const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
     const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
-    auto context = std::make_shared<WindowsGLContext>(*surfaceBackendDescriptor);
+    auto context = std::make_unique<WindowsGLContext>(*surfaceBackendDescriptor);
     if (!context->initialize(*surfaceAttributesDescriptor)) {
         return nullptr;
     }
@@ -96,8 +96,15 @@ WindowsGLContext::WindowsGLContext(const WindowsSurfaceBackendDescriptor &descri
 }
 
 WindowsGLContext::~WindowsGLContext() {
-    NOX_ASSERT_MSG((m_handleWindow == nullptr) && (m_handleDeviceContext == nullptr) && (m_handleRenderingContext == nullptr),
-                   "OpenGL surface should be destroyed via destroy() method");
+    NOX_ASSERT_MSG(IsWindow(m_handleWindow), "The window handle associated with OpenGL context is invalid");
+
+    wglMakeCurrent(nullptr, nullptr);
+    wglDeleteContext(m_handleRenderingContext);
+    ReleaseDC(m_handleWindow, m_handleDeviceContext);
+
+    m_handleWindow = nullptr;
+    m_handleDeviceContext = nullptr;
+    m_handleRenderingContext = nullptr;
 
     gladLoaderUnloadGL();
 }
@@ -134,20 +141,6 @@ bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descr
     NOX_ENSURE_RETURN_FALSE_MSG(m_handleRenderingContext != nullptr, "Couldn't create OpenGL 4.6 context");
 
     wglMakeCurrent(m_handleDeviceContext, m_handleRenderingContext);
-
-    return true;
-}
-
-bool WindowsGLContext::destroy() {
-    NOX_ENSURE_RETURN_FALSE_MSG(IsWindow(m_handleWindow), "The window handle associated with OpenGL context is invalid");
-
-    wglMakeCurrent(nullptr, nullptr);
-    wglDeleteContext(m_handleRenderingContext);
-    ReleaseDC(m_handleWindow, m_handleDeviceContext);
-
-    m_handleWindow = nullptr;
-    m_handleDeviceContext = nullptr;
-    m_handleRenderingContext = nullptr;
 
     return true;
 }

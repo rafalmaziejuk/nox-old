@@ -5,10 +5,14 @@
 namespace NOX {
 
 bool GLSwapchain::validateInput(const SwapchainDescriptor &descriptor) {
-    return (std::get_if<OpenGLPresentMode>(&descriptor.presentMode) != nullptr);
+    return (GLContext::validateInput(descriptor.surfaceDescriptor)) &&
+           (std::get_if<OpenGLPresentMode>(&descriptor.presentMode) != nullptr);
 }
 
-GLSwapchain::GLSwapchain(const SwapchainDescriptor &descriptor, std::shared_ptr<GLContext> context) : m_context{std::move(context)} {
+GLSwapchain::GLSwapchain(const SwapchainDescriptor &descriptor) {
+    m_context = GLContext::create(descriptor.surfaceDescriptor);
+    NOX_ASSERT(m_context != nullptr);
+
     const auto *presentMode = std::get_if<OpenGLPresentMode>(&descriptor.presentMode);
     m_context->setSwapInterval(presentMode->vSync);
 }

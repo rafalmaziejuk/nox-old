@@ -27,9 +27,7 @@ RendererFactoryRegistry &RendererFactoryRegistry::instance() {
     return registry;
 }
 
-bool RendererFactoryRegistry::registerFactory(RendererBackend backend) {
-    NOX_ASSERT(backend < RendererBackend::MAX);
-
+bool RendererFactoryRegistry::loadPlugin(RendererBackend backend) {
     if (contains(backend)) {
         return true;
     }
@@ -37,7 +35,8 @@ bool RendererFactoryRegistry::registerFactory(RendererBackend backend) {
     auto plugin = createRendererPlugin(backend);
     NOX_ENSURE_RETURN_FALSE_MSG(plugin != nullptr, "Couldn't create renderer plugin");
     NOX_ENSURE_RETURN_FALSE_MSG(plugin->pluginRegister(), "Couldn't register renderer plugin");
-    NOX_ASSERT_MSG(plugin->pluginVersion() == NOX_PLUGIN_API_VERSION, "Plugin API version mismatch");
+    NOX_ENSURE_RETURN_FALSE_MSG(plugin->pluginVersion() == NOX_PLUGIN_API_VERSION, "Plugin API version mismatch");
+    NOX_ENSURE_RETURN_FALSE_MSG(contains(backend), "Couldn't register renderer factory");
 
     const auto index = static_cast<size_t>(backend);
     m_plugins.at(index) = std::move(plugin);
@@ -45,26 +44,27 @@ bool RendererFactoryRegistry::registerFactory(RendererBackend backend) {
     return true;
 }
 
+void RendererFactoryRegistry::registerFactory(RendererBackend backend, const RendererFactory &factory) {
+    const auto index = static_cast<size_t>(backend);
+    m_factories.at(index) = factory;
+}
+
+RendererPtr RendererFactoryRegistry::createRenderer(RendererBackend backend) {
+    NOX_ENSURE_RETURN_NULLPTR_MSG(contains(backend), "Factory for given renderer backend isn't registered");
+
+    const auto index = static_cast<size_t>(backend);
+    const auto &[createRenderer, destroyRenderer] = m_factories.at(index);
+
+    return {createRenderer(), destroyRenderer};
+}
+
 bool RendererFactoryRegistry::contains(RendererBackend backend) const {
     const auto index = static_cast<size_t>(backend);
-    if (index >= m_factories.size()) {
-        return false;
-    }
-
+    NOX_ENSURE_RETURN_FALSE(index < m_factories.size());
     const auto &factory = m_factories.at(index);
-    return ((factory.first != nullptr) && (factory.second != nullptr));
-}
 
-RendererFactory &RendererFactoryRegistry::operator[](RendererBackend backend) {
-    const auto index = static_cast<size_t>(backend);
-    auto &factory = m_factories.at(index);
-    return factory;
-}
-
-const RendererFactory &RendererFactoryRegistry::operator[](RendererBackend backend) const {
-    const auto index = static_cast<size_t>(backend);
-    const auto &factory = m_factories.at(index);
-    return factory;
+    return (factory.first != nullptr) &&
+           (factory.second != nullptr);
 }
 
 } // namespace NOX

@@ -16,18 +16,10 @@ RendererBackend GLRenderer::getRendererBackend() const {
     return RendererBackend::OPENGL;
 }
 
-std::shared_ptr<Surface> GLRenderer::createSurface(const SurfaceDescriptor &descriptor) {
-    NOX_ASSERT(GLContext::validateInput(descriptor));
-
-    m_context = GLContext::create(descriptor);
-    return m_context;
-}
-
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
-    NOX_ENSURE_RETURN_NULLPTR_MSG(m_context != nullptr, "Surface needs to be created before swapchain");
     NOX_ASSERT(GLSwapchain::validateInput(descriptor));
 
-    auto swapchain = std::make_unique<GLSwapchain>(descriptor, m_context);
+    auto swapchain = std::make_unique<GLSwapchain>(descriptor);
     m_state.currentRenderTarget = &swapchain->getDefaultRenderTarget();
 
     return swapchain;

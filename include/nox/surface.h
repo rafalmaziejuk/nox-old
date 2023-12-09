@@ -36,9 +36,6 @@ struct SurfaceDescriptor {
 
 class NOX_EXPORT Surface {
   public:
-    [[nodiscard]] virtual bool destroy() = 0;
-
-  public:
     Surface(const Surface &) = delete;
     Surface &operator=(const Surface &) = delete;
     Surface(Surface &&) = delete;

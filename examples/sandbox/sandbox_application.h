@@ -9,7 +9,6 @@ namespace NOX {
 class SandboxApplication {
   public:
     SandboxApplication();
-    ~SandboxApplication();
 
     void initialize();
     void run();
@@ -20,7 +19,6 @@ class SandboxApplication {
   private:
     GLFWwindow *m_window{nullptr};
     RendererPtr m_renderer{nullptr};
-    std::shared_ptr<Surface> m_surface{nullptr};
     std::unique_ptr<Swapchain> m_swapchain{nullptr};
     std::unique_ptr<GraphicsPipelineState> m_triangleGraphicsPipelineState{nullptr};
     std::unique_ptr<Buffer> m_triangleVertexBuffer{nullptr};
