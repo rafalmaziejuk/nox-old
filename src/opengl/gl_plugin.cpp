@@ -1,5 +1,5 @@
-#include "renderer_registry.h"
 #include "plugins/plugin_interface.h"
+#include "renderer_factory_registry.h"
 #include "opengl/gl_renderer.h"
 #include "opengl/nox_opengl_export.h"
 
@@ -14,8 +14,8 @@ NOX_PLUGIN_REGISTER(OPENGL) {
         renderer = nullptr;
     };
 
-    auto &registry = NOX::RendererRegistry::instance();
-    registry.registerFactory(NOX::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
+    auto &registry = NOX::RendererFactoryRegistry::instance();
+    registry[NOX::RendererBackend::OPENGL] = {createRenderer, destroyRenderer};
 
     return true;
 }

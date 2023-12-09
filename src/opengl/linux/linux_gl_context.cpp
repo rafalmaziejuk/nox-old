@@ -45,14 +45,8 @@ std::shared_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor
 }
 
 LinuxGLContext::~LinuxGLContext() {
-    eglMakeCurrent(m_handleDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
-    eglDestroyContext(m_handleDisplay, m_handleRenderingContext);
-    eglDestroySurface(m_handleDisplay, m_handleSurface);
-    eglTerminate(m_handleDisplay);
-
-    m_handleDisplay = nullptr;
-    m_handleSurface = nullptr;
-    m_handleRenderingContext = nullptr;
+    NOX_ASSERT_MSG((m_handleDisplay == nullptr) && (m_handleSurface == nullptr) && (m_handleRenderingContext == nullptr),
+                   "OpenGL surface should be destroyed via destroy() method");
 
     gladLoaderUnloadEGL();
     gladLoaderUnloadGL();
@@ -93,6 +87,19 @@ bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descrip
     eglMakeCurrent(m_handleDisplay, m_handleSurface, m_handleSurface, m_handleRenderingContext);
 
     NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadGL(), "Couldn't load OpenGL");
+
+    return true;
+}
+
+bool LinuxGLContext::destroy() {
+    eglMakeCurrent(m_handleDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+    eglDestroyContext(m_handleDisplay, m_handleRenderingContext);
+    eglDestroySurface(m_handleDisplay, m_handleSurface);
+    NOX_ENSURE_RETURN_FALSE_MSG(eglTerminate(m_handleDisplay), "Couldn't terminate EGL display connection");
+
+    m_handleDisplay = nullptr;
+    m_handleSurface = nullptr;
+    m_handleRenderingContext = nullptr;
 
     return true;
 }

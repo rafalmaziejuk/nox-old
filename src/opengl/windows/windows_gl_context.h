@@ -11,6 +11,8 @@ class WindowsGLContext final : public GLContext {
 
     [[nodiscard]] bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor);
 
+    bool destroy() override;
+
     void swapBuffers() const override;
     void setSwapInterval(bool value) const override;
 

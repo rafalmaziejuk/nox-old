@@ -80,8 +80,8 @@ set(NOX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/format_helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/nox_assert.h
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_registry.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_registry.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.h
     ${CMAKE_CURRENT_SOURCE_DIR}/shader_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/texture_visitor.h
 )

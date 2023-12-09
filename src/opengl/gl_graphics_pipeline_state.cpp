@@ -49,9 +49,7 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
 
         GLShaderVisitor visitor{};
         shader->accept(visitor);
-        const auto &glShader = visitor.get();
-
-        return (mapShaderTypeToBitfield(glShader.getType()) != GL_NONE);
+        return (mapShaderTypeToBitfield(visitor.getType()) != GL_NONE);
     };
 
     return (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE) &&
@@ -80,10 +78,9 @@ bool GLGraphicsPipelineState::bindShaderStages(const ShaderStages &shaderStages)
     for (const auto &shader : shaderStages) {
         GLShaderVisitor visitor{};
         shader->accept(visitor);
-        const auto &glShader = visitor.get();
 
-        m_program.attachShader(glShader.getHandle());
-        stages |= mapShaderTypeToBitfield(glShader.getType());
+        m_program.attachShader(visitor.getHandle());
+        stages |= mapShaderTypeToBitfield(visitor.getType());
     }
 
     if (!m_program.link()) {
