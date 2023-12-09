@@ -24,12 +24,13 @@ enum class RendererBackend : uint8_t {
 };
 
 class Renderer;
-using RendererDeleter = std::function<void(Renderer *)>;
-using RendererPtr = std::unique_ptr<Renderer, RendererDeleter>;
+using RendererPtr = std::shared_ptr<Renderer>;
 
 class NOX_EXPORT Renderer {
   public:
     [[nodiscard]] static RendererPtr create(RendererBackend backend);
+
+    [[nodiscard]] static bool release(RendererPtr &&renderer);
 
     [[nodiscard]] virtual RendererBackend getRendererBackend() const = 0;
 
