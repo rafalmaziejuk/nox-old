@@ -58,7 +58,7 @@ SandboxApplication::SandboxApplication() {
 #if defined(WIN32)
     WindowsSurfaceBackendDescriptor surfaceBackendDescriptor{};
     surfaceBackendDescriptor.windowHandle = static_cast<void *>(glfwGetWin32Window(m_window));
-#elif defined(NOX_UNIX)
+#elif defined(__linux__)
     X11SurfaceBackendDescriptor surfaceBackendDescriptor{};
     surfaceBackendDescriptor.displayHandle = static_cast<void *>(glfwGetX11Display());
     surfaceBackendDescriptor.windowHandle = static_cast<uint64_t>(glfwGetX11Window(m_window));
@@ -76,11 +76,9 @@ SandboxApplication::SandboxApplication() {
 }
 
 SandboxApplication::~SandboxApplication() {
-    if (m_surface->destroy()) {
-        glfwDestroyWindow(m_window);
-        glfwTerminate();
-        m_window = nullptr;
-    }
+    glfwDestroyWindow(m_window);
+    glfwTerminate();
+    m_window = nullptr;
 }
 
 void SandboxApplication::initialize() {
@@ -128,8 +126,8 @@ void SandboxApplication::createTriangleVertexBuffer() {
                                  5u, 6u, 7u};
 
     VertexFormat vertexFormat{
-        {Format::RG32F},
-        {Format::RGBA8_UNORM},
+        Format::RG32F,
+        Format::RGBA8_UNORM,
     };
 
     BufferDescriptor vertexBufferDescriptor{};

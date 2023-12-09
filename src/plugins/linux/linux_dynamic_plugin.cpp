@@ -6,8 +6,10 @@
 namespace NOX {
 
 std::unique_ptr<Plugin> Plugin::create(std::string_view name) {
+    constexpr auto searchPath = "./";
     constexpr auto extension = "so";
-    const auto filename = createPluginFilename(name, extension);
+
+    const auto filename = searchPath + createPluginFilename(name, extension);
     auto plugin = std::make_unique<LinuxDynamicPlugin>();
     NOX_ENSURE_RETURN_NULLPTR(plugin->load(filename));
 

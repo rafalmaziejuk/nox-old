@@ -12,8 +12,6 @@ class X11GLContext final : public LinuxGLContext {
     explicit X11GLContext(const X11SurfaceBackendDescriptor &descriptor);
     ~X11GLContext() override;
 
-    bool destroy() override;
-
   protected:
     bool setDisplayHandle() override;
     bool setSurfaceHandle(EGLConfig framebufferConfig) override;

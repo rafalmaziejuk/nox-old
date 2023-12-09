@@ -24,8 +24,8 @@ std::shared_ptr<Surface> GLRenderer::createSurface(const SurfaceDescriptor &desc
 }
 
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
-    NOX_ENSURE_RETURN_NULLPTR_MSG(m_context != nullptr, "Surface needs to be created before swapchain");
     NOX_ASSERT(GLSwapchain::validateInput(descriptor));
+    NOX_ENSURE_RETURN_NULLPTR_MSG(m_context != nullptr, "Surface needs to be created before swapchain");
 
     auto swapchain = std::make_unique<GLSwapchain>(descriptor, m_context);
     m_state.currentRenderTarget = &swapchain->getDefaultRenderTarget();
