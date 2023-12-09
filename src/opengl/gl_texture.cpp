@@ -86,30 +86,9 @@ GLenum mapTextureFormat(Format format) {
 
 } // namespace
 
-bool GLTexture::validateInput(const TextureDescriptor &descriptor) {
-    return (mapTextureTarget(descriptor.type) != GL_NONE) &&
-           (mapTextureFormat(descriptor.format) != GL_NONE);
-}
-
-GLTexture::GLTexture(const TextureDescriptor &descriptor) {
-    auto target = mapTextureTarget(descriptor.type);
+GLTexture::GLTexture(TextureType type) {
+    auto target = mapTextureTarget(type);
     glCreateTextures(target, 1, &m_handle);
-
-    switch (descriptor.type) {
-    case TextureType::TEXTURE2D: {
-        auto width = descriptor.size.x();
-        auto height = descriptor.size.y();
-        auto format = mapTextureFormat(descriptor.format);
-        glTextureStorage2D(m_handle,
-                           1,
-                           format,
-                           static_cast<GLsizei>(width),
-                           static_cast<GLsizei>(height));
-        break;
-    }
-
-    default: break;
-    }
 }
 
 GLTexture::~GLTexture() {
@@ -122,6 +101,21 @@ void GLTexture::bind(uint32_t index) const {
 
 void GLTexture::accept(TextureVisitor &visitor) const {
     visitor.visit(*this);
+}
+
+bool GLTexture2D::validateInput(const Texture2DDescriptor &descriptor) {
+    return (mapTextureFormat(descriptor.format) != GL_NONE);
+}
+
+GLTexture2D::GLTexture2D(const Texture2DDescriptor &descriptor) : GLTexture{TextureType::TEXTURE2D} {
+    auto width = static_cast<GLsizei>(descriptor.size.x());
+    auto height = static_cast<GLsizei>(descriptor.size.y());
+    auto format = mapTextureFormat(descriptor.format);
+    glTextureStorage2D(m_handle, 1, format, width, height);
+}
+
+TextureType GLTexture2D::getTextureType() const {
+    return TextureType::TEXTURE2D;
 }
 
 } // namespace NOX

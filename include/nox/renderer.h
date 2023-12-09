@@ -9,7 +9,6 @@
 #include <nox/swapchain.h>
 #include <nox/texture.h>
 
-#include <cstdint>
 #include <functional>
 #include <memory>
 #include <string_view>
@@ -43,7 +42,7 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Texture> createTexture(const TextureDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Texture> createTexture2D(const Texture2DDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) = 0;
 

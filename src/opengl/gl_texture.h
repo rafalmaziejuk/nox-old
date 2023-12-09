@@ -4,11 +4,9 @@
 
 namespace NOX {
 
-class GLTexture final : public Texture {
+class GLTexture : public Texture {
   public:
-    [[nodiscard]] static bool validateInput(const TextureDescriptor &descriptor);
-
-    explicit GLTexture(const TextureDescriptor &descriptor);
+    explicit GLTexture(TextureType type);
     ~GLTexture() override;
 
     uint32_t getHandle() const { return m_handle; }
@@ -17,8 +15,17 @@ class GLTexture final : public Texture {
 
     void accept(TextureVisitor &visitor) const override;
 
-  private:
+  protected:
     uint32_t m_handle{0u};
+};
+
+class GLTexture2D final : public GLTexture {
+  public:
+    [[nodiscard]] static bool validateInput(const Texture2DDescriptor &descriptor);
+
+    explicit GLTexture2D(const Texture2DDescriptor &descriptor);
+
+    TextureType getTextureType() const override;
 };
 
 } // namespace NOX

@@ -15,13 +15,17 @@ enum class TextureType {
 };
 
 struct TextureDescriptor {
-    Vector3D<uint32_t> size;
-    TextureType type;
     Format format;
+};
+
+struct Texture2DDescriptor : TextureDescriptor {
+    Vector2D<uint32_t> size;
 };
 
 class NOX_EXPORT Texture {
   public:
+    virtual TextureType getTextureType() const = 0;
+
     virtual void accept(TextureVisitor &visitor) const = 0;
 
   public:
