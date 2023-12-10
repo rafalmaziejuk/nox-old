@@ -22,8 +22,7 @@ class GLBuffer : public Buffer, public GLWithState {
 
 class GLVertexBuffer final : public GLBuffer {
   public:
-    [[nodiscard]] static bool validateInput(const BufferDescriptor &descriptor,
-                                            const VertexFormat &vertexFormat);
+    [[nodiscard]] static bool validateInput(const VertexBufferDescriptor &descriptor);
 
     using GLBuffer::GLBuffer;
 
@@ -37,8 +36,7 @@ class GLVertexBuffer final : public GLBuffer {
 
 class GLIndexBuffer final : public GLBuffer {
   public:
-    [[nodiscard]] static bool validateInput(const BufferDescriptor &descriptor,
-                                            Format format);
+    [[nodiscard]] static bool validateInput(const IndexBufferDescriptor &descriptor);
 
     using GLBuffer::GLBuffer;
 

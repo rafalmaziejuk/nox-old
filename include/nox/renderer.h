@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/buffer.h>
-#include <nox/common.h>
 #include <nox/command_list.h>
 #include <nox/export.h>
 #include <nox/graphics_pipeline_state.h>
@@ -17,8 +16,8 @@
 
 namespace NOX {
 
-enum class RendererBackend : uint8_t {
-    OPENGL = 0u,
+enum class RendererBackend {
+    OPENGL = 0,
     MAX
 };
 
@@ -34,9 +33,9 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescriptor &descriptor) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const VertexBufferDescriptor &descriptor) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const IndexBufferDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) = 0;
 

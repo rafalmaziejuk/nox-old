@@ -8,7 +8,7 @@ namespace NOX {
 
 class ShaderVisitor;
 
-enum class ShaderType : uint8_t {
+enum class ShaderType {
     VERTEX,
     FRAGMENT,
     TESS_CONTROL,
