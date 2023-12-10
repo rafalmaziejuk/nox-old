@@ -8,7 +8,6 @@
 #include <nox/render_target.h>
 #include <nox/shader.h>
 #include <nox/swapchain.h>
-#include <nox/surface.h>
 #include <nox/texture.h>
 
 #include <cstdint>
@@ -32,8 +31,6 @@ class NOX_EXPORT Renderer {
     [[nodiscard]] static RendererPtr create(RendererBackend backend);
 
     [[nodiscard]] virtual RendererBackend getRendererBackend() const = 0;
-
-    [[nodiscard]] virtual std::shared_ptr<Surface> createSurface(const SurfaceDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescriptor &descriptor) = 0;
 

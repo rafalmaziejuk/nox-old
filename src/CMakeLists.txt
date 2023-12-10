@@ -39,6 +39,7 @@ target_compile_definitions(
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>: NOX_USE_PLUGIN_PREFIX>
 
     # Configuration specific definitions
+    $<$<CONFIG:Debug>: NOX_DEBUG>
     $<$<CONFIG:Debug>: NOX_USE_PLUGIN_POSTFIX>
 
     # Options specific definitions

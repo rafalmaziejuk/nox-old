@@ -12,14 +12,14 @@ class GLSwapchain final : public Swapchain {
   public:
     [[nodiscard]] static bool validateInput(const SwapchainDescriptor &descriptor);
 
-    GLSwapchain(const SwapchainDescriptor &descriptor, std::shared_ptr<GLContext> context);
+    GLSwapchain(const SwapchainDescriptor &descriptor);
 
     void present() const override;
 
     GLDefaultRenderTarget &getDefaultRenderTarget() { return m_renderTarget; }
 
   private:
-    std::shared_ptr<GLContext> m_context{nullptr};
+    std::unique_ptr<GLContext> m_context{nullptr};
     GLDefaultRenderTarget m_renderTarget{};
 };
 

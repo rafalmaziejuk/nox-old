@@ -7,10 +7,9 @@ namespace NOX {
 
 RendererPtr Renderer::create(RendererBackend backend) {
     auto &registry = RendererFactoryRegistry::instance();
-    NOX_ENSURE_RETURN_NULLPTR_MSG(registry.registerFactory(backend), "Couldn't register renderer factory");
+    NOX_ENSURE_RETURN_NULLPTR_MSG(registry.loadPlugin(backend), "Couldn't register renderer factory");
 
-    const auto &[createRenderer, destroyRenderer] = registry[backend];
-    return {createRenderer(), destroyRenderer};
+    return registry.createRenderer(backend);
 }
 
 } // namespace NOX

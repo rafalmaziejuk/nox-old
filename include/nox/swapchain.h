@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
+#include <nox/surface.h>
 
 #include <variant>
 
@@ -13,6 +14,7 @@ struct OpenGLPresentMode {
 using PresentMode = std::variant<OpenGLPresentMode>;
 
 struct SwapchainDescriptor {
+    SurfaceDescriptor surfaceDescriptor;
     PresentMode presentMode;
 };
 
