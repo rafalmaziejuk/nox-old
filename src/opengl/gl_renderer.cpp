@@ -69,10 +69,10 @@ std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDesc
     return std::make_unique<GLCommandList>(descriptor, m_state);
 }
 
-std::unique_ptr<Texture> GLRenderer::createTexture(const TextureDescriptor &descriptor) {
-    NOX_ASSERT(GLTexture::validateInput(descriptor));
+std::unique_ptr<Texture> GLRenderer::createTexture2D(const Texture2DDescriptor &descriptor) {
+    NOX_ASSERT(GLTexture2D::validateInput(descriptor));
 
-    return std::make_unique<GLTexture>(descriptor);
+    return std::make_unique<GLTexture2D>(descriptor);
 }
 
 std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetDescriptor &descriptor) {

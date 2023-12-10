@@ -24,7 +24,7 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) override;
 
-    std::unique_ptr<Texture> createTexture(const TextureDescriptor &descriptor) override;
+    std::unique_ptr<Texture> createTexture2D(const Texture2DDescriptor &descriptor) override;
 
     std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) override;
 

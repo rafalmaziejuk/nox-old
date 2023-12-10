@@ -145,11 +145,10 @@ void GLRenderTarget::createColorAttachment(const Texture &texture, uint32_t atta
 }
 
 void GLRenderTarget::createDepthStencilAttachment(Format format) {
-    TextureDescriptor textureDescriptor{};
-    textureDescriptor.type = TextureType::TEXTURE2D;
+    Texture2DDescriptor textureDescriptor{};
     textureDescriptor.format = format;
-    textureDescriptor.size = {m_size.x(), m_size.y(), 0u};
-    m_depthStencilAttachments.emplace_back(std::make_unique<GLTexture>(textureDescriptor));
+    textureDescriptor.size = {m_size.x(), m_size.y()};
+    m_depthStencilAttachments.emplace_back(std::make_unique<GLTexture2D>(textureDescriptor));
 
     auto formatDescriptor = Helpers::getFormatDescriptor(format);
     uint32_t attachmentPoint = 0u;
