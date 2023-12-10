@@ -139,8 +139,9 @@ GLRenderTarget::~GLRenderTarget() {
 void GLRenderTarget::createColorAttachment(const Texture &texture, uint32_t attachmentPoint) {
     GLTextureVisitor visitor{};
     texture.accept(visitor);
+    const auto &glTexture = visitor.get();
 
-    glNamedFramebufferTexture(m_handle, attachmentPoint, visitor.getHandle(), 0);
+    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture.getHandle(), 0);
 }
 
 void GLRenderTarget::createDepthStencilAttachment(Format format) {
