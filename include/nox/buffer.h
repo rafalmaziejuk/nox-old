@@ -1,5 +1,6 @@
 #pragma once
 
+#include <nox/common.h>
 #include <nox/export.h>
 
 #include <cstdint>
@@ -17,6 +18,14 @@ struct BufferDescriptor {
     uint32_t usage;
     uint32_t size;
     const void *data;
+};
+
+struct VertexBufferDescriptor : BufferDescriptor {
+    VertexFormat vertexFormat;
+};
+
+struct IndexBufferDescriptor : BufferDescriptor {
+    Format format;
 };
 
 class NOX_EXPORT Buffer {

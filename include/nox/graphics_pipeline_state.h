@@ -11,7 +11,7 @@ namespace NOX {
 
 using ShaderStages = std::vector<std::shared_ptr<Shader>>;
 
-enum class PrimitiveTopology : uint8_t {
+enum class PrimitiveTopology {
     TRIANGLE_LIST
 };
 

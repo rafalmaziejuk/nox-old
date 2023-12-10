@@ -14,9 +14,9 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescriptor &descriptor) override;
 
-    std::unique_ptr<Buffer> createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) override;
+    std::unique_ptr<Buffer> createVertexBuffer(const VertexBufferDescriptor &descriptor) override;
 
-    std::unique_ptr<Buffer> createIndexBuffer(const BufferDescriptor &descriptor, Format format) override;
+    std::unique_ptr<Buffer> createIndexBuffer(const IndexBufferDescriptor &descriptor) override;
 
     std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) override;
 

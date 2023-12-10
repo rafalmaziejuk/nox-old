@@ -119,22 +119,22 @@ void SandboxApplication::createTriangleVertexBuffer() {
                                  4u, 5u, 7u,
                                  5u, 6u, 7u};
 
-    VertexFormat vertexFormat{
-        Format::RG32F,
-        Format::RGBA8_UNORM,
-    };
-
-    BufferDescriptor vertexBufferDescriptor{};
+    VertexBufferDescriptor vertexBufferDescriptor{};
     vertexBufferDescriptor.usage = BufferUsage::STATIC;
     vertexBufferDescriptor.size = sizeof(vertices);
     vertexBufferDescriptor.data = vertices;
-    m_triangleVertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor, vertexFormat);
+    vertexBufferDescriptor.vertexFormat = {
+        Format::RG32F,
+        Format::RGBA8_UNORM,
+    };
+    m_triangleVertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor);
 
-    BufferDescriptor indexBufferDescriptor{};
+    IndexBufferDescriptor indexBufferDescriptor{};
     indexBufferDescriptor.usage = BufferUsage::STATIC;
     indexBufferDescriptor.size = sizeof(indices);
     indexBufferDescriptor.data = indices;
-    m_triangleIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor, Format::R32UI);
+    indexBufferDescriptor.format = Format::R32UI;
+    m_triangleIndexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor);
 
     ShaderDescriptor vertexShaderDescriptor{};
     vertexShaderDescriptor.type = ShaderType::VERTEX;

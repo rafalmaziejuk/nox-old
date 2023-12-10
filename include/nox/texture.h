@@ -10,7 +10,7 @@ namespace NOX {
 
 class TextureVisitor;
 
-enum class TextureType : uint8_t {
+enum class TextureType {
     TEXTURE2D
 };
 

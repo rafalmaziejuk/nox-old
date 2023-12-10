@@ -38,7 +38,7 @@ GLBuffer::~GLBuffer() {
     glDeleteBuffers(1, &m_handle);
 }
 
-bool GLVertexBuffer::validateInput(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) {
+bool GLVertexBuffer::validateInput(const VertexBufferDescriptor &descriptor) {
     auto validateFormat = [](Format format) -> bool {
         auto formatDescriptor = Helpers::getFormatDescriptor(format);
         auto indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
@@ -46,8 +46,8 @@ bool GLVertexBuffer::validateInput(const BufferDescriptor &descriptor, const Ver
     };
 
     return (GLBuffer::validateInput(descriptor)) &&
-           (!vertexFormat.empty()) &&
-           (std::all_of(vertexFormat.begin(), vertexFormat.end(), validateFormat));
+           (!descriptor.vertexFormat.empty()) &&
+           (std::all_of(descriptor.vertexFormat.begin(), descriptor.vertexFormat.end(), validateFormat));
 }
 
 void GLVertexBuffer::bind() {
@@ -60,8 +60,8 @@ void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
     m_vertexArrayIndex = index;
 }
 
-bool GLIndexBuffer::validateInput(const BufferDescriptor &descriptor, Format format) {
-    auto formatDescriptor = Helpers::getFormatDescriptor(format);
+bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
+    auto formatDescriptor = Helpers::getFormatDescriptor(descriptor.format);
     auto indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
 
     return (GLBuffer::validateInput(descriptor)) &&

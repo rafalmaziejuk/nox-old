@@ -25,11 +25,11 @@ std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor
     return swapchain;
 }
 
-std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const BufferDescriptor &descriptor, const VertexFormat &vertexFormat) {
-    NOX_ASSERT(GLVertexBuffer::validateInput(descriptor, vertexFormat));
+std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescriptor &descriptor) {
+    NOX_ASSERT(GLVertexBuffer::validateInput(descriptor));
 
     auto &vertexArrayRegistry = m_state.vertexArrayRegistry;
-    auto vertexArrayIndex = vertexArrayRegistry.registerVertexArray(vertexFormat);
+    auto vertexArrayIndex = vertexArrayRegistry.registerVertexArray(descriptor.vertexFormat);
 
     auto buffer = std::make_unique<GLVertexBuffer>(descriptor, m_state);
     buffer->setVertexArrayIndex(vertexArrayIndex);
@@ -38,11 +38,11 @@ std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const BufferDescriptor &d
     return buffer;
 }
 
-std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const BufferDescriptor &descriptor, Format format) {
-    NOX_ASSERT(GLIndexBuffer::validateInput(descriptor, format));
+std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const IndexBufferDescriptor &descriptor) {
+    NOX_ASSERT(GLIndexBuffer::validateInput(descriptor));
 
     auto buffer = std::make_unique<GLIndexBuffer>(descriptor, m_state);
-    buffer->setIndexType(format);
+    buffer->setIndexType(descriptor.format);
 
     return buffer;
 }
