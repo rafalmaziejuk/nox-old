@@ -1,9 +1,9 @@
-#include "sandbox_application.h"
+#include "sandbox_example.h"
 
 int main() {
-    auto application = std::make_unique<nox::SandboxApplication>();
-    application->initialize();
-    application->run();
+    auto example = std::make_unique<nox::SandboxExample>();
+    example->initialize();
+    example->run();
 
     return 0;
 }
