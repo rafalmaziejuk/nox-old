@@ -6,7 +6,7 @@
 #include <cstddef>
 #include <vector>
 
-namespace NOX {
+namespace nox {
 
 GLProgram::GLProgram() {
     m_handle = glCreateProgram();
@@ -45,4 +45,4 @@ bool GLProgram::link() const {
     return true;
 }
 
-} // namespace NOX
+} // namespace nox

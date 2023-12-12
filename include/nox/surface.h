@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <variant>
 
-namespace NOX {
+namespace nox {
 
 struct WindowsSurfaceBackendDescriptor {
     void *windowHandle;
@@ -46,4 +46,4 @@ class NOX_EXPORT Surface {
     Surface() = default;
 };
 
-} // namespace NOX
+} // namespace nox

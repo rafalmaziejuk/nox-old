@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace NOX {
+namespace nox {
 
 class GLVertexArray {
   public:
@@ -54,4 +54,4 @@ class GLVertexArrayRegistry {
     uint32_t m_boundVertexArrayIndex{invalidVertexArrayIndex};
 };
 
-} // namespace NOX
+} // namespace nox

@@ -2,7 +2,7 @@
 
 #include <nox/render_target.h>
 
-namespace NOX {
+namespace nox {
 
 class GLTexture;
 
@@ -45,4 +45,4 @@ class GLRenderTarget final : public GLRenderTargetBase {
     uint8_t m_depthStencilAttachmentsCount{0u};
 };
 
-} // namespace NOX
+} // namespace nox

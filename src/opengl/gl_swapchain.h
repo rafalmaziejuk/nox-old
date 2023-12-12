@@ -4,7 +4,7 @@
 
 #include <nox/swapchain.h>
 
-namespace NOX {
+namespace nox {
 
 class GLContext;
 
@@ -23,4 +23,4 @@ class GLSwapchain final : public Swapchain {
     GLDefaultRenderTarget m_renderTarget{};
 };
 
-} // namespace NOX
+} // namespace nox

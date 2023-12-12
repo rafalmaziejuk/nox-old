@@ -3,7 +3,7 @@
 
 #include <dlfcn.h>
 
-namespace NOX {
+namespace nox {
 
 std::unique_ptr<Plugin> Plugin::create(std::string_view name) {
     constexpr auto searchPath = "./";
@@ -34,4 +34,4 @@ bool LinuxDynamicPlugin::load(std::string_view filename) {
     return true;
 }
 
-} // namespace NOX
+} // namespace nox

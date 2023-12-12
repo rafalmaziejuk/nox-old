@@ -4,7 +4,7 @@
 
 #include <string_view>
 
-namespace NOX {
+namespace nox {
 
 class GLShader final : public Shader {
   public:
@@ -26,4 +26,4 @@ class GLShader final : public Shader {
     uint32_t m_handle{0u};
 };
 
-} // namespace NOX
+} // namespace nox

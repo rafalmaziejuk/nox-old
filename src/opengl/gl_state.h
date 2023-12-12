@@ -3,7 +3,7 @@
 #include "opengl/gl_render_target.h"
 #include "opengl/gl_vertex_array.h"
 
-namespace NOX {
+namespace nox {
 
 struct GLState {
     GLVertexArrayRegistry vertexArrayRegistry;
@@ -28,4 +28,4 @@ class GLWithState {
     GLState *m_state{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

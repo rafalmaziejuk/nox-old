@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -82,4 +82,4 @@ void GLIndexBuffer::setIndexType(Format format) {
     m_indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
 }
 
-} // namespace NOX
+} // namespace nox

@@ -2,7 +2,7 @@
 #include "opengl/gl_context.h"
 #include "opengl/gl_swapchain.h"
 
-namespace NOX {
+namespace nox {
 
 bool GLSwapchain::validateInput(const SwapchainDescriptor &descriptor) {
     return (GLContext::validateInput(descriptor.surfaceDescriptor)) &&
@@ -21,4 +21,4 @@ void GLSwapchain::present() const {
     m_context->swapBuffers();
 }
 
-} // namespace NOX
+} // namespace nox

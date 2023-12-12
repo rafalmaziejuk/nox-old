@@ -4,7 +4,7 @@
 
 #include <nox/renderer.h>
 
-namespace NOX {
+namespace nox {
 
 class GLRenderer final : public Renderer {
   public:
@@ -32,4 +32,4 @@ class GLRenderer final : public Renderer {
     GLState m_state{};
 };
 
-} // namespace NOX
+} // namespace nox

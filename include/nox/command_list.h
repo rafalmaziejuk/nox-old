@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace NOX {
+namespace nox {
 
 struct CommandListDescriptor {};
 
@@ -49,4 +49,4 @@ class NOX_EXPORT CommandList {
     CommandList() = default;
 };
 
-} // namespace NOX
+} // namespace nox

@@ -4,7 +4,7 @@
 #include <memory>
 #include <string>
 
-namespace NOX {
+namespace nox {
 
 class Plugin {
   public:
@@ -33,4 +33,4 @@ class Plugin {
 
 [[nodiscard]] std::string createPluginFilename(std::string_view name, std::string_view extension);
 
-} // namespace NOX
+} // namespace nox

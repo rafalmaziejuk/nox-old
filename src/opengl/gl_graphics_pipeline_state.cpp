@@ -8,7 +8,7 @@
 
 #include <algorithm>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -94,4 +94,4 @@ bool GLGraphicsPipelineState::bindShaderStages(const ShaderStages &shaderStages)
     return true;
 }
 
-} // namespace NOX
+} // namespace nox

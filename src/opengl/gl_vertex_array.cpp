@@ -4,7 +4,7 @@
 
 #include <algorithm>
 
-namespace NOX {
+namespace nox {
 
 GLVertexArray::GLVertexArray(const VertexFormat &vertexFormat) {
     glCreateVertexArrays(1, &m_handle);
@@ -84,4 +84,4 @@ uint32_t GLVertexArrayRegistry::find(const VertexFormat &vertexFormat) const {
     return invalidVertexArrayIndex;
 }
 
-} // namespace NOX
+} // namespace nox

@@ -3,7 +3,7 @@
 
 #include <nox/renderer.h>
 
-namespace NOX {
+namespace nox {
 
 RendererPtr Renderer::create(RendererBackend backend) {
     auto &registry = RendererFactoryRegistry::instance();
@@ -12,4 +12,4 @@ RendererPtr Renderer::create(RendererBackend backend) {
     return registry.createRenderer(backend);
 }
 
-} // namespace NOX
+} // namespace nox

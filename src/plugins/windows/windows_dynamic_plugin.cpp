@@ -1,7 +1,7 @@
 #include "nox_assert.h"
 #include "plugins/windows/windows_dynamic_plugin.h"
 
-namespace NOX {
+namespace nox {
 
 std::unique_ptr<Plugin> Plugin::create(std::string_view name) {
     constexpr auto extension = "dll";
@@ -30,4 +30,4 @@ bool WindowsDynamicPlugin::load(std::string_view filename) {
     return true;
 }
 
-} // namespace NOX
+} // namespace nox

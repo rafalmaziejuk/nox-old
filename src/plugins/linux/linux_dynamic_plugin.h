@@ -1,6 +1,6 @@
 #include "plugins/plugin.h"
 
-namespace NOX {
+namespace nox {
 
 class LinuxDynamicPlugin final : public Plugin {
   public:
@@ -12,4 +12,4 @@ class LinuxDynamicPlugin final : public Plugin {
     void *m_handle{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

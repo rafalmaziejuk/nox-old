@@ -11,7 +11,7 @@
     bool pluginRegister##pluginName();                                      \
     uint8_t pluginVersion##pluginName();                                    \
                                                                             \
-    class StaticPlugin##pluginName : public NOX::Plugin {                   \
+    class StaticPlugin##pluginName : public nox::Plugin {                   \
       public:                                                               \
         StaticPlugin##pluginName() {                                        \
             m_pluginRegisterFunction = pluginRegister##pluginName;          \
@@ -20,7 +20,7 @@
         ~StaticPlugin##pluginName() override = default;                     \
     };                                                                      \
                                                                             \
-    [[nodiscard]] std::unique_ptr<NOX::Plugin> createPlugin##pluginName() { \
+    [[nodiscard]] std::unique_ptr<nox::Plugin> createPlugin##pluginName() { \
         return std::make_unique<StaticPlugin##pluginName>();                \
     }                                                                       \
                                                                             \
@@ -30,7 +30,7 @@
     uint8_t pluginVersion##pluginName() { return NOX_PLUGIN_API_VERSION; }
 
 #define NOX_PLUGIN_IMPORT(pluginName) \
-    NOX_PLUGIN_VISIBILITY std::unique_ptr<NOX::Plugin> createPlugin##pluginName()
+    NOX_PLUGIN_VISIBILITY std::unique_ptr<nox::Plugin> createPlugin##pluginName()
 
 #define NOX_PLUGIN_CREATE(pluginName) \
     createPlugin##pluginName()
@@ -48,5 +48,5 @@
 #define NOX_PLUGIN_IMPORT(pluginName)
 
 #define NOX_PLUGIN_CREATE(pluginName) \
-    NOX::Plugin::create(#pluginName)
+    nox::Plugin::create(#pluginName)
 #endif

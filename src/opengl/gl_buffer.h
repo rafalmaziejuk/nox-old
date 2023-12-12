@@ -4,7 +4,7 @@
 
 #include <nox/buffer.h>
 
-namespace NOX {
+namespace nox {
 
 class GLBuffer : public Buffer, public GLWithState {
   public:
@@ -48,4 +48,4 @@ class GLIndexBuffer final : public GLBuffer {
     uint32_t m_indexType{0u};
 };
 
-} // namespace NOX
+} // namespace nox

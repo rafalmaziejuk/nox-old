@@ -6,7 +6,7 @@
 NOX_PLUGIN_IMPORT(OPENGL);
 #endif
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -67,4 +67,4 @@ bool RendererFactoryRegistry::contains(RendererBackend backend) const {
            (factory.second != nullptr);
 }
 
-} // namespace NOX
+} // namespace nox

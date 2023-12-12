@@ -5,7 +5,7 @@
 
 #include <array>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -153,4 +153,4 @@ void WindowsGLContext::setSwapInterval(bool value) const {
     wglSwapIntervalEXT(static_cast<int32_t>(value));
 }
 
-} // namespace NOX
+} // namespace nox

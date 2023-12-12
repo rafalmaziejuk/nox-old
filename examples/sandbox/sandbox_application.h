@@ -4,7 +4,7 @@
 
 struct GLFWwindow;
 
-namespace NOX {
+namespace nox {
 
 class SandboxApplication {
   public:
@@ -25,4 +25,4 @@ class SandboxApplication {
     std::unique_ptr<Buffer> m_triangleIndexBuffer{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

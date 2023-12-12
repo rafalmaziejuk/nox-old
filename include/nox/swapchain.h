@@ -5,7 +5,7 @@
 
 #include <variant>
 
-namespace NOX {
+namespace nox {
 
 struct OpenGLPresentMode {
     bool vSync;
@@ -33,4 +33,4 @@ class NOX_EXPORT Swapchain {
     Swapchain() = default;
 };
 
-} // namespace NOX
+} // namespace nox

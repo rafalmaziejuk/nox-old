@@ -6,16 +6,16 @@
 #define NOX_PLUGIN_EXPORT NOX_OPENGL_EXPORT
 
 NOX_PLUGIN_REGISTER(OPENGL) {
-    auto createRenderer = []() -> NOX::Renderer * {
-        return new NOX::GLRenderer{};
+    auto createRenderer = []() -> nox::Renderer * {
+        return new nox::GLRenderer{};
     };
-    auto destroyRenderer = [](NOX::Renderer *renderer) -> void {
+    auto destroyRenderer = [](nox::Renderer *renderer) -> void {
         delete renderer;
         renderer = nullptr;
     };
 
-    auto &registry = NOX::RendererFactoryRegistry::instance();
-    registry.registerFactory(NOX::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
+    auto &registry = nox::RendererFactoryRegistry::instance();
+    registry.registerFactory(nox::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
 
     return true;
 }

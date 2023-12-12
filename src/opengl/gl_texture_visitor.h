@@ -3,7 +3,7 @@
 #include "texture_visitor.h"
 #include "opengl/gl_texture.h"
 
-namespace NOX {
+namespace nox {
 
 class GLTextureVisitor final : public TextureVisitor {
   public:
@@ -17,4 +17,4 @@ class GLTextureVisitor final : public TextureVisitor {
     const GLTexture *m_texture{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

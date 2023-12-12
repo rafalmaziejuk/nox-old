@@ -2,7 +2,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace NOX;
+using namespace nox;
 
 class RendererTestFixture : public ::testing::TestWithParam<RendererBackend> {
   public:

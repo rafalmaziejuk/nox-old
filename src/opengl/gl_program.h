@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace NOX {
+namespace nox {
 
 class GLProgram {
   public:
@@ -22,4 +22,4 @@ class GLProgram {
     uint32_t m_handle{0u};
 };
 
-} // namespace NOX
+} // namespace nox

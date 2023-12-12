@@ -4,7 +4,7 @@
 
 #include <nox/command_list.h>
 
-namespace NOX {
+namespace nox {
 
 class GLCommandList final : public CommandList, public GLWithState {
   public:
@@ -27,4 +27,4 @@ class GLCommandList final : public CommandList, public GLWithState {
     void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) override;
 };
 
-} // namespace NOX
+} // namespace nox

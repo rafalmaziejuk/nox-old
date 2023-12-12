@@ -2,7 +2,7 @@
 
 #include <windows.h>
 
-namespace NOX {
+namespace nox {
 
 class WindowsDynamicPlugin final : public Plugin {
   public:
@@ -14,4 +14,4 @@ class WindowsDynamicPlugin final : public Plugin {
     HMODULE m_handle{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

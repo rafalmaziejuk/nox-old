@@ -5,7 +5,7 @@
 using Display = struct _XDisplay;
 using Window = uint64_t;
 
-namespace NOX {
+namespace nox {
 
 class X11GLContext final : public LinuxGLContext {
   public:
@@ -21,4 +21,4 @@ class X11GLContext final : public LinuxGLContext {
     Window m_handleWindowX11{0u};
 };
 
-} // namespace NOX
+} // namespace nox

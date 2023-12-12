@@ -4,7 +4,7 @@
 
 #include <glad/gl.h>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -58,4 +58,4 @@ void GLShader::accept(ShaderVisitor &visitor) const {
     visitor.visit(*this);
 }
 
-} // namespace NOX
+} // namespace nox

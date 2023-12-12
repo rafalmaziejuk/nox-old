@@ -2,7 +2,7 @@
 
 #include <windows.h>
 
-namespace NOX {
+namespace nox {
 
 class WindowsGLContext final : public GLContext {
   public:
@@ -20,4 +20,4 @@ class WindowsGLContext final : public GLContext {
     HGLRC m_handleRenderingContext{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

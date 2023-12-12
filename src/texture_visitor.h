@@ -2,7 +2,7 @@
 
 #include <nox/texture.h>
 
-namespace NOX {
+namespace nox {
 
 class GLTexture;
 
@@ -17,4 +17,4 @@ class TextureVisitor {
     virtual ~TextureVisitor() = default;
 };
 
-} // namespace NOX
+} // namespace nox
