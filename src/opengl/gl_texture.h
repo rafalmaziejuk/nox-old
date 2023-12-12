@@ -2,7 +2,7 @@
 
 #include <nox/texture.h>
 
-namespace NOX {
+namespace nox {
 
 class GLTexture : public Texture {
   public:
@@ -28,4 +28,4 @@ class GLTexture2D final : public GLTexture {
     TextureType getTextureType() const override;
 };
 
-} // namespace NOX
+} // namespace nox

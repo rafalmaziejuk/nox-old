@@ -4,7 +4,7 @@
 
 #include <glad/gl.h>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -118,4 +118,4 @@ TextureType GLTexture2D::getTextureType() const {
     return TextureType::TEXTURE2D;
 }
 
-} // namespace NOX
+} // namespace nox

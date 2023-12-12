@@ -2,7 +2,7 @@
 
 #include <nox/shader.h>
 
-namespace NOX {
+namespace nox {
 
 class GLShader;
 
@@ -17,4 +17,4 @@ class ShaderVisitor {
     virtual ~ShaderVisitor() = default;
 };
 
-} // namespace NOX
+} // namespace nox

@@ -7,7 +7,7 @@
 
 #include <array>
 
-namespace NOX {
+namespace nox {
 
 bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
     const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
@@ -104,4 +104,4 @@ void LinuxGLContext::setSwapInterval(bool value) const {
     eglSwapInterval(m_handleDisplay, static_cast<EGLint>(value));
 }
 
-} // namespace NOX
+} // namespace nox

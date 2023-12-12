@@ -5,7 +5,7 @@
 
 #include <cstdint>
 
-namespace NOX {
+namespace nox {
 
 struct BufferUsage {
     enum {
@@ -43,4 +43,4 @@ class NOX_EXPORT Buffer {
     Buffer() = default;
 };
 
-} // namespace NOX
+} // namespace nox

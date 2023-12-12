@@ -3,7 +3,7 @@
 #include "shader_visitor.h"
 #include "opengl/gl_shader.h"
 
-namespace NOX {
+namespace nox {
 
 class GLShaderVisitor final : public ShaderVisitor {
   public:
@@ -17,4 +17,4 @@ class GLShaderVisitor final : public ShaderVisitor {
     const GLShader *m_shader{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

@@ -1,7 +1,7 @@
 #include "nox_assert.h"
 #include "opengl/gl_helper.h"
 
-namespace NOX::GLHelper {
+namespace nox::GLHelper {
 
 GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size) {
     if (type == FormatDataType::UINT) {
@@ -42,4 +42,4 @@ GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size) {
     return GL_NONE;
 }
 
-} // namespace NOX::GLHelper
+} // namespace nox::GLHelper

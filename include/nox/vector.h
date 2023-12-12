@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <type_traits>
 
-namespace NOX {
+namespace nox {
 
 template <typename Type, size_t componentCount>
 struct Vector {
@@ -71,4 +71,4 @@ using Vector3D = Vector<Type, 3>;
 template <typename Type>
 using Vector4D = Vector<Type, 4>;
 
-} // namespace NOX
+} // namespace nox

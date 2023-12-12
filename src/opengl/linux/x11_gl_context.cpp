@@ -4,7 +4,7 @@
 #define USE_X11
 #include <glad/egl.h>
 
-namespace NOX {
+namespace nox {
 
 X11GLContext::X11GLContext(const X11SurfaceBackendDescriptor &descriptor) {
     m_handleDisplayX11 = static_cast<Display *>(descriptor.displayHandle);
@@ -30,4 +30,4 @@ bool X11GLContext::setSurfaceHandle(EGLConfig framebufferConfig) {
     return (m_handleSurface != EGL_NO_SURFACE);
 }
 
-} // namespace NOX
+} // namespace nox

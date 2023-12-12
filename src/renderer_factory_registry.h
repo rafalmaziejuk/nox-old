@@ -5,7 +5,7 @@
 #include <nox/export.h>
 #include <nox/renderer.h>
 
-namespace NOX {
+namespace nox {
 
 using CreateRendererCallback = std::function<Renderer *()>;
 using DestroyRendererCallback = std::function<void(Renderer *)>;
@@ -41,4 +41,4 @@ class NOX_EXPORT RendererFactoryRegistry {
     std::array<RendererPlugin, registrySize> m_plugins{};
 };
 
-} // namespace NOX
+} // namespace nox

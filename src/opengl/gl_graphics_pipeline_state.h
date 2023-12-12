@@ -5,7 +5,7 @@
 
 #include <nox/graphics_pipeline_state.h>
 
-namespace NOX {
+namespace nox {
 
 class GLGraphicsPipelineState final : public GraphicsPipelineState, public GLWithState {
   public:
@@ -24,4 +24,4 @@ class GLGraphicsPipelineState final : public GraphicsPipelineState, public GLWit
     uint32_t m_handle{0u};
 };
 
-} // namespace NOX
+} // namespace nox

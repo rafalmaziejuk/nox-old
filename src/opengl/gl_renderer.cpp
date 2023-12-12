@@ -10,7 +10,7 @@
 #include "opengl/gl_texture.h"
 #include "opengl/gl_vertex_array.h"
 
-namespace NOX {
+namespace nox {
 
 RendererBackend GLRenderer::getRendererBackend() const {
     return RendererBackend::OPENGL;
@@ -79,4 +79,4 @@ std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetD
     return std::make_unique<GLRenderTarget>(descriptor);
 }
 
-} // namespace NOX
+} // namespace nox

@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -47,4 +47,4 @@ std::string createPluginFilename(std::string_view name, std::string_view extensi
     return toLower(result);
 }
 
-} // namespace NOX
+} // namespace nox

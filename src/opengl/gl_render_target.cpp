@@ -6,7 +6,7 @@
 
 #include <glad/gl.h>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -164,4 +164,4 @@ void GLRenderTarget::createDepthStencilAttachment(Format format) {
     glNamedFramebufferTexture(m_handle, attachmentPoint, m_depthStencilAttachments.front()->getHandle(), 0);
 }
 
-} // namespace NOX
+} // namespace nox

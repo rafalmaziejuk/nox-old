@@ -6,7 +6,7 @@
 
 #include <cstdint>
 
-namespace NOX {
+namespace nox {
 
 class TextureVisitor;
 
@@ -39,4 +39,4 @@ class NOX_EXPORT Texture {
     Texture() = default;
 };
 
-} // namespace NOX
+} // namespace nox

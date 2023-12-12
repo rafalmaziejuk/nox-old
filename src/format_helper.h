@@ -3,7 +3,7 @@
 #include <nox/common.h>
 #include <nox/export.h>
 
-namespace NOX {
+namespace nox {
 
 enum class FormatDataType : uint8_t {
     NONE,
@@ -27,4 +27,4 @@ NOX_EXPORT FormatDescriptor getFormatDescriptor(Format format);
 
 } // namespace Helpers
 
-} // namespace NOX
+} // namespace nox

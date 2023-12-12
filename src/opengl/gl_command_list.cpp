@@ -8,7 +8,7 @@
 
 #include <glad/gl.h>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -106,4 +106,4 @@ void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCo
                    nullptr);
 }
 
-} // namespace NOX
+} // namespace nox

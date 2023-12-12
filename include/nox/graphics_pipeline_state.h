@@ -7,7 +7,7 @@
 #include <memory>
 #include <vector>
 
-namespace NOX {
+namespace nox {
 
 using ShaderStages = std::vector<std::shared_ptr<Shader>>;
 
@@ -35,4 +35,4 @@ class NOX_EXPORT GraphicsPipelineState {
     GraphicsPipelineState() = default;
 };
 
-} // namespace NOX
+} // namespace nox

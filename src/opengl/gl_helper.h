@@ -4,8 +4,8 @@
 
 #include <glad/gl.h>
 
-namespace NOX::GLHelper {
+namespace nox::GLHelper {
 
 GLenum mapFormatDataTypeToEnum(FormatDataType type, uint8_t size);
 
-} // namespace NOX::GLHelper
+} // namespace nox::GLHelper

@@ -9,7 +9,7 @@
 #endif
 #include <GLFW/glfw3native.h>
 
-namespace NOX {
+namespace nox {
 
 namespace {
 
@@ -152,4 +152,4 @@ void SandboxApplication::createTriangleVertexBuffer() {
     m_triangleGraphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);
 }
 
-} // namespace NOX
+} // namespace nox

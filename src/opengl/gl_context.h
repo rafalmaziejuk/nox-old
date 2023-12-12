@@ -4,7 +4,7 @@
 
 #include <memory>
 
-namespace NOX {
+namespace nox {
 
 class GLContext : public Surface {
   public:
@@ -26,4 +26,4 @@ class GLContext : public Surface {
     static constexpr auto glMinorVersion = 6u;
 };
 
-} // namespace NOX
+} // namespace nox

@@ -7,7 +7,7 @@ using EGLDisplay = void *;
 using EGLContext = void *;
 using EGLConfig = void *;
 
-namespace NOX {
+namespace nox {
 
 class LinuxGLContext : public GLContext {
   public:
@@ -28,4 +28,4 @@ class LinuxGLContext : public GLContext {
     EGLContext m_handleRenderingContext{nullptr};
 };
 
-} // namespace NOX
+} // namespace nox

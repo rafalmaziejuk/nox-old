@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <vector>
 
-namespace NOX {
+namespace nox {
 
 struct ClearMask {
     enum {
@@ -114,4 +114,4 @@ struct Viewport {
     float farClip{1.0f};
 };
 
-} // namespace NOX
+} // namespace nox

@@ -4,7 +4,7 @@
 
 #include <cstdint>
 
-namespace NOX {
+namespace nox {
 
 class ShaderVisitor;
 
@@ -39,4 +39,4 @@ class NOX_EXPORT Shader {
     Shader() = default;
 };
 
-} // namespace NOX
+} // namespace nox

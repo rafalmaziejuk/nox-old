@@ -9,7 +9,7 @@
 #include <cstdint>
 #include <memory>
 
-namespace NOX {
+namespace nox {
 
 class Texture;
 
@@ -40,4 +40,4 @@ class NOX_EXPORT RenderTarget {
     RenderTarget() = default;
 };
 
-} // namespace NOX
+} // namespace nox

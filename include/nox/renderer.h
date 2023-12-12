@@ -13,7 +13,7 @@
 #include <memory>
 #include <string_view>
 
-namespace NOX {
+namespace nox {
 
 enum class RendererBackend {
     OPENGL = 0,
@@ -57,4 +57,4 @@ class NOX_EXPORT Renderer {
     Renderer() = default;
 };
 
-} // namespace NOX
+} // namespace nox
