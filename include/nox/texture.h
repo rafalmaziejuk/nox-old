@@ -1,7 +1,7 @@
 #pragma once
 
-#include <nox/common.h>
 #include <nox/export.h>
+#include <nox/format.h>
 #include <nox/vector.h>
 
 #include <cstdint>
@@ -15,7 +15,7 @@ enum class TextureType {
 };
 
 struct TextureDescriptor {
-    Format format;
+    ImageFormat format;
 };
 
 struct Texture2DDescriptor : TextureDescriptor {

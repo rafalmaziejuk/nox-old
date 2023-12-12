@@ -1,7 +1,7 @@
 #pragma once
 
-#include <nox/common.h>
 #include <nox/export.h>
+#include <nox/format.h>
 
 #include <cstdint>
 
@@ -21,11 +21,11 @@ struct BufferDescriptor {
 };
 
 struct VertexBufferDescriptor : BufferDescriptor {
-    VertexFormat vertexFormat;
+    VertexAttributes vertexAttributes;
 };
 
 struct IndexBufferDescriptor : BufferDescriptor {
-    Format format;
+    VertexAttributeFormat format;
 };
 
 class NOX_EXPORT Buffer {

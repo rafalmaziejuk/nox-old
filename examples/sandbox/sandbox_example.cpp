@@ -38,14 +38,14 @@ struct Vertex {
     uint8_t color[4];
 };
 constexpr Vertex vertices[]{
-    {{0.5f, 0.5f}, {255, 0, 0, 255}},
-    {{0.5f, -0.5f}, {0, 255, 0, 255}},
-    {{-0.5f, -0.5f}, {0, 0, 255, 255}},
-    {{-0.5f, 0.5f}, {0, 255, 0, 255}},
-    {{0.25f, 0.25f}, {255, 0, 0, 255}},
-    {{0.25f, -0.25f}, {255, 0, 0, 255}},
-    {{-0.25f, -0.25f}, {255, 0, 0, 255}},
-    {{-0.25f, 0.25f}, {255, 0, 0, 255}},
+    {{0.5f, 0.5f}, {255u, 0u, 0u, 255u}},
+    {{0.5f, -0.5f}, {0u, 255u, 0u, 255u}},
+    {{-0.5f, -0.5f}, {0u, 0u, 255u, 255u}},
+    {{-0.5f, 0.5f}, {0u, 255u, 0u, 255u}},
+    {{0.25f, 0.25f}, {255u, 0u, 0u, 255u}},
+    {{0.25f, -0.25f}, {255u, 0u, 0u, 255u}},
+    {{-0.25f, -0.25f}, {255u, 0u, 0u, 255u}},
+    {{-0.25f, 0.25f}, {255u, 0u, 0u, 255u}},
 };
 constexpr uint32_t indices[]{0u, 1u, 3u,
                              1u, 2u, 3u,
@@ -93,17 +93,18 @@ void SandboxExample::initialize() {
     vertexBufferDescriptor.usage = BufferUsage::STATIC;
     vertexBufferDescriptor.size = sizeof(vertices);
     vertexBufferDescriptor.data = vertices;
-    vertexBufferDescriptor.vertexFormat = {
-        Format::RG32F,
-        Format::RGBA8_UNORM,
+    vertexBufferDescriptor.vertexAttributes = {
+        VertexAttributeFormat::RG32F,
+        VertexAttributeFormat::RGBA8,
     };
     m_vertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor);
+    auto vertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor);
 
     IndexBufferDescriptor indexBufferDescriptor{};
     indexBufferDescriptor.usage = BufferUsage::STATIC;
     indexBufferDescriptor.size = sizeof(indices);
     indexBufferDescriptor.data = indices;
-    indexBufferDescriptor.format = Format::R32UI;
+    indexBufferDescriptor.format = VertexAttributeFormat::R32UI;
     m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor);
 }
 

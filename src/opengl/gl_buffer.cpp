@@ -1,6 +1,9 @@
-#include "format_helper.h"
+#include "format_descriptor.h"
+#include "nox_assert.h"
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_helper.h"
+
+#include <glad/gl.h>
 
 #include <algorithm>
 
@@ -39,21 +42,15 @@ GLBuffer::~GLBuffer() {
 }
 
 bool GLVertexBuffer::validateInput(const VertexBufferDescriptor &descriptor) {
-    auto validateFormat = [](Format format) -> bool {
-        auto formatDescriptor = Helpers::getFormatDescriptor(format);
-        auto indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
-        return (indexType != GL_NONE);
-    };
-
     return (GLBuffer::validateInput(descriptor)) &&
-           (!descriptor.vertexFormat.empty()) &&
-           (std::all_of(descriptor.vertexFormat.begin(), descriptor.vertexFormat.end(), validateFormat));
+           (!descriptor.vertexAttributes.empty());
 }
 
 void GLVertexBuffer::bind() {
+    auto &state = getState();
     auto &vertexArrayRegistry = getState().vertexArrayRegistry;
     vertexArrayRegistry[m_vertexArrayIndex].bind();
-    vertexArrayRegistry.setBoundVertexArrayIndex(m_vertexArrayIndex);
+    state.boundVertexArrayIndex = m_vertexArrayIndex;
 }
 
 void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
@@ -61,11 +58,7 @@ void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
 }
 
 bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
-    auto formatDescriptor = Helpers::getFormatDescriptor(descriptor.format);
-    auto indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
-
-    return (GLBuffer::validateInput(descriptor)) &&
-           (indexType != GL_NONE);
+    return GLBuffer::validateInput(descriptor);
 }
 
 void GLIndexBuffer::bind() {
@@ -73,13 +66,13 @@ void GLIndexBuffer::bind() {
     state.indexType = m_indexType;
 
     auto &vertexArrayRegistry = state.vertexArrayRegistry;
-    auto &vertexArray = vertexArrayRegistry[vertexArrayRegistry.getBoundVertexArrayIndex()];
+    auto &vertexArray = vertexArrayRegistry[state.boundVertexArrayIndex];
     vertexArray.setIndexBuffer(getHandle());
 }
 
-void GLIndexBuffer::setIndexType(Format format) {
-    auto formatDescriptor = Helpers::getFormatDescriptor(format);
-    m_indexType = GLHelper::mapFormatDataTypeToEnum(formatDescriptor.dataType, formatDescriptor.dataTypeSize);
+void GLIndexBuffer::setIndexType(VertexAttributeFormat format) {
+    auto descriptor = getVertexAttributeFormatDescriptor(format);
+    m_indexType = mapVertexAttributeDataTypeToEnum(descriptor.vertexAttributeDataType);
 }
 
 } // namespace nox

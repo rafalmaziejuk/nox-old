@@ -1,7 +1,7 @@
 #pragma once
 
-#include <nox/common.h>
 #include <nox/export.h>
+#include <nox/format.h>
 #include <nox/texture.h>
 #include <nox/vector.h>
 
@@ -17,7 +17,7 @@ struct AttachmentsContainer {
     static constexpr auto maxColorAttachments = 8u;
     static constexpr auto maxDepthStencilAttachments = 2u;
     using ColorAttachmentsContainer = std::array<std::shared_ptr<Texture>, maxColorAttachments>;
-    using DepthStencilAttachmentsContainer = std::array<Format, maxDepthStencilAttachments>;
+    using DepthStencilAttachmentsContainer = std::array<ImageFormat, maxDepthStencilAttachments>;
 
     ColorAttachmentsContainer colorAttachments;
     DepthStencilAttachmentsContainer depthStencilAttachments;

@@ -1,12 +1,21 @@
 #pragma once
 
-#include <nox/common.h>
 #include <nox/export.h>
 #include <nox/vector.h>
+#include <nox/viewport.h>
 
 #include <cstdint>
 
 namespace nox {
+
+struct ClearMask {
+    enum {
+        COLOR = (1 << 0),
+        DEPTH = (1 << 1),
+        STENCIL = (1 << 2),
+        ALL = COLOR | DEPTH | STENCIL
+    };
+};
 
 struct CommandListDescriptor {};
 

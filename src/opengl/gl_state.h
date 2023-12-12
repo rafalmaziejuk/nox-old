@@ -7,6 +7,7 @@ namespace nox {
 
 struct GLState {
     GLVertexArrayRegistry vertexArrayRegistry;
+    uint32_t boundVertexArrayIndex;
 
     const GLRenderTargetBase *currentRenderTarget;
     uint32_t indexType;
