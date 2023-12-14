@@ -29,8 +29,11 @@ std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescrip
     NOX_ASSERT(GLVertexBuffer::validateInput(descriptor));
 
     auto &vertexArrayRegistry = m_state.vertexArrayRegistry;
-    auto vertexArrayIndex = vertexArrayRegistry.registerVertexArray(descriptor.vertexFormat);
+    if (!vertexArrayRegistry.contains(descriptor.vertexAttributes)) {
+        vertexArrayRegistry.registerVertexArray(descriptor.vertexAttributes);
+    }
 
+    auto vertexArrayIndex = vertexArrayRegistry.find(descriptor.vertexAttributes);
     auto buffer = std::make_unique<GLVertexBuffer>(descriptor, m_state);
     buffer->setVertexArrayIndex(vertexArrayIndex);
     vertexArrayRegistry[vertexArrayIndex].setVertexBuffer(buffer->getHandle());

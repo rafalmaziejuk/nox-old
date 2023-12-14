@@ -6,23 +6,23 @@
 
 namespace nox {
 
-template <typename Type, size_t componentCount>
+template <typename Type, size_t componentsCount>
 struct Vector {
     static_assert(std::is_pod<Type>::value);
-    static_assert(componentCount >= 2u && componentCount <= 4u);
+    static_assert(componentsCount >= 2u && componentsCount <= 4u);
 
     constexpr Vector() = default;
 
     constexpr Vector(Type x, Type y) : values{{x, y}} {
-        static_assert(componentCount == 2u);
+        static_assert(componentsCount == 2u);
     }
 
     constexpr Vector(Type x, Type y, Type z) : values{{x, y, z}} {
-        static_assert(componentCount == 3u);
+        static_assert(componentsCount == 3u);
     }
 
     constexpr Vector(Type x, Type y, Type z, Type w) : values{{x, y, z, w}} {
-        static_assert(componentCount == 4u);
+        static_assert(componentsCount == 4u);
     }
 
     template <typename U>
@@ -40,17 +40,17 @@ struct Vector {
                                                                    static_cast<Type>(other.z()),
                                                                    static_cast<Type>(other.w())}} {}
 
-    bool operator==(const Vector<Type, componentCount> &other) const { return (values == other.values); }
-    bool operator!=(const Vector<Type, componentCount> &other) const { return (values != other.values); }
+    bool operator==(const Vector<Type, componentsCount> &other) const { return (values == other.values); }
+    bool operator!=(const Vector<Type, componentsCount> &other) const { return (values != other.values); }
 
     Type x() const { return values[0]; }
     Type y() const { return values[1]; }
     Type z() const {
-        static_assert(componentCount >= 3u && componentCount <= 4u);
+        static_assert(componentsCount >= 3u && componentsCount <= 4u);
         return values[2];
     }
     Type w() const {
-        static_assert(componentCount == 4u);
+        static_assert(componentsCount == 4u);
         return values[3];
     }
 
@@ -59,7 +59,7 @@ struct Vector {
     Type b() const { return z(); }
     Type a() const { return w(); }
 
-    std::array<Type, componentCount> values{};
+    std::array<Type, componentsCount> values{};
 };
 
 template <typename Type>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/common.h>
+#include <nox/format.h>
 
 #include <memory>
 
@@ -8,7 +8,7 @@ namespace nox {
 
 class GLVertexArray {
   public:
-    explicit GLVertexArray(const VertexFormat &vertexFormat);
+    explicit GLVertexArray(const VertexAttributes &vertexAttributes);
     ~GLVertexArray();
 
     void setVertexBuffer(uint32_t vertexBufferHandle);
@@ -19,25 +19,24 @@ class GLVertexArray {
   public:
     GLVertexArray(const GLVertexArray &) = delete;
     GLVertexArray &operator=(const GLVertexArray &) = delete;
+    GLVertexArray(GLVertexArray &&other) = delete;
+    GLVertexArray &operator=(GLVertexArray &&other) = delete;
 
   private:
     uint32_t m_currentBindingIndex{0u};
-    uint32_t m_handle{0u};
     uint32_t m_stride{0u};
+    uint32_t m_handle{0u};
 };
 
 class GLVertexArrayRegistry {
   public:
-    [[nodiscard]] uint32_t registerVertexArray(const VertexFormat &vertexFormat);
+    void registerVertexArray(const VertexAttributes &vertexAttributes);
 
     [[nodiscard]] GLVertexArray &operator[](uint32_t index);
     [[nodiscard]] const GLVertexArray &operator[](uint32_t index) const;
 
-    void setBoundVertexArrayIndex(uint32_t index);
-    [[nodiscard]] uint32_t getBoundVertexArrayIndex() const;
-
-  private:
-    [[nodiscard]] uint32_t find(const VertexFormat &vertexFormat) const;
+    [[nodiscard]] bool contains(const VertexAttributes &vertexAttributes) const;
+    [[nodiscard]] uint32_t find(const VertexAttributes &vertexAttributes) const;
 
   public:
     GLVertexArrayRegistry() = default;
@@ -47,11 +46,11 @@ class GLVertexArrayRegistry {
     GLVertexArrayRegistry &operator=(GLVertexArrayRegistry &&) = delete;
 
   private:
-    static constexpr uint32_t invalidVertexArrayIndex = ~0u;
+    using VertexArray = std::unique_ptr<GLVertexArray>;
+    using VertexArrayEntry = std::pair<VertexAttributes, VertexArray>;
+    using VertexArraysEntries = std::vector<VertexArrayEntry>;
 
-    std::vector<std::unique_ptr<GLVertexArray>> m_vertexArrays;
-    std::vector<VertexFormat> m_vertexFormats;
-    uint32_t m_boundVertexArrayIndex{invalidVertexArrayIndex};
+    VertexArraysEntries m_vertexArraysEntries;
 };
 
 } // namespace nox

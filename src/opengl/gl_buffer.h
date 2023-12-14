@@ -42,7 +42,7 @@ class GLIndexBuffer final : public GLBuffer {
 
     void bind() override;
 
-    void setIndexType(Format format);
+    void setIndexType(VertexAttributeFormat format);
 
   private:
     uint32_t m_indexType{0u};

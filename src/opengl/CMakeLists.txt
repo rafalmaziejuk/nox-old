@@ -83,7 +83,6 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_graphics_pipeline_state.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_graphics_pipeline_state.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.cpp

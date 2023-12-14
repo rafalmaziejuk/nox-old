@@ -1,5 +1,5 @@
+#include "format_descriptor.h"
 #include "nox_assert.h"
-#include "format_helper.h"
 #include "opengl/gl_render_target.h"
 #include "opengl/gl_texture.h"
 #include "opengl/gl_texture_visitor.h"
@@ -33,18 +33,16 @@ uint8_t validateDepthStencilAttachments(const DepthStencilAttachmentsContainer &
     uint8_t depthStencilAttachmentCount = 0u;
     uint8_t depthAttachmentCount = 0u;
     uint8_t stencilAttachmentCount = 0u;
-    for (const auto &attachment : attachments) {
-        if (attachment == Format::NONE) {
-            break;
-        }
-
-        auto formatDescriptor = Helpers::getFormatDescriptor(attachment);
-        if (formatDescriptor.hasDepth && formatDescriptor.hasStencil) {
-            depthStencilAttachmentCount++;
-        } else if (formatDescriptor.hasDepth) {
-            depthAttachmentCount++;
-        } else if (formatDescriptor.hasStencil) {
-            stencilAttachmentCount++;
+    for (auto attachment : attachments) {
+        auto descriptor = getImageFormatDescriptor(attachment);
+        if (descriptor.isDepth || descriptor.isStencil) {
+            if (descriptor.isDepth && descriptor.isStencil) {
+                depthStencilAttachmentCount++;
+            } else if (descriptor.isDepth) {
+                depthAttachmentCount++;
+            } else if (descriptor.isStencil) {
+                stencilAttachmentCount++;
+            }
         }
     }
 
@@ -144,19 +142,19 @@ void GLRenderTarget::createColorAttachment(const Texture &texture, uint32_t atta
     glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture.getHandle(), 0);
 }
 
-void GLRenderTarget::createDepthStencilAttachment(Format format) {
+void GLRenderTarget::createDepthStencilAttachment(ImageFormat format) {
     Texture2DDescriptor textureDescriptor{};
     textureDescriptor.format = format;
     textureDescriptor.size = {m_size.x(), m_size.y()};
     m_depthStencilAttachments.emplace_back(std::make_unique<GLTexture2D>(textureDescriptor));
 
-    auto formatDescriptor = Helpers::getFormatDescriptor(format);
+    auto descriptor = getImageFormatDescriptor(format);
     uint32_t attachmentPoint = 0u;
-    if (formatDescriptor.hasDepth && formatDescriptor.hasStencil) {
+    if (descriptor.isDepth && descriptor.isStencil) {
         attachmentPoint = GL_DEPTH_STENCIL_ATTACHMENT;
-    } else if (formatDescriptor.hasDepth) {
+    } else if (descriptor.isDepth) {
         attachmentPoint = GL_DEPTH_ATTACHMENT;
-    } else if (formatDescriptor.hasStencil) {
+    } else if (descriptor.isStencil) {
         attachmentPoint = GL_STENCIL_ATTACHMENT;
     }
     m_attachmentPoints.push_back(attachmentPoint);

@@ -35,7 +35,7 @@ class GLRenderTarget final : public GLRenderTargetBase {
 
   private:
     void createColorAttachment(const Texture &texture, uint32_t attachmentPoint);
-    void createDepthStencilAttachment(Format format);
+    void createDepthStencilAttachment(ImageFormat format);
 
   private:
     std::vector<std::unique_ptr<GLTexture>> m_depthStencilAttachments{};
