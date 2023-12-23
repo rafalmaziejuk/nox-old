@@ -17,7 +17,7 @@ Window::~Window() {
     m_handle = nullptr;
 }
 
-void Window::initialize(std::string_view title, const Vector2D<int32_t> &size) {
+void Window::initialize(std::string_view title, const Vector2D<uint32_t> &size) {
     glfwInit();
 
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -46,7 +46,7 @@ SurfaceBackendDescriptor Window::getSurfaceBackendDescriptor() const {
     return surfaceBackendDescriptor;
 }
 
-Vector2D<int32_t> Window::getSize() const {
+Vector2D<uint32_t> Window::getSize() const {
     return m_size;
 }
 

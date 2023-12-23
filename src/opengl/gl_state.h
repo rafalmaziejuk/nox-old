@@ -1,15 +1,12 @@
 #pragma once
 
-#include "opengl/gl_render_target.h"
 #include "opengl/gl_vertex_array.h"
 
 namespace nox {
 
 struct GLState {
     GLVertexArrayRegistry vertexArrayRegistry;
-    uint32_t boundVertexArrayIndex;
 
-    const GLRenderTargetBase *currentRenderTarget;
     uint32_t indexType;
     uint32_t primitiveTopology;
 };

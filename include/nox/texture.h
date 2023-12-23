@@ -24,7 +24,8 @@ struct Texture2DDescriptor : TextureDescriptor {
 
 class NOX_EXPORT Texture {
   public:
-    virtual TextureType getTextureType() const = 0;
+    [[nodiscard]] virtual TextureType getType() const = 0;
+    [[nodiscard]] virtual ImageFormat getFormat() const = 0;
 
     virtual void accept(TextureVisitor &visitor) const = 0;
 

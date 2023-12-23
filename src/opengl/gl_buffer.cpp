@@ -27,8 +27,12 @@ GLbitfield mapBufferUsageToBitfield(uint32_t usage) {
 } // namespace
 
 bool GLBuffer::validateInput(const BufferDescriptor &descriptor) {
-    return (descriptor.size > 0u) &&
-           (descriptor.data != nullptr);
+    bool result = true;
+
+    result &= (descriptor.size > 0u);
+    result &= (descriptor.data != nullptr);
+
+    return result;
 }
 
 GLBuffer::GLBuffer(const BufferDescriptor &descriptor, GLState &state) : GLWithState{state} {
@@ -42,15 +46,18 @@ GLBuffer::~GLBuffer() {
 }
 
 bool GLVertexBuffer::validateInput(const VertexBufferDescriptor &descriptor) {
-    return (GLBuffer::validateInput(descriptor)) &&
-           (!descriptor.vertexAttributes.empty());
+    bool result = true;
+
+    result &= GLBuffer::validateInput(descriptor);
+    result &= (!descriptor.vertexAttributes.empty());
+
+    return result;
 }
 
 void GLVertexBuffer::bind() {
-    auto &state = getState();
     auto &vertexArrayRegistry = getState().vertexArrayRegistry;
     vertexArrayRegistry[m_vertexArrayIndex].bind();
-    state.boundVertexArrayIndex = m_vertexArrayIndex;
+    vertexArrayRegistry.setBoundVertexArrayIndex(m_vertexArrayIndex);
 }
 
 void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
@@ -58,7 +65,11 @@ void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
 }
 
 bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
-    return GLBuffer::validateInput(descriptor);
+    bool result = true;
+
+    result &= GLBuffer::validateInput(descriptor);
+
+    return result;
 }
 
 void GLIndexBuffer::bind() {
@@ -66,7 +77,7 @@ void GLIndexBuffer::bind() {
     state.indexType = m_indexType;
 
     auto &vertexArrayRegistry = state.vertexArrayRegistry;
-    auto &vertexArray = vertexArrayRegistry[state.boundVertexArrayIndex];
+    auto &vertexArray = vertexArrayRegistry[vertexArrayRegistry.getBoundVertexArrayIndex()];
     vertexArray.setIndexBuffer(getHandle());
 }
 

@@ -11,7 +11,7 @@ class GLBuffer : public Buffer, public GLWithState {
     GLBuffer(const BufferDescriptor &descriptor, GLState &state);
     ~GLBuffer() override;
 
-    uint32_t getHandle() const { return m_handle; }
+    [[nodiscard]] uint32_t getHandle() const { return m_handle; }
 
   protected:
     [[nodiscard]] static bool validateInput(const BufferDescriptor &descriptor);

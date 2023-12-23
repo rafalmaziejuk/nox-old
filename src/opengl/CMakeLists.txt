@@ -81,14 +81,18 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_graphics_pipeline_state.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_graphics_pipeline_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_plugin.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_target.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_target.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_shader.cpp

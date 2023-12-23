@@ -15,7 +15,7 @@ class GLShader final : public Shader {
 
     ShaderType getType() const override { return m_type; }
 
-    uint32_t getHandle() const { return m_handle; }
+    [[nodiscard]] uint32_t getHandle() const { return m_handle; }
 
     bool compile(const char *source) const;
 

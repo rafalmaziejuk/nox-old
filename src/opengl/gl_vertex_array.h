@@ -32,6 +32,9 @@ class GLVertexArrayRegistry {
   public:
     void registerVertexArray(const VertexAttributes &vertexAttributes);
 
+    void setBoundVertexArrayIndex(uint32_t index);
+    [[nodiscard]] uint32_t getBoundVertexArrayIndex() const;
+
     [[nodiscard]] GLVertexArray &operator[](uint32_t index);
     [[nodiscard]] const GLVertexArray &operator[](uint32_t index) const;
 
@@ -51,6 +54,7 @@ class GLVertexArrayRegistry {
     using VertexArraysEntries = std::vector<VertexArrayEntry>;
 
     VertexArraysEntries m_vertexArraysEntries;
+    uint32_t m_boundVertexArrayIndex;
 };
 
 } // namespace nox

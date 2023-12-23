@@ -2,8 +2,9 @@
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_command_list.h"
 #include "opengl/gl_context.h"
+#include "opengl/gl_framebuffer.h"
 #include "opengl/gl_graphics_pipeline_state.h"
-#include "opengl/gl_render_target.h"
+#include "opengl/gl_render_pass.h"
 #include "opengl/gl_renderer.h"
 #include "opengl/gl_shader.h"
 #include "opengl/gl_swapchain.h"
@@ -19,10 +20,7 @@ RendererBackend GLRenderer::getRendererBackend() const {
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
     NOX_ASSERT(GLSwapchain::validateInput(descriptor));
 
-    auto swapchain = std::make_unique<GLSwapchain>(descriptor);
-    m_state.currentRenderTarget = &swapchain->getDefaultRenderTarget();
-
-    return swapchain;
+    return std::make_unique<GLSwapchain>(descriptor);
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescriptor &descriptor) {
@@ -63,7 +61,8 @@ std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(c
     NOX_ASSERT(GLGraphicsPipelineState::validateInput(descriptor));
 
     auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor, m_state);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(pipeline->bindShaderStages(descriptor.shaderStages), "Couldn't bind graphics pipeline shader stages");
+    NOX_ENSURE_RETURN_NULLPTR_MSG(pipeline->bindShaderStages(descriptor.shaderStages),
+                                  "Couldn't bind graphics pipeline shader stages");
 
     return pipeline;
 }
@@ -78,8 +77,25 @@ std::unique_ptr<Texture> GLRenderer::createTexture2D(const Texture2DDescriptor &
     return std::make_unique<GLTexture2D>(descriptor);
 }
 
-std::unique_ptr<RenderTarget> GLRenderer::createRenderTarget(const RenderTargetDescriptor &descriptor) {
-    return std::make_unique<GLRenderTarget>(descriptor);
+std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {
+    NOX_ASSERT(GLRenderPass::validateInput(descriptor));
+
+    return std::make_unique<GLRenderPass>(descriptor);
+}
+
+std::unique_ptr<Framebuffer> GLRenderer::createFramebuffer(const FramebufferDescriptor &descriptor) {
+    NOX_ASSERT(GLFramebuffer::validateInput(descriptor));
+
+    std::unique_ptr<GLFramebuffer> framebuffer{nullptr};
+    if (GLFramebuffer::isDefaultFramebuffer(descriptor.attachments)) {
+        framebuffer = std::make_unique<GLDefaultFramebuffer>();
+    } else {
+        framebuffer = std::make_unique<GLFramebufferWithAttachments>(descriptor);
+    }
+
+    NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer->validate(), "Framebuffer isn't valid");
+
+    return framebuffer;
 }
 
 } // namespace nox

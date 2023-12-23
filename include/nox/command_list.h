@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nox/export.h>
+#include <nox/render_pass.h>
 #include <nox/vector.h>
 #include <nox/viewport.h>
 
@@ -8,43 +9,16 @@
 
 namespace nox {
 
-struct ClearMask {
-    enum {
-        COLOR = (1 << 0),
-        DEPTH = (1 << 1),
-        STENCIL = (1 << 2),
-        ALL = COLOR | DEPTH | STENCIL
-    };
-};
-
 struct CommandListDescriptor {};
 
 class NOX_EXPORT CommandList {
   public:
     virtual void setViewport(const Viewport &viewport) = 0;
 
-    virtual void setClearColor(const Vector4D<float> &color = {0.0f, 0.0f, 0.0f, 1.0f}) = 0;
-
-    virtual void setClearDepth(float depth = 1.0f) = 0;
-
-    virtual void setClearStencil(uint32_t stencil = 0u) = 0;
-
-    virtual void clear(uint32_t mask) = 0;
-
-    virtual void clearColor(const Vector4D<float> &color, uint8_t index = 0u) = 0;
-
-    virtual void clearColor(const Vector4D<int32_t> &color, uint8_t index = 0u) = 0;
-
-    virtual void clearColor(const Vector4D<uint32_t> &color, uint8_t index = 0u) = 0;
-
-    virtual void clearDepth(float depth = 1.0f) = 0;
-
-    virtual void clearStencil(uint32_t stencil = 0u) = 0;
-
-    virtual void clearDepthStencil(float depth = 1.0f, uint32_t stencil = 0u) = 0;
+    virtual void beginRenderPass(const RenderPassBeginDescriptor &descriptor) = 0;
+    virtual void endRenderPass() = 0;
 
     virtual void draw(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
-
     virtual void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
 
   public:

@@ -19,6 +19,7 @@ struct Viewport {
                                                                                                                    nearClip{nearClip},
                                                                                                                    farClip{farClip} {}
 
+    constexpr Viewport(const Vector2D<float> &size) : Viewport{size.x(), size.y()} {}
     constexpr Viewport(const Vector2D<int32_t> &size) : Viewport{static_cast<float>(size.x()), static_cast<float>(size.y())} {}
     constexpr Viewport(const Vector2D<uint32_t> &size) : Viewport{static_cast<float>(size.x()), static_cast<float>(size.y())} {}
 

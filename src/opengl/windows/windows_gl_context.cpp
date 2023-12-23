@@ -66,12 +66,21 @@ namespace {
 } // namespace
 
 bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
-    const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
-    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
+    bool result = true;
 
-    return (surfaceBackendDescriptor != nullptr) &&
-           (surfaceBackendDescriptor->windowHandle != nullptr) &&
-           (surfaceAttributesDescriptor != nullptr);
+    const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
+    result &= (surfaceBackendDescriptor != nullptr);
+    if (result) {
+        result &= (surfaceBackendDescriptor->windowHandle != nullptr);
+    }
+
+    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
+    result &= (surfaceAttributesDescriptor != nullptr);
+    if (result) {
+        result &= (surfaceAttributesDescriptor->pixelFormatDescriptor.colorBits > 0u);
+    }
+
+    return result;
 }
 
 std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
@@ -110,7 +119,7 @@ WindowsGLContext::~WindowsGLContext() {
 }
 
 bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
-    std::array<int32_t, 17> pixelFormatAttributes{WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+    std::array<int32_t, 19> pixelFormatAttributes{WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
                                                   WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
                                                   WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
                                                   WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
@@ -118,6 +127,7 @@ bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descr
                                                   WGL_COLOR_BITS_ARB, descriptor.pixelFormatDescriptor.colorBits,
                                                   WGL_DEPTH_BITS_ARB, descriptor.pixelFormatDescriptor.depthBits,
                                                   WGL_STENCIL_BITS_ARB, descriptor.pixelFormatDescriptor.stencilBits,
+                                                  WGL_ALPHA_BITS_ARB, (descriptor.pixelFormatDescriptor.colorBits == 32u) ? 8 : 0,
                                                   0};
     int32_t pixelFormat{};
     UINT formatsCount{};
