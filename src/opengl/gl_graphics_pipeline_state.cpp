@@ -42,6 +42,8 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
 } // namespace
 
 bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescriptor &descriptor) {
+    bool result = true;
+
     auto validateShader = [](const auto &shader) -> bool {
         if (shader == nullptr) {
             return false;
@@ -53,9 +55,10 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
 
         return (mapShaderTypeToBitfield(glShader.getType()) != GL_NONE);
     };
+    result &= (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
+    result &= (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE);
 
-    return (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE) &&
-           (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
+    return result;
 }
 
 GLGraphicsPipelineState::GLGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state} {

@@ -26,7 +26,9 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<Texture> createTexture2D(const Texture2DDescriptor &descriptor) override;
 
-    std::unique_ptr<RenderTarget> createRenderTarget(const RenderTargetDescriptor &descriptor) override;
+    std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) override;
+
+    std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescriptor &descriptor) override;
 
   private:
     GLState m_state{};

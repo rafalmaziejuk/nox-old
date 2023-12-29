@@ -55,6 +55,14 @@ void GLVertexArrayRegistry::registerVertexArray(const VertexAttributes &vertexAt
     m_vertexArraysEntries.emplace_back(vertexAttributes, std::make_unique<GLVertexArray>(vertexAttributes));
 }
 
+void GLVertexArrayRegistry::setBoundVertexArrayIndex(uint32_t index) {
+    m_boundVertexArrayIndex = index;
+}
+
+uint32_t GLVertexArrayRegistry::getBoundVertexArrayIndex() const {
+    return m_boundVertexArrayIndex;
+}
+
 GLVertexArray &GLVertexArrayRegistry::operator[](uint32_t index) {
     return *m_vertexArraysEntries[index].second;
 }

@@ -6,16 +6,21 @@ namespace nox {
 
 class GLTexture : public Texture {
   public:
-    explicit GLTexture(TextureType type);
+    GLTexture(const TextureDescriptor &descriptor, TextureType type);
     ~GLTexture() override;
 
-    uint32_t getHandle() const { return m_handle; }
+    TextureType getType() const override;
+    ImageFormat getFormat() const override;
+
+    [[nodiscard]] uint32_t getHandle() const { return m_handle; }
 
     void bind(uint32_t index) const;
 
     void accept(TextureVisitor &visitor) const override;
 
   protected:
+    TextureType m_type;
+    ImageFormat m_format;
     uint32_t m_handle{0u};
 };
 
@@ -23,9 +28,20 @@ class GLTexture2D final : public GLTexture {
   public:
     [[nodiscard]] static bool validateInput(const Texture2DDescriptor &descriptor);
 
-    explicit GLTexture2D(const Texture2DDescriptor &descriptor);
+    GLTexture2D(const Texture2DDescriptor &descriptor);
+};
 
-    TextureType getTextureType() const override;
+class GLDefaultFramebufferAttachment final : public Texture {
+  public:
+    TextureType getType() const override;
+
+    void setFormat(ImageFormat format);
+    ImageFormat getFormat() const override;
+
+    void accept(TextureVisitor &visitor) const override;
+
+  private:
+    ImageFormat m_format;
 };
 
 } // namespace nox

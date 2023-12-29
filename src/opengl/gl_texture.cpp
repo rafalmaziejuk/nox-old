@@ -21,14 +21,6 @@ GLenum mapTextureTarget(TextureType type) {
 
 GLenum mapTextureFormat(ImageFormat format) {
     switch (format) {
-    case ImageFormat::R8: return GL_R8;
-    case ImageFormat::R16: return GL_R16;
-    case ImageFormat::RG8: return GL_RG8;
-    case ImageFormat::RG16: return GL_RG16;
-    case ImageFormat::RGB8: return GL_RGB8;
-    case ImageFormat::RGB16: return GL_RGB16;
-    case ImageFormat::RGBA8: return GL_RGBA8;
-    case ImageFormat::RGBA16: return GL_RGBA16;
     case ImageFormat::R8UI: return GL_R8UI;
     case ImageFormat::R16UI: return GL_R16UI;
     case ImageFormat::R32UI: return GL_R32UI;
@@ -53,6 +45,14 @@ GLenum mapTextureFormat(ImageFormat format) {
     case ImageFormat::RGBA8I: return GL_RGBA8I;
     case ImageFormat::RGBA16I: return GL_RGBA16I;
     case ImageFormat::RGBA32I: return GL_RGBA32I;
+    case ImageFormat::R8_UNORM: return GL_R8;
+    case ImageFormat::R16_UNORM: return GL_R16;
+    case ImageFormat::RG8_UNORM: return GL_RG8;
+    case ImageFormat::RG16_UNORM: return GL_RG16;
+    case ImageFormat::RGB8_UNORM: return GL_RGB8;
+    case ImageFormat::RGB16_UNORM: return GL_RGB16;
+    case ImageFormat::RGBA8_UNORM: return GL_RGBA8;
+    case ImageFormat::RGBA16_UNORM: return GL_RGBA16;
     case ImageFormat::R8_SNORM: return GL_R8_SNORM;
     case ImageFormat::R16_SNORM: return GL_R16_SNORM;
     case ImageFormat::RG8_SNORM: return GL_RG8_SNORM;
@@ -80,19 +80,28 @@ GLenum mapTextureFormat(ImageFormat format) {
     default: break;
     }
 
-    NOX_ASSERT(false);
+    NOX_ASSERT_MSG(false, "Given image format isn't supported");
     return GL_NONE;
 }
 
 } // namespace
 
-GLTexture::GLTexture(TextureType type) {
-    auto target = mapTextureTarget(type);
+GLTexture::GLTexture(const TextureDescriptor &descriptor, TextureType type) : m_type{type},
+                                                                              m_format{descriptor.format} {
+    auto target = mapTextureTarget(m_type);
     glCreateTextures(target, 1, &m_handle);
 }
 
 GLTexture::~GLTexture() {
     glDeleteTextures(1, &m_handle);
+}
+
+TextureType GLTexture::getType() const {
+    return m_type;
+}
+
+ImageFormat GLTexture::getFormat() const {
+    return m_format;
 }
 
 void GLTexture::bind(uint32_t index) const {
@@ -104,18 +113,34 @@ void GLTexture::accept(TextureVisitor &visitor) const {
 }
 
 bool GLTexture2D::validateInput(const Texture2DDescriptor &descriptor) {
-    return (mapTextureFormat(descriptor.format) != GL_NONE);
+    bool result = true;
+
+    result &= (mapTextureFormat(descriptor.format) != GL_NONE);
+
+    return result;
 }
 
-GLTexture2D::GLTexture2D(const Texture2DDescriptor &descriptor) : GLTexture{TextureType::TEXTURE2D} {
+GLTexture2D::GLTexture2D(const Texture2DDescriptor &descriptor) : GLTexture{descriptor, TextureType::TEXTURE2D} {
     auto width = static_cast<GLsizei>(descriptor.size.x());
     auto height = static_cast<GLsizei>(descriptor.size.y());
     auto format = mapTextureFormat(descriptor.format);
     glTextureStorage2D(m_handle, 1, format, width, height);
 }
 
-TextureType GLTexture2D::getTextureType() const {
+TextureType GLDefaultFramebufferAttachment::getType() const {
     return TextureType::TEXTURE2D;
+}
+
+void GLDefaultFramebufferAttachment::setFormat(ImageFormat format) {
+    m_format = format;
+}
+
+ImageFormat GLDefaultFramebufferAttachment::getFormat() const {
+    return m_format;
+}
+
+void GLDefaultFramebufferAttachment::accept(TextureVisitor &visitor) const {
+    visitor.visit(*this);
 }
 
 } // namespace nox

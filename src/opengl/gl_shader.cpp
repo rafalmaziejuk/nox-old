@@ -27,8 +27,12 @@ GLenum mapShaderTypeToEnum(ShaderType type) {
 } // namespace
 
 bool GLShader::validateInput(const ShaderDescriptor &descriptor, std::string_view source) {
-    return (!source.empty()) &&
-           (mapShaderTypeToEnum(descriptor.type) != GL_NONE);
+    bool result = true;
+
+    result &= (!source.empty());
+    result &= (mapShaderTypeToEnum(descriptor.type) != GL_NONE);
+
+    return result;
 }
 
 GLShader::GLShader(const ShaderDescriptor &descriptor) : m_type{descriptor.type} {

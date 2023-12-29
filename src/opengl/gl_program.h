@@ -9,10 +9,10 @@ class GLProgram {
     GLProgram();
     ~GLProgram();
 
-    uint32_t getHandle() const { return m_handle; }
+    [[nodiscard]] uint32_t getHandle() const { return m_handle; }
 
     void attachShader(uint32_t shaderHandle) const;
-    bool link() const;
+    [[nodiscard]] bool link() const;
 
   public:
     GLProgram(const GLProgram &) = delete;

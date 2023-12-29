@@ -9,7 +9,7 @@
 
 namespace nox {
 
-using ShaderStages = std::vector<std::shared_ptr<Shader>>;
+using ShaderStages = std::vector<const Shader *>;
 
 enum class PrimitiveTopology {
     TRIANGLE_LIST

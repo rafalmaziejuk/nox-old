@@ -10,19 +10,28 @@
 namespace nox {
 
 bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
-    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
+    bool result = true;
+
     auto validateSurfaceBackendDescriptor = [&descriptor]() -> bool {
         const auto *x11SurfaceBackendDescriptor = std::get_if<X11SurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
         if (x11SurfaceBackendDescriptor != nullptr) {
-            return (x11SurfaceBackendDescriptor->windowHandle == 0u) &&
-                   (x11SurfaceBackendDescriptor->displayHandle == nullptr);
+            bool result = true;
+            result &= (x11SurfaceBackendDescriptor->windowHandle != 0u);
+            result &= (x11SurfaceBackendDescriptor->displayHandle != nullptr);
+            return result;
         }
 
         return false;
     };
+    result &= validateSurfaceBackendDescriptor();
 
-    return (surfaceAttributesDescriptor != nullptr) &&
-           (validateSurfaceBackendDescriptor());
+    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
+    result &= (surfaceAttributesDescriptor != nullptr);
+    if (result) {
+        result &= (surfaceAttributesDescriptor->pixelFormatDescriptor.colorBits > 0u);
+    }
+
+    return result;
 }
 
 std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
@@ -71,6 +80,7 @@ bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descrip
                                                         EGL_BUFFER_SIZE, descriptor.pixelFormatDescriptor.colorBits,
                                                         EGL_DEPTH_SIZE, descriptor.pixelFormatDescriptor.depthBits,
                                                         EGL_STENCIL_SIZE, descriptor.pixelFormatDescriptor.stencilBits,
+                                                        EGL_ALPHA_SIZE, (descriptor.pixelFormatDescriptor.colorBits == 32u) ? 8 : 0,
                                                         EGL_NONE};
     EGLConfig framebufferConfig{};
     EGLint framebufferConfigsCount{};

@@ -56,7 +56,7 @@ constexpr uint32_t indices[]{0u, 1u, 3u,
 
 void SandboxExample::initialize() {
     constexpr std::string_view windowTitle = "Sandbox Example";
-    constexpr Vector2D<int32_t> windowSize = {800, 600};
+    constexpr Vector2D<uint32_t> windowSize = {800u, 600u};
     m_window.initialize(windowTitle, windowSize);
 
     m_renderer = Renderer::create(RendererBackend::OPENGL);
@@ -68,24 +68,46 @@ void SandboxExample::initialize() {
 
     SwapchainDescriptor swapchainDescriptor{};
     swapchainDescriptor.surfaceDescriptor = surfaceDescriptor;
+    swapchainDescriptor.size = m_window.getSize();
     swapchainDescriptor.presentMode = OpenGLPresentMode{true};
     m_swapchain = m_renderer->createSwapchain(swapchainDescriptor);
 
     CommandListDescriptor commandListDescriptor{};
     m_commandList = m_renderer->createCommandList(commandListDescriptor);
-    m_commandList->setViewport(m_window.getSize());
+    m_commandList->setViewport(m_swapchain->getSize());
+
+    AttachmentDescriptor attachmentDescriptor{};
+    attachmentDescriptor.format = m_swapchain->getSurfaceFormat();
+    attachmentDescriptor.loadOp = AttachmentLoadOp::CLEAR;
+    attachmentDescriptor.storeOp = AttachmentStoreOp::STORE;
+    attachmentDescriptor.stencilLoadOp = AttachmentLoadOp::DONT_CARE;
+    attachmentDescriptor.stencilStoreOp = AttachmentStoreOp::DONT_CARE;
+
+    RenderPassDescriptor renderPassDescriptor{};
+    renderPassDescriptor.attachmentsDescriptors = {
+        {attachmentDescriptor},
+    };
+    m_renderPass = m_renderer->createRenderPass(renderPassDescriptor);
+
+    FramebufferDescriptor framebufferDescriptor{};
+    framebufferDescriptor.attachments = m_swapchain->getPresentableTextures();
+    framebufferDescriptor.renderPass = m_renderPass.get();
+    framebufferDescriptor.size = m_swapchain->getSize();
+    m_framebuffer = m_renderer->createFramebuffer(framebufferDescriptor);
 
     ShaderDescriptor vertexShaderDescriptor{};
     vertexShaderDescriptor.type = ShaderType::VERTEX;
+    auto vertexShader = m_renderer->createShader(vertexShaderDescriptor, triangleVertexShaderSource);
 
     ShaderDescriptor fragmentShaderDescriptor{};
     fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
+    auto fragmentShader = m_renderer->createShader(fragmentShaderDescriptor, triangleFragmentShaderSource);
 
     GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
     graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
     graphicsPipelineStateDescriptor.shaderStages = {
-        m_renderer->createShader(vertexShaderDescriptor, triangleVertexShaderSource),
-        m_renderer->createShader(fragmentShaderDescriptor, triangleFragmentShaderSource),
+        vertexShader.get(),
+        fragmentShader.get(),
     };
     m_graphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);
 
@@ -95,10 +117,9 @@ void SandboxExample::initialize() {
     vertexBufferDescriptor.data = vertices;
     vertexBufferDescriptor.vertexAttributes = {
         VertexAttributeFormat::RG32F,
-        VertexAttributeFormat::RGBA8,
+        VertexAttributeFormat::RGBA8_UNORM,
     };
     m_vertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor);
-    auto vertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor);
 
     IndexBufferDescriptor indexBufferDescriptor{};
     indexBufferDescriptor.usage = BufferUsage::STATIC;
@@ -109,13 +130,23 @@ void SandboxExample::initialize() {
 }
 
 void SandboxExample::onUpdate() {
-    m_graphicsPipelineState->bind();
-    m_vertexBuffer->bind();
-    m_indexBuffer->bind();
+    RenderPassBeginDescriptor renderPassBeginDescriptor{};
+    renderPassBeginDescriptor.renderPass = m_renderPass.get();
+    renderPassBeginDescriptor.framebuffer = m_framebuffer.get();
+    renderPassBeginDescriptor.clearValues = {
+        {Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f}},
+    };
 
-    m_commandList->clearColor(Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f});
-    m_commandList->drawIndexed(0u, 6u);
-    m_commandList->drawIndexed(7u, 14u);
+    m_commandList->beginRenderPass(renderPassBeginDescriptor);
+    {
+        m_graphicsPipelineState->bind();
+        m_vertexBuffer->bind();
+        m_indexBuffer->bind();
+
+        m_commandList->drawIndexed(0u, 6u);
+        m_commandList->drawIndexed(7u, 14u);
+    }
+    m_commandList->endRenderPass();
 }
 
 } // namespace nox

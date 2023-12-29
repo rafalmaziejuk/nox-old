@@ -18,18 +18,6 @@ using ImageFormatDescriptors = std::array<ImageFormatDescriptor, static_cast<siz
 
 // clang-format off
 inline constexpr ImageFormatDescriptors imageFormatDescriptors{{
-    {true , false, false, false}, // R8
-    {true , false, false, false}, // R16
-    {true , false, false, false}, // R32
-    {true , false, false, false}, // RG8
-    {true , false, false, false}, // RG16
-    {true , false, false, false}, // RG32
-    {true , false, false, false}, // RGB8
-    {true , false, false, false}, // RGB16
-    {true , false, false, false}, // RGB32
-    {true , false, false, false}, // RGBA8
-    {true , false, false, false}, // RGBA16
-    {true , false, false, false}, // RGBA32
     {true , false, false, false}, // R8UI
     {true , false, false, false}, // R16UI
     {true , false, false, false}, // R32UI
@@ -54,6 +42,18 @@ inline constexpr ImageFormatDescriptors imageFormatDescriptors{{
     {true , false, false, false}, // RGBA8I
     {true , false, false, false}, // RGBA16I
     {true , false, false, false}, // RGBA32I
+    {true , false, false, false}, // R8_UNORM
+    {true , false, false, false}, // R16_UNORM
+    {true , false, false, false}, // R32_UNORM
+    {true , false, false, false}, // RG8_UNORM
+    {true , false, false, false}, // RG16_UNORM
+    {true , false, false, false}, // RG32_UNORM
+    {true , false, false, false}, // RGB8_UNORM
+    {true , false, false, false}, // RGB16_UNORM
+    {true , false, false, false}, // RGB32_UNORM
+    {true , false, false, false}, // RGBA8_UNORM
+    {true , false, false, false}, // RGBA16_UNORM
+    {true , false, false, false}, // RGBA32_UNORM
     {true , false, false, false}, // R8_SNORM
     {true , false, false, false}, // R16_SNORM
     {true , false, false, false}, // R32_SNORM
@@ -111,18 +111,6 @@ using VertexAttributeFormatDescriptors = std::array<VertexAttributeFormatDescrip
 
 // clang-format off
 inline constexpr VertexAttributeFormatDescriptors vertexAttributeFormatDescriptors{{
-    {VertexAttributeDataType::UNSIGNED_BYTE , 1u, 1u * 1u, true }, // R8
-    {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, true }, // R16
-    {VertexAttributeDataType::UNSIGNED_INT  , 1u, 1u * 4u, true }, // R32
-    {VertexAttributeDataType::UNSIGNED_BYTE , 2u, 2u * 1u, true }, // RG8
-    {VertexAttributeDataType::UNSIGNED_SHORT, 2u, 2u * 2u, true }, // RG16
-    {VertexAttributeDataType::UNSIGNED_INT  , 2u, 2u * 4u, true }, // RG32
-    {VertexAttributeDataType::UNSIGNED_BYTE , 3u, 3u * 1u, true }, // RGB8
-    {VertexAttributeDataType::UNSIGNED_SHORT, 3u, 3u * 2u, true }, // RGB16
-    {VertexAttributeDataType::UNSIGNED_INT  , 3u, 3u * 4u, true }, // RGB32
-    {VertexAttributeDataType::UNSIGNED_BYTE , 4u, 4u * 1u, true }, // RGBA8
-    {VertexAttributeDataType::UNSIGNED_SHORT, 4u, 4u * 2u, true }, // RGBA16
-    {VertexAttributeDataType::UNSIGNED_INT  , 4u, 4u * 4u, true }, // RGBA32
     {VertexAttributeDataType::UNSIGNED_BYTE , 1u, 1u * 1u, false}, // R8UI
     {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, false}, // R16UI
     {VertexAttributeDataType::UNSIGNED_INT  , 1u, 1u * 4u, false}, // R32UI
@@ -147,6 +135,18 @@ inline constexpr VertexAttributeFormatDescriptors vertexAttributeFormatDescripto
     {VertexAttributeDataType::BYTE          , 4u, 4u * 1u, false}, // RGBA8I
     {VertexAttributeDataType::SHORT         , 4u, 4u * 2u, false}, // RGBA16I
     {VertexAttributeDataType::INT           , 4u, 4u * 4u, false}, // RGBA32I
+    {VertexAttributeDataType::UNSIGNED_BYTE , 1u, 1u * 1u, true }, // R8_UNORM
+    {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, true }, // R16_UNORM
+    {VertexAttributeDataType::UNSIGNED_INT  , 1u, 1u * 4u, true }, // R32_UNORM
+    {VertexAttributeDataType::UNSIGNED_BYTE , 2u, 2u * 1u, true }, // RG8_UNORM
+    {VertexAttributeDataType::UNSIGNED_SHORT, 2u, 2u * 2u, true }, // RG16_UNORM
+    {VertexAttributeDataType::UNSIGNED_INT  , 2u, 2u * 4u, true }, // RG32_UNORM
+    {VertexAttributeDataType::UNSIGNED_BYTE , 3u, 3u * 1u, true }, // RGB8_UNORM
+    {VertexAttributeDataType::UNSIGNED_SHORT, 3u, 3u * 2u, true }, // RGB16_UNORM
+    {VertexAttributeDataType::UNSIGNED_INT  , 3u, 3u * 4u, true }, // RGB32_UNORM
+    {VertexAttributeDataType::UNSIGNED_BYTE , 4u, 4u * 1u, true }, // RGBA8_UNORM
+    {VertexAttributeDataType::UNSIGNED_SHORT, 4u, 4u * 2u, true }, // RGBA16_UNORM
+    {VertexAttributeDataType::UNSIGNED_INT  , 4u, 4u * 4u, true }, // RGBA32_UNORM
     {VertexAttributeDataType::BYTE          , 1u, 1u * 1u, true }, // R8_SNORM
     {VertexAttributeDataType::SHORT         , 1u, 1u * 2u, true }, // R16_SNORM
     {VertexAttributeDataType::INT           , 1u, 1u * 4u, true }, // R32_SNORM

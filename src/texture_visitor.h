@@ -5,10 +5,12 @@
 namespace nox {
 
 class GLTexture;
+class GLDefaultFramebufferAttachment;
 
 class TextureVisitor {
   public:
     virtual void visit(const GLTexture &texture) = 0;
+    virtual void visit(const GLDefaultFramebufferAttachment &attachment) = 0;
 
   public:
     TextureVisitor() = default;

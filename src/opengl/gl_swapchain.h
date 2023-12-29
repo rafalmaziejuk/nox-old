@@ -1,6 +1,6 @@
 #pragma once
 
-#include "opengl/gl_render_target.h"
+#include "opengl/gl_texture.h"
 
 #include <nox/swapchain.h>
 
@@ -14,13 +14,16 @@ class GLSwapchain final : public Swapchain {
 
     GLSwapchain(const SwapchainDescriptor &descriptor);
 
-    void present() const override;
+    Vector2D<uint32_t> getSize() const override;
+    ImageFormat getSurfaceFormat() const override;
+    std::vector<const Texture *> getPresentableTextures() const override;
 
-    GLDefaultRenderTarget &getDefaultRenderTarget() { return m_renderTarget; }
+    void present() const override;
 
   private:
     std::unique_ptr<GLContext> m_context{nullptr};
-    GLDefaultRenderTarget m_renderTarget{};
+    GLDefaultFramebufferAttachment m_presentableTexture{};
+    Vector2D<uint32_t> m_size;
 };
 
 } // namespace nox
