@@ -2,6 +2,7 @@
 
 #include "opengl/gl_texture.h"
 
+#include <nox/command_list.h>
 #include <nox/framebuffer.h>
 
 namespace nox {
@@ -21,8 +22,6 @@ class GLFramebuffer : public Framebuffer {
 
     void clearAttachments(const ClearValues &values, const RenderPass *renderPass) const;
     void bind() const;
-
-    void accept(FramebufferVisitor &visitor) const override;
 
   private:
     void clearColorAttachment(const ClearColorValue &value, int32_t index) const;

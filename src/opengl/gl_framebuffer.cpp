@@ -1,11 +1,8 @@
 #include "format_descriptor.h"
 #include "nox_assert.h"
 #include "opengl/gl_framebuffer.h"
-#include "opengl/gl_framebuffer_visitor.h"
 #include "opengl/gl_render_pass.h"
-#include "opengl/gl_render_pass_visitor.h"
 #include "opengl/gl_texture.h"
-#include "opengl/gl_texture_visitor.h"
 
 #include <glad/gl.h>
 
@@ -19,10 +16,8 @@ bool GLFramebuffer::validateInput(const FramebufferDescriptor &descriptor) {
             return false;
         }
 
-        GLRenderPassVisitor renderPassVisitor{};
-        descriptor.renderPass->accept(renderPassVisitor);
-        const auto &glRenderPass = renderPassVisitor.get();
-        const auto &attachmentsDescriptors = glRenderPass.getAttachmentsDescriptors();
+        const auto *glRenderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
+        const auto &attachmentsDescriptors = glRenderPass->getAttachmentsDescriptors();
 
         for (size_t i = 0u; i < descriptor.attachments.size(); i++) {
             const auto &attachment = *descriptor.attachments[i];
@@ -44,14 +39,12 @@ bool GLFramebuffer::validateInput(const FramebufferDescriptor &descriptor) {
 }
 
 bool GLFramebuffer::isDefaultFramebuffer(const AttachmentsContainer &attachments) {
-    if (attachments.size() > 1u) {
-        return false;
-    }
+    bool result = true;
 
-    GLTextureVisitor visitor{};
-    attachments.back()->accept(visitor);
+    result &= (attachments.size() == 1u);
+    result &= (dynamic_cast<const GLDefaultFramebufferAttachment *>(attachments.back()) != nullptr);
 
-    return visitor.isDefaultFramebufferAttachment();
+    return result;
 }
 
 GLFramebuffer::~GLFramebuffer() {
@@ -65,10 +58,8 @@ bool GLFramebuffer::validate() const {
 }
 
 void GLFramebuffer::clearAttachments(const ClearValues &values, const RenderPass *renderPass) const {
-    GLRenderPassVisitor visitor{};
-    renderPass->accept(visitor);
-    const auto &glRenderPass = visitor.get();
-    const auto &attachmentsDescriptors = glRenderPass.getAttachmentsDescriptors();
+    const auto *glRenderPass = static_cast<const GLRenderPass *>(renderPass);
+    const auto &attachmentsDescriptors = glRenderPass->getAttachmentsDescriptors();
 
     for (size_t i = 0u; i < attachmentsDescriptors.size(); i++) {
         const auto &attachmentDescriptor = attachmentsDescriptors[i];
@@ -112,10 +103,6 @@ void GLFramebuffer::clearStencilAttachment(uint32_t stencil) const {
 
 void GLFramebuffer::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
-}
-
-void GLFramebuffer::accept(FramebufferVisitor &visitor) const {
-    visitor.visit(*this);
 }
 
 GLFramebufferWithAttachments::GLFramebufferWithAttachments(const FramebufferDescriptor &descriptor) {
@@ -165,11 +152,8 @@ void GLFramebufferWithAttachments::attachDepthStencilAttachments(const Attachmen
 }
 
 void GLFramebufferWithAttachments::attachAttachment(const Texture *attachment, AttachmentPoint attachmentPoint) {
-    GLTextureVisitor visitor{};
-    attachment->accept(visitor);
-    const auto &glTexture = visitor.get();
-
-    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture.getHandle(), 0);
+    const auto *glTexture = static_cast<const GLTexture *>(attachment);
+    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture->getHandle(), 0);
     m_attachmentsPoints.push_back(attachmentPoint);
 }
 

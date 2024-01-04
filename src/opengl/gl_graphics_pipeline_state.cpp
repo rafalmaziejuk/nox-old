@@ -2,7 +2,6 @@
 #include "opengl/gl_graphics_pipeline_state.h"
 #include "opengl/gl_program.h"
 #include "opengl/gl_shader.h"
-#include "opengl/gl_shader_visitor.h"
 
 #include <glad/gl.h>
 
@@ -42,19 +41,17 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
 } // namespace
 
 bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescriptor &descriptor) {
-    bool result = true;
-
-    auto validateShader = [](const auto &shader) -> bool {
+    auto validateShader = [](const Shader *shader) -> bool {
         if (shader == nullptr) {
             return false;
         }
 
-        GLShaderVisitor visitor{};
-        shader->accept(visitor);
-        const auto &glShader = visitor.get();
+        const auto &glShader = static_cast<const GLShader *>(shader);
 
-        return (mapShaderTypeToBitfield(glShader.getType()) != GL_NONE);
+        return (mapShaderTypeToBitfield(glShader->getType()) != GL_NONE);
     };
+    bool result = true;
+
     result &= (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
     result &= (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE);
 
@@ -80,13 +77,10 @@ void GLGraphicsPipelineState::bind() {
 
 bool GLGraphicsPipelineState::bindShaderStages(const ShaderStages &shaderStages) {
     GLbitfield stages = GL_NONE;
-    for (const auto &shader : shaderStages) {
-        GLShaderVisitor visitor{};
-        shader->accept(visitor);
-        const auto &glShader = visitor.get();
-
-        m_program.attachShader(glShader.getHandle());
-        stages |= mapShaderTypeToBitfield(glShader.getType());
+    for (const auto *shader : shaderStages) {
+        const auto *glShader = static_cast<const GLShader *>(shader);
+        m_program.attachShader(glShader->getHandle());
+        stages |= mapShaderTypeToBitfield(glShader->getType());
     }
 
     if (!m_program.link()) {

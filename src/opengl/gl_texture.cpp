@@ -1,6 +1,5 @@
 #include "nox_assert.h"
 #include "opengl/gl_texture.h"
-#include "opengl/gl_texture_visitor.h"
 
 #include <glad/gl.h>
 
@@ -108,10 +107,6 @@ void GLTexture::bind(uint32_t index) const {
     glBindTextureUnit(index, m_handle);
 }
 
-void GLTexture::accept(TextureVisitor &visitor) const {
-    visitor.visit(*this);
-}
-
 bool GLTexture2D::validateInput(const Texture2DDescriptor &descriptor) {
     bool result = true;
 
@@ -137,10 +132,6 @@ void GLDefaultFramebufferAttachment::setFormat(ImageFormat format) {
 
 ImageFormat GLDefaultFramebufferAttachment::getFormat() const {
     return m_format;
-}
-
-void GLDefaultFramebufferAttachment::accept(TextureVisitor &visitor) const {
-    visitor.visit(*this);
 }
 
 } // namespace nox

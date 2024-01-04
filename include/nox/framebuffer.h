@@ -10,8 +10,6 @@
 
 namespace nox {
 
-class FramebufferVisitor;
-
 using AttachmentsContainer = std::vector<const Texture *>;
 
 struct FramebufferDescriptor {
@@ -21,9 +19,6 @@ struct FramebufferDescriptor {
 };
 
 class NOX_EXPORT Framebuffer {
-  public:
-    virtual void accept(FramebufferVisitor &visitor) const = 0;
-
   public:
     Framebuffer(const Framebuffer &) = delete;
     Framebuffer &operator=(const Framebuffer &) = delete;

@@ -2,7 +2,6 @@
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_command_list.h"
 #include "opengl/gl_framebuffer.h"
-#include "opengl/gl_framebuffer_visitor.h"
 #include "opengl/gl_graphics_pipeline_state.h"
 #include "opengl/gl_render_pass.h"
 #include "opengl/gl_state.h"
@@ -10,6 +9,16 @@
 #include <glad/gl.h>
 
 namespace nox {
+
+bool GLCommandList::validateInput(const RenderPassBeginDescriptor &descriptor) {
+    bool result = true;
+
+    result &= (descriptor.framebuffer != nullptr);
+    result &= (descriptor.renderPass != nullptr);
+    result &= (!descriptor.clearValues.empty());
+
+    return result;
+}
 
 GLCommandList::GLCommandList([[maybe_unused]] const CommandListDescriptor &descriptor,
                              GLState &state) : GLWithState{state} {}
@@ -24,14 +33,11 @@ void GLCommandList::setViewport(const Viewport &viewport) {
 }
 
 void GLCommandList::beginRenderPass(const RenderPassBeginDescriptor &descriptor) {
-    NOX_ASSERT(GLRenderPass::validateInput(descriptor));
+    NOX_ASSERT(validateInput(descriptor));
 
-    GLFramebufferVisitor visitor{};
-    descriptor.framebuffer->accept(visitor);
-    const auto &glFramebuffer = visitor.get();
-
-    glFramebuffer.bind();
-    glFramebuffer.clearAttachments(descriptor.clearValues, descriptor.renderPass);
+    const auto *glFramebuffer = static_cast<const GLFramebuffer *>(descriptor.framebuffer);
+    glFramebuffer->bind();
+    glFramebuffer->clearAttachments(descriptor.clearValues, descriptor.renderPass);
 }
 
 void GLCommandList::endRenderPass() {}

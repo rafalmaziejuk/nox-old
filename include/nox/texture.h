@@ -8,8 +8,6 @@
 
 namespace nox {
 
-class TextureVisitor;
-
 enum class TextureType {
     TEXTURE2D
 };
@@ -26,8 +24,6 @@ class NOX_EXPORT Texture {
   public:
     [[nodiscard]] virtual TextureType getType() const = 0;
     [[nodiscard]] virtual ImageFormat getFormat() const = 0;
-
-    virtual void accept(TextureVisitor &visitor) const = 0;
 
   public:
     Texture(const Texture &) = delete;
