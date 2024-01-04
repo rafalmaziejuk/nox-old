@@ -19,8 +19,6 @@ class GLShader final : public Shader {
 
     bool compile(const char *source) const;
 
-    void accept(ShaderVisitor &visitor) const override;
-
   private:
     ShaderType m_type;
     uint32_t m_handle{0u};

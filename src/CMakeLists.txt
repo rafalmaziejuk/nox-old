@@ -78,14 +78,10 @@ generate_export_header(
 set(NOX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/format_descriptor.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/framebuffer_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/nox_assert.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/render_pass_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/shader_visitor.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/texture_visitor.h
 )
 
 target_sources(${NOX_LIB_NAME} PRIVATE ${NOX_SOURCES})

@@ -1,6 +1,5 @@
 #include "nox_assert.h"
 #include "opengl/gl_shader.h"
-#include "opengl/gl_shader_visitor.h"
 
 #include <glad/gl.h>
 
@@ -56,10 +55,6 @@ bool GLShader::compile(const char *source) const {
     }
 
     return true;
-}
-
-void GLShader::accept(ShaderVisitor &visitor) const {
-    visitor.visit(*this);
 }
 
 } // namespace nox

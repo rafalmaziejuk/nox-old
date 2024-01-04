@@ -83,7 +83,6 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_graphics_pipeline_state.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_graphics_pipeline_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_helper.h
@@ -92,18 +91,15 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_program.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_render_pass_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_shader.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_shader_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swapchain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swapchain.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture_visitor.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_vertex_array.h
     ${CMAKE_CURRENT_SOURCE_DIR}/nox_opengl_export.h

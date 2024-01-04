@@ -8,6 +8,8 @@ namespace nox {
 
 class GLCommandList final : public CommandList, public GLWithState {
   public:
+    [[nodiscard]] static bool validateInput(const RenderPassBeginDescriptor &descriptor);
+
     GLCommandList(const CommandListDescriptor &descriptor, GLState &state);
 
     void setViewport(const Viewport &viewport) override;

@@ -16,8 +16,6 @@ class GLTexture : public Texture {
 
     void bind(uint32_t index) const;
 
-    void accept(TextureVisitor &visitor) const override;
-
   protected:
     TextureType m_type;
     ImageFormat m_format;
@@ -37,8 +35,6 @@ class GLDefaultFramebufferAttachment final : public Texture {
 
     void setFormat(ImageFormat format);
     ImageFormat getFormat() const override;
-
-    void accept(TextureVisitor &visitor) const override;
 
   private:
     ImageFormat m_format;

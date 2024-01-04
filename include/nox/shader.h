@@ -6,8 +6,6 @@
 
 namespace nox {
 
-class ShaderVisitor;
-
 enum class ShaderType {
     VERTEX,
     FRAGMENT,
@@ -25,8 +23,6 @@ struct ShaderDescriptor {
 class NOX_EXPORT Shader {
   public:
     virtual ShaderType getType() const = 0;
-
-    virtual void accept(ShaderVisitor &visitor) const = 0;
 
   public:
     Shader(const Shader &) = delete;
