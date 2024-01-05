@@ -19,6 +19,7 @@ Checks: >
   -cppcoreguidelines-prefer-member-initializer,
   -cppcoreguidelines-pro-type-member-init,
   -cppcoreguidelines-pro-type-reinterpret-cast,
+  -cppcoreguidelines-pro-type-static-cast-downcast,
   -cppcoreguidelines-owning-memory,
   -cppcoreguidelines-special-member-functions,
   -google-default-arguments,

@@ -6,7 +6,9 @@
 namespace nox {
 
 RendererPtr Renderer::create(RendererBackend backend) {
-    auto renderer = nox::RendererFactoryRegistry::createRenderer(backend);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(RendererFactoryRegistry::loadRendererPlugin(backend), "Couldn't load renderer plugin");
+
+    auto renderer = RendererFactoryRegistry::createRenderer();
     NOX_ASSERT_MSG(renderer != nullptr, "Couldn't create renderer");
 
     return renderer;

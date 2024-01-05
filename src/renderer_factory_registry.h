@@ -11,9 +11,10 @@ using RendererFactory = std::pair<CreateRendererCallback, DestroyRendererCallbac
 
 class NOX_EXPORT RendererFactoryRegistry {
   public:
-    [[nodiscard]] static RendererPtr createRenderer(RendererBackend backend);
+    [[nodiscard]] static bool loadRendererPlugin(RendererBackend backend);
+    [[nodiscard]] static RendererPtr createRenderer();
 
-    static void initializeFactory(const RendererFactory &factory);
+    static void initializeFactory(RendererBackend backend, const RendererFactory &factory);
 };
 
 } // namespace nox
