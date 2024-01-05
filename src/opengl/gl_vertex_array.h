@@ -1,6 +1,6 @@
 #pragma once
 
-#include <nox/format.h>
+#include <nox/buffer.h>
 
 #include <memory>
 

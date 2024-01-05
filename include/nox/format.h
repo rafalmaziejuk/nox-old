@@ -131,6 +131,4 @@ enum class VertexAttributeFormat {
     MAX
 };
 
-using VertexAttributes = std::vector<VertexAttributeFormat>;
-
 } // namespace nox
