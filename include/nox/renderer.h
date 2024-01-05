@@ -17,8 +17,8 @@
 namespace nox {
 
 enum class RendererBackend {
-    OPENGL = 0,
-    MAX
+    NONE,
+    OPENGL
 };
 
 class Renderer;
