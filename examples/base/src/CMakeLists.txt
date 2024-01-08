@@ -1,6 +1,7 @@
 set(NOX_EXAMPLE_BASE_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/example.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/image.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/window.cpp
 )
 
