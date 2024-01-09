@@ -122,16 +122,4 @@ GLTexture2D::GLTexture2D(const Texture2DDescriptor &descriptor) : GLTexture{desc
     glTextureStorage2D(m_handle, 1, format, width, height);
 }
 
-TextureType GLDefaultFramebufferAttachment::getType() const {
-    return TextureType::TEXTURE2D;
-}
-
-void GLDefaultFramebufferAttachment::setFormat(ImageFormat format) {
-    m_format = format;
-}
-
-ImageFormat GLDefaultFramebufferAttachment::getFormat() const {
-    return m_format;
-}
-
 } // namespace nox

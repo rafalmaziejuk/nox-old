@@ -39,15 +39,15 @@ GLSwapchain::GLSwapchain(const SwapchainDescriptor &descriptor) : m_size{descrip
     const auto *presentMode = std::get_if<OpenGLPresentMode>(&descriptor.presentMode);
     m_context->setSwapInterval(presentMode->vSync);
 
-    m_presentableTexture.setFormat(queryDefaultFramebufferImageFormat());
+    Texture2DDescriptor presentableTextureDescriptor{};
+    presentableTextureDescriptor.format = queryDefaultFramebufferImageFormat();
+    presentableTextureDescriptor.size = getSize();
+    m_presentableTexture = std::make_unique<GLTexture2D>(presentableTextureDescriptor);
+    m_presentableTexture->setPresentable();
 }
 
 std::vector<const Texture *> GLSwapchain::getPresentableTextures() const {
-    AttachmentsContainer result;
-    result.resize(1u);
-    result[0] = &m_presentableTexture;
-
-    return result;
+    return {1u, m_presentableTexture.get()};
 }
 
 void GLSwapchain::present() const {

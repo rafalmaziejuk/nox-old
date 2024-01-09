@@ -27,17 +27,12 @@ class GLTexture2D final : public GLTexture {
     [[nodiscard]] static bool validateInput(const Texture2DDescriptor &descriptor);
 
     GLTexture2D(const Texture2DDescriptor &descriptor);
-};
 
-class GLDefaultFramebufferAttachment final : public Texture {
-  public:
-    TextureType getType() const override;
-
-    void setFormat(ImageFormat format);
-    ImageFormat getFormat() const override;
+    [[nodiscard]] bool isPresentable() const { return m_isPresentable; }
+    void setPresentable() { m_isPresentable = true; }
 
   private:
-    ImageFormat m_format;
+    bool m_isPresentable{false};
 };
 
 } // namespace nox

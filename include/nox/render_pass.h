@@ -22,8 +22,6 @@ struct AttachmentDescriptor {
     ImageFormat format;
     AttachmentLoadOp loadOp;
     AttachmentStoreOp storeOp;
-    AttachmentLoadOp stencilLoadOp;
-    AttachmentStoreOp stencilStoreOp;
 };
 using AttachmentsDescriptorsContainer = std::vector<AttachmentDescriptor>;
 
