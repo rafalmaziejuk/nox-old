@@ -45,6 +45,8 @@ bool RendererFactoryRegistry::loadRendererPlugin(RendererBackend backend) {
 }
 
 RendererPtr RendererFactoryRegistry::createRenderer() {
+    NOX_ENSURE_RETURN_NULLPTR_MSG(rendererFactory.has_value(), "Renderer factory hasn't been properly initialized");
+
     const auto &[createRenderer, destroyRenderer] = rendererFactory.value();
     return {createRenderer(), destroyRenderer};
 }

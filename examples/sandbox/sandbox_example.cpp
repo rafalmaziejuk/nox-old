@@ -80,8 +80,6 @@ void SandboxExample::initialize() {
     attachmentDescriptor.format = m_swapchain->getSurfaceFormat();
     attachmentDescriptor.loadOp = AttachmentLoadOp::CLEAR;
     attachmentDescriptor.storeOp = AttachmentStoreOp::STORE;
-    attachmentDescriptor.stencilLoadOp = AttachmentLoadOp::DONT_CARE;
-    attachmentDescriptor.stencilStoreOp = AttachmentStoreOp::DONT_CARE;
 
     RenderPassDescriptor renderPassDescriptor{};
     renderPassDescriptor.attachmentsDescriptors = {

@@ -22,7 +22,7 @@ class GLSwapchain final : public Swapchain {
 
   private:
     std::unique_ptr<GLContext> m_context{nullptr};
-    GLDefaultFramebufferAttachment m_presentableTexture{};
+    std::unique_ptr<GLTexture2D> m_presentableTexture{nullptr};
     Vector2D<uint32_t> m_size;
 };
 

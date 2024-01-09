@@ -27,6 +27,7 @@ class GLFramebuffer : public Framebuffer {
     void clearColorAttachment(const ClearColorValue &value, int32_t index) const;
     void clearDepthAttachment(float depth) const;
     void clearStencilAttachment(uint32_t stencil) const;
+    void clearDepthStencilAttachment(float depth, uint32_t stencil) const;
 
   protected:
     AttachmentsPointsContainer m_attachmentsPoints;

@@ -39,12 +39,16 @@ bool GLFramebuffer::validateInput(const FramebufferDescriptor &descriptor) {
 }
 
 bool GLFramebuffer::isDefaultFramebuffer(const AttachmentsContainer &attachments) {
-    bool result = true;
+    if (attachments.size() > 1u) {
+        return false;
+    }
 
-    result &= (attachments.size() == 1u);
-    result &= (dynamic_cast<const GLDefaultFramebufferAttachment *>(attachments.back()) != nullptr);
+    const auto *glTexture = dynamic_cast<const GLTexture2D *>(attachments.back());
+    if (glTexture == nullptr) {
+        return false;
+    }
 
-    return result;
+    return glTexture->isPresentable();
 }
 
 GLFramebuffer::~GLFramebuffer() {
@@ -61,23 +65,33 @@ void GLFramebuffer::clearAttachments(const ClearValues &values, const RenderPass
     const auto *glRenderPass = static_cast<const GLRenderPass *>(renderPass);
     const auto &attachmentsDescriptors = glRenderPass->getAttachmentsDescriptors();
 
+    NOX_ASSERT(attachmentsDescriptors.size() == values.size());
+
     for (size_t i = 0u; i < attachmentsDescriptors.size(); i++) {
         const auto &attachmentDescriptor = attachmentsDescriptors[i];
-        const auto &clearValue = values[i];
+        const auto attachmentFormatDescriptor = getImageFormatDescriptor(attachmentDescriptor.format);
+        const auto *clearColorValue = std::get_if<ClearColorValue>(&values[i]);
+        const auto *clearDepthStencilValue = std::get_if<ClearDepthStencilValue>(&values[i]);
 
         if (attachmentDescriptor.loadOp == AttachmentLoadOp::CLEAR) {
-            if (const auto *value = std::get_if<ClearColorValue>(&clearValue)) {
-                clearColorAttachment(*value, static_cast<int32_t>(i));
+            if (attachmentFormatDescriptor.isColor) {
+                NOX_ASSERT(clearColorValue != nullptr);
+                clearColorAttachment(*clearColorValue, static_cast<int32_t>(i));
             }
 
-            if (const auto *value = std::get_if<ClearDepthStencilValue>(&clearValue)) {
-                clearDepthAttachment(value->depth);
+            if (attachmentFormatDescriptor.isDepth) {
+                NOX_ASSERT(clearDepthStencilValue != nullptr);
+                clearDepthAttachment(clearDepthStencilValue->depth);
             }
-        }
 
-        if (attachmentDescriptor.stencilLoadOp == AttachmentLoadOp::CLEAR) {
-            if (const auto *value = std::get_if<ClearDepthStencilValue>(&clearValue)) {
-                clearStencilAttachment(value->stencil);
+            if (attachmentFormatDescriptor.isStencil) {
+                NOX_ASSERT(clearDepthStencilValue != nullptr);
+                clearStencilAttachment(clearDepthStencilValue->stencil);
+            }
+
+            if (attachmentFormatDescriptor.isDepthStencil) {
+                NOX_ASSERT(clearDepthStencilValue != nullptr);
+                clearDepthStencilAttachment(clearDepthStencilValue->depth, clearDepthStencilValue->stencil);
             }
         }
     }
@@ -101,6 +115,10 @@ void GLFramebuffer::clearStencilAttachment(uint32_t stencil) const {
     glClearNamedFramebufferuiv(m_handle, GL_STENCIL, 0, &stencil);
 }
 
+void GLFramebuffer::clearDepthStencilAttachment(float depth, uint32_t stencil) const {
+    glClearNamedFramebufferfi(m_handle, GL_DEPTH_STENCIL, 0, depth, static_cast<GLint>(stencil));
+}
+
 void GLFramebuffer::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
 }
@@ -116,7 +134,7 @@ GLFramebufferWithAttachments::GLFramebufferWithAttachments(const FramebufferDesc
 
 void GLFramebufferWithAttachments::attachColorAttachments(const AttachmentsContainer &attachments) {
     for (const auto *attachment : attachments) {
-        auto descriptor = getImageFormatDescriptor(attachment->getFormat());
+        const auto descriptor = getImageFormatDescriptor(attachment->getFormat());
 
         if (descriptor.isColor) {
             auto attachmentPoint = GL_COLOR_ATTACHMENT0 + static_cast<uint32_t>(m_attachmentsPoints.size());
@@ -134,7 +152,7 @@ void GLFramebufferWithAttachments::attachColorAttachments(const AttachmentsConta
 
 void GLFramebufferWithAttachments::attachDepthStencilAttachments(const AttachmentsContainer &attachments) {
     for (const auto *attachment : attachments) {
-        auto descriptor = getImageFormatDescriptor(attachment->getFormat());
+        const auto descriptor = getImageFormatDescriptor(attachment->getFormat());
         AttachmentPoint attachmentPoint = GL_NONE;
 
         if (descriptor.isDepth) {
