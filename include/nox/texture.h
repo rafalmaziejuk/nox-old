@@ -8,6 +8,18 @@
 
 namespace nox {
 
+struct TextureSubresourceDescriptor {
+    uint32_t baseMipmapLevel;
+};
+
+struct TextureWriteDescriptor {
+    void *data;
+    ImageFormat dataFormat;
+    TextureSubresourceDescriptor subresource;
+    Vector3D<uint32_t> size;
+    Vector3D<uint32_t> offset;
+};
+
 enum class TextureType {
     TEXTURE2D
 };
@@ -22,6 +34,8 @@ struct Texture2DDescriptor : TextureDescriptor {
 
 class NOX_EXPORT Texture {
   public:
+    virtual void write(const TextureWriteDescriptor &descriptor) = 0;
+
     [[nodiscard]] virtual TextureType getType() const = 0;
     [[nodiscard]] virtual ImageFormat getFormat() const = 0;
 

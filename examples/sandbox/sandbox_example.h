@@ -16,6 +16,7 @@ class SandboxExample : public base::Example {
     void createFramebuffer();
     void createGraphicsPipelineState();
     void createBuffer();
+    void createTexture();
 
   private:
     std::unique_ptr<CommandList> m_commandList{nullptr};
@@ -24,6 +25,7 @@ class SandboxExample : public base::Example {
     std::unique_ptr<RenderPass> m_renderPass{nullptr};
     std::unique_ptr<Framebuffer> m_framebuffer{nullptr};
     std::unique_ptr<GraphicsPipelineState> m_graphicsPipelineState{nullptr};
+    std::shared_ptr<Texture> m_texture{nullptr};
 };
 
 } // namespace nox

@@ -1,5 +1,7 @@
 #include "sandbox_example.h"
 
+#include <base/image.h>
+
 namespace nox {
 
 namespace {
@@ -8,34 +10,42 @@ constexpr auto triangleVertexShaderSource = R"(
             #version 460 core
 
             layout(location = 0) in vec2 aPosition;
+            layout(location = 1) in vec2 aTextureCoordinates;
 
             out gl_PerVertex {
 	            vec4 gl_Position;
             };
 
+            out vec2 textureCoordinates;
+
             void main() {
                 gl_Position = vec4(aPosition, 0.0, 1.0);
+                textureCoordinates = aTextureCoordinates;
             }
         )";
 
 constexpr auto triangleFragmentShaderSource = R"(
             #version 460 core
 
+            layout(binding = 0) uniform sampler2D uTexture;
+
+            in vec2 textureCoordinates;
             out vec4 fragmentColor;
 
             void main() {
-                fragmentColor = vec4(1.0);
+                fragmentColor = texture(uTexture, textureCoordinates);
             }
         )";
 
 struct Vertex {
     float position[2];
+    float textureCoordinates[2];
 };
 constexpr Vertex vertices[]{
-    {{0.5f, 0.5f}},   // top right
-    {{0.5f, -0.5f}},  // bottom right
-    {{-0.5f, -0.5f}}, // bottom left
-    {{-0.5f, 0.5f}},  // top left
+    {{0.5f, 0.5f}, {1.0f, 1.0f}},   // top right
+    {{0.5f, -0.5f}, {1.0f, 0.0f}},  // bottom right
+    {{-0.5f, -0.5f}, {0.0f, 0.0f}}, // bottom left
+    {{-0.5f, 0.5f}, {0.0f, 1.0f}},  // top left
 };
 
 constexpr uint32_t indices[]{0, 1, 3,
@@ -67,6 +77,7 @@ SandboxExample::SandboxExample() {
 
 void SandboxExample::initialize() {
     createBuffer();
+    createTexture();
     createRenderPass();
     createFramebuffer();
     createGraphicsPipelineState();
@@ -100,6 +111,7 @@ void SandboxExample::createBuffer() {
     vertexBufferDescriptor.data = vertices;
     vertexBufferDescriptor.vertexAttributes = {
         VertexAttributeFormat::RG32F,
+        VertexAttributeFormat::RG32F,
     };
     m_vertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor);
 
@@ -109,6 +121,22 @@ void SandboxExample::createBuffer() {
     indexBufferDescriptor.data = indices;
     indexBufferDescriptor.format = VertexAttributeFormat::R32UI;
     m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor);
+}
+
+void SandboxExample::createTexture() {
+    base::Image containerImage("assets/container.jpg");
+
+    Texture2DDescriptor textureDescriptor{};
+    textureDescriptor.format = ImageFormat::RGB8_UNORM;
+    textureDescriptor.size = containerImage.size;
+    m_texture = m_renderer->createTexture2D(textureDescriptor);
+
+    TextureWriteDescriptor textureWriteDescriptor{};
+    textureWriteDescriptor.data = containerImage.data;
+    textureWriteDescriptor.dataFormat = ImageFormat::RGB8UI;
+    textureWriteDescriptor.subresource.baseMipmapLevel = 0u;
+    textureWriteDescriptor.size = {containerImage.size.x(), containerImage.size.y(), 0u};
+    m_texture->write(textureWriteDescriptor);
 }
 
 void SandboxExample::createRenderPass() {
@@ -136,7 +164,22 @@ void SandboxExample::createGraphicsPipelineState() {
     GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
     graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
+    DescriptorSetLayoutBinding descriptorSetLayoutBinding{};
+    descriptorSetLayoutBinding.bindingIndex = 0u;
+    descriptorSetLayoutBinding.resourceType = ResourceType::TEXTURE;
+    descriptorSetLayoutBinding.textureResourceDescriptors = {
+        {m_texture},
+    };
+
+    DescriptorSetLayout descriptorSetLayout{};
+    descriptorSetLayout.bindings = {
+        descriptorSetLayoutBinding,
+    };
+
     PipelineLayoutDescriptor pipelineLayoutDescriptor{};
+    pipelineLayoutDescriptor.setLayouts = {
+        descriptorSetLayout,
+    };
     graphicsPipelineStateDescriptor.pipelineLayout = m_renderer->createPipelineLayout(pipelineLayoutDescriptor);
 
     ShaderDescriptor vertexShaderDescriptor{};
@@ -151,6 +194,7 @@ void SandboxExample::createGraphicsPipelineState() {
         vertexShader.get(),
         fragmentShader.get(),
     };
+
     m_graphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);
 }
 
