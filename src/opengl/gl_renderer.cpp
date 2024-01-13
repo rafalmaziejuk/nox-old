@@ -4,6 +4,7 @@
 #include "opengl/gl_context.h"
 #include "opengl/gl_framebuffer.h"
 #include "opengl/gl_graphics_pipeline_state.h"
+#include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_render_pass.h"
 #include "opengl/gl_renderer.h"
 #include "opengl/gl_shader.h"
@@ -57,7 +58,13 @@ std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descrip
     return shader;
 }
 
-std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) {
+std::unique_ptr<PipelineLayout> GLRenderer::createPipelineLayout(PipelineLayoutDescriptor &descriptor) {
+    NOX_ASSERT(GLPipelineLayout::validateInput(descriptor));
+
+    return std::make_unique<GLPipelineLayout>(descriptor);
+}
+
+std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) {
     NOX_ASSERT(GLGraphicsPipelineState::validateInput(descriptor));
 
     auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor, m_state);
@@ -71,10 +78,10 @@ std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDesc
     return std::make_unique<GLCommandList>(descriptor, m_state);
 }
 
-std::unique_ptr<Texture> GLRenderer::createTexture2D(const Texture2DDescriptor &descriptor) {
+std::shared_ptr<Texture> GLRenderer::createTexture2D(const Texture2DDescriptor &descriptor) {
     NOX_ASSERT(GLTexture2D::validateInput(descriptor));
 
-    return std::make_unique<GLTexture2D>(descriptor);
+    return std::make_shared<GLTexture2D>(descriptor);
 }
 
 std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescriptor &descriptor) {

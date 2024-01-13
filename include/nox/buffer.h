@@ -20,6 +20,8 @@ struct BufferDescriptor {
     const void *data;
 };
 
+using VertexAttributes = std::vector<VertexAttributeFormat>;
+
 struct VertexBufferDescriptor : BufferDescriptor {
     VertexAttributes vertexAttributes;
 };

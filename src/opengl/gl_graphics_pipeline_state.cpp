@@ -1,5 +1,6 @@
 #include "nox_assert.h"
 #include "opengl/gl_graphics_pipeline_state.h"
+#include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_program.h"
 #include "opengl/gl_shader.h"
 
@@ -58,7 +59,8 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
     return result;
 }
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state} {
+GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state} {
+    m_pipelineLayout = std::move(descriptor.pipelineLayout);
     m_primitiveTopology = mapPrimitiveTopologyToEnum(descriptor.primitiveTopology);
 
     glCreateProgramPipelines(1, &m_handle);
@@ -71,6 +73,9 @@ GLGraphicsPipelineState::~GLGraphicsPipelineState() {
 void GLGraphicsPipelineState::bind() {
     auto &state = getState();
     state.primitiveTopology = m_primitiveTopology;
+
+    const auto *glPipelineLayout = static_cast<const GLPipelineLayout *>(m_pipelineLayout.get());
+    glPipelineLayout->bind();
 
     glBindProgramPipeline(m_handle);
 }
