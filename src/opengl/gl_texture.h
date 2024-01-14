@@ -28,6 +28,8 @@ class GLTexture2D final : public GLTexture {
 
     GLTexture2D(const Texture2DDescriptor &descriptor);
 
+    void write(const TextureWriteDescriptor &descriptor) override;
+
     [[nodiscard]] bool isPresentable() const { return m_isPresentable; }
     void setPresentable() { m_isPresentable = true; }
 
