@@ -1,14 +1,20 @@
-# NOX - Graphics Rendering Library
-NOX is a cross-platform and graphics API agnostic library. The API is designed to be similar to 
-a modern graphics APIs such as Vulkan or Direct3D 12. It is written in C++17 and uses CMake build 
-system.
+# NOX - Cross-Platform Graphics Rendering Library
+
+<p align="center">
+    <a href="https://github.com/rafalmaziejuk/nox/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" /></a>
+    <a href="https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml"><img src="https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml/badge.svg?branch=master"/></a>
+</p>
+
+NOX is a C++17 library crafted for cross-platform graphics rendering, providing a unified API for modern graphics APIs such as Vulkan or D3D12, as well as OpenGL. Tailored for Windows and Linux development, NOX simplifies the intricacies of low-level graphics programming, enabling you to focus on creating immersive visual experiences.
 
 ## Platform Support
 
-| Platform | CI | OpenGL | Vulkan | D3D12 |
-|----------|:--:|:----------:|:------:|:-----:|
-| Windows | [![Windows](https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml) | In Development | Planned | Planned |
-| Linux | N/A | Planned | Planned | N/A |
+| Platform | OpenGL | Vulkan | D3D12 |
+|----------|:----------:|:------:|:-----:|
+| Windows | In Development | Planned | Planned |
+| Linux | In Development | Planned | N/A |
+
+
 
 ## Building
 ```
