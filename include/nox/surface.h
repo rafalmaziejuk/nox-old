@@ -7,31 +7,31 @@
 
 namespace nox {
 
-struct WindowsSurfaceBackendDescriptor {
+struct WindowsSurfaceBackendDescription {
     void *windowHandle;
 };
 
-struct X11SurfaceBackendDescriptor {
+struct X11SurfaceBackendDescription {
     uint64_t windowHandle;
     void *displayHandle;
 };
 
-using SurfaceBackendDescriptor = std::variant<WindowsSurfaceBackendDescriptor,
-                                              X11SurfaceBackendDescriptor>;
+using SurfaceBackendDescription = std::variant<WindowsSurfaceBackendDescription,
+                                              X11SurfaceBackendDescription>;
 
-struct OpenGLSurfaceAttributesDescriptor {
-    struct PixelFormatDescriptor {
+struct OpenGLSurfaceAttributesDescription {
+    struct PixelFormatDescription {
         uint8_t colorBits{32u};
         uint8_t depthBits{24u};
         uint8_t stencilBits{8u};
-    } pixelFormatDescriptor;
+    } pixelFormatDescription;
 };
 
-using SurfaceAttributesDescriptor = std::variant<OpenGLSurfaceAttributesDescriptor>;
+using SurfaceAttributesDescription = std::variant<OpenGLSurfaceAttributesDescription>;
 
-struct SurfaceDescriptor {
-    SurfaceBackendDescriptor surfaceBackendDescriptor;
-    SurfaceAttributesDescriptor surfaceAttributesDescriptor;
+struct SurfaceDescription {
+    SurfaceBackendDescription surfaceBackendDescription;
+    SurfaceAttributesDescription surfaceAttributesDescription;
 };
 
 class NOX_EXPORT Surface {

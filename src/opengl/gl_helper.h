@@ -1,6 +1,6 @@
 #pragma once
 
-#include "format_descriptor.h"
+#include "format_description.h"
 #include "nox_assert.h"
 
 #include <glad/gl.h>

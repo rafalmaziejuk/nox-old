@@ -14,25 +14,25 @@ enum class ResourceType {
     TEXTURE
 };
 
-struct TextureResourceDescriptor {
+struct TextureResourceDescription {
     std::shared_ptr<Texture> texture;
 };
-using TextureResourceDescriptors = std::vector<TextureResourceDescriptor>;
+using TextureResourceDescriptions = std::vector<TextureResourceDescription>;
 
-struct DescriptorSetLayoutBinding {
+struct DescriptionSetLayoutBinding {
     uint32_t bindingIndex;
     ResourceType resourceType;
-    TextureResourceDescriptors textureResourceDescriptors;
+    TextureResourceDescriptions textureResourceDescriptions;
 };
-using DescriptorSetLayoutBindings = std::vector<DescriptorSetLayoutBinding>;
+using DescriptionSetLayoutBindings = std::vector<DescriptionSetLayoutBinding>;
 
-struct DescriptorSetLayout {
-    DescriptorSetLayoutBindings bindings;
+struct DescriptionSetLayout {
+    DescriptionSetLayoutBindings bindings;
 };
-using DescriptorSetLayouts = std::vector<DescriptorSetLayout>;
+using DescriptionSetLayouts = std::vector<DescriptionSetLayout>;
 
-struct PipelineLayoutDescriptor {
-    DescriptorSetLayouts setLayouts;
+struct PipelineLayoutDescription {
+    DescriptionSetLayouts setLayouts;
 };
 
 class NOX_EXPORT PipelineLayout {

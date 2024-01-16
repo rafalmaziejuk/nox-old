@@ -10,9 +10,9 @@ class GLContext;
 
 class GLSwapchain final : public Swapchain {
   public:
-    [[nodiscard]] static bool validateInput(const SwapchainDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const SwapchainDescription &description);
 
-    GLSwapchain(const SwapchainDescriptor &descriptor);
+    GLSwapchain(const SwapchainDescription &description);
 
     Vector2D<uint32_t> getSize() const override;
     ImageFormat getSurfaceFormat() const override;

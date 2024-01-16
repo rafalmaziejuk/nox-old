@@ -23,26 +23,26 @@ ImageFormat queryDefaultFramebufferImageFormat() {
 
 } // namespace
 
-bool GLSwapchain::validateInput(const SwapchainDescriptor &descriptor) {
+bool GLSwapchain::validateInput(const SwapchainDescription &description) {
     bool result = true;
 
-    result &= GLContext::validateInput(descriptor.surfaceDescriptor);
-    result &= (std::get_if<OpenGLPresentMode>(&descriptor.presentMode) != nullptr);
+    result &= GLContext::validateInput(description.surfaceDescription);
+    result &= (std::get_if<OpenGLPresentMode>(&description.presentMode) != nullptr);
 
     return result;
 }
 
-GLSwapchain::GLSwapchain(const SwapchainDescriptor &descriptor) : m_size{descriptor.size} {
-    m_context = GLContext::create(descriptor.surfaceDescriptor);
+GLSwapchain::GLSwapchain(const SwapchainDescription &description) : m_size{description.size} {
+    m_context = GLContext::create(description.surfaceDescription);
     NOX_ASSERT(m_context != nullptr);
 
-    const auto *presentMode = std::get_if<OpenGLPresentMode>(&descriptor.presentMode);
+    const auto *presentMode = std::get_if<OpenGLPresentMode>(&description.presentMode);
     m_context->setSwapInterval(presentMode->vSync);
 
-    Texture2DDescriptor presentableTextureDescriptor{};
-    presentableTextureDescriptor.format = queryDefaultFramebufferImageFormat();
-    presentableTextureDescriptor.size = getSize();
-    m_presentableTexture = std::make_unique<GLTexture2D>(presentableTextureDescriptor);
+    Texture2DDescription presentableTextureDescription{};
+    presentableTextureDescription.format = queryDefaultFramebufferImageFormat();
+    presentableTextureDescription.size = getSize();
+    m_presentableTexture = std::make_unique<GLTexture2D>(presentableTextureDescription);
     m_presentableTexture->setPresentable();
 }
 

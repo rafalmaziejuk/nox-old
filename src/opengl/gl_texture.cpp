@@ -1,4 +1,4 @@
-#include "format_descriptor.h"
+#include "format_description.h"
 #include "nox_assert.h"
 #include "opengl/gl_helper.h"
 #include "opengl/gl_texture.h"
@@ -209,8 +209,8 @@ GLenum mapPixelDataType(ImageFormat format) {
 
 } // namespace
 
-GLTexture::GLTexture(const TextureDescriptor &descriptor, TextureType type) : m_type{type},
-                                                                              m_format{descriptor.format} {
+GLTexture::GLTexture(const TextureDescription &description, TextureType type) : m_type{type},
+                                                                              m_format{description.format} {
     auto target = mapTextureTarget(m_type);
     glCreateTextures(target, 1, &m_handle);
 }
@@ -231,34 +231,34 @@ void GLTexture::bind(uint32_t index) const {
     glBindTextureUnit(index, m_handle);
 }
 
-bool GLTexture2D::validateInput(const Texture2DDescriptor &descriptor) {
+bool GLTexture2D::validateInput(const Texture2DDescription &description) {
     bool result = true;
 
-    result &= (mapTextureFormat(descriptor.format) != GL_NONE);
+    result &= (mapTextureFormat(description.format) != GL_NONE);
 
     return result;
 }
 
-GLTexture2D::GLTexture2D(const Texture2DDescriptor &descriptor) : GLTexture{descriptor, TextureType::TEXTURE2D} {
-    auto width = static_cast<GLsizei>(descriptor.size.x());
-    auto height = static_cast<GLsizei>(descriptor.size.y());
-    auto format = mapTextureFormat(descriptor.format);
+GLTexture2D::GLTexture2D(const Texture2DDescription &description) : GLTexture{description, TextureType::TEXTURE2D} {
+    auto width = static_cast<GLsizei>(description.size.x());
+    auto height = static_cast<GLsizei>(description.size.y());
+    auto format = mapTextureFormat(description.format);
     glTextureStorage2D(m_handle, 1, format, width, height);
 }
 
-void GLTexture2D::write(const TextureWriteDescriptor &descriptor) {
-    auto pixelDataFormat = mapPixelDataFormat(descriptor.dataFormat);
-    auto pixelDataType = mapPixelDataType(descriptor.dataFormat);
+void GLTexture2D::write(const TextureWriteDescription &description) {
+    auto pixelDataFormat = mapPixelDataFormat(description.dataFormat);
+    auto pixelDataType = mapPixelDataType(description.dataFormat);
 
     glTextureSubImage2D(m_handle,
-                        static_cast<GLint>(descriptor.subresource.baseMipmapLevel),
-                        static_cast<GLint>(descriptor.offset.x()),
-                        static_cast<GLint>(descriptor.offset.y()),
-                        static_cast<GLsizei>(descriptor.size.x()),
-                        static_cast<GLsizei>(descriptor.size.y()),
+                        static_cast<GLint>(description.subresource.baseMipmapLevel),
+                        static_cast<GLint>(description.offset.x()),
+                        static_cast<GLint>(description.offset.y()),
+                        static_cast<GLsizei>(description.size.x()),
+                        static_cast<GLsizei>(description.size.y()),
                         pixelDataFormat,
                         pixelDataType,
-                        descriptor.data);
+                        description.data);
 }
 
 } // namespace nox

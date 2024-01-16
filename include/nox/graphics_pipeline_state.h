@@ -14,7 +14,7 @@ enum class PrimitiveTopology {
     TRIANGLE_LIST
 };
 
-struct GraphicsPipelineStateDescriptor {
+struct GraphicsPipelineStateDescription {
     ShaderStages shaderStages;
     std::unique_ptr<PipelineLayout> pipelineLayout;
     PrimitiveTopology primitiveTopology;

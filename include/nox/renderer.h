@@ -32,25 +32,25 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual RendererBackend getRendererBackend() const = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Swapchain> createSwapchain(const SwapchainDescription &description) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const VertexBufferDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Buffer> createVertexBuffer(const VertexBufferDescription &description) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const IndexBufferDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const IndexBufferDescription &description) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Shader> createShader(const ShaderDescription &description, std::string_view source) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<PipelineLayout> createPipelineLayout(PipelineLayoutDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<PipelineLayout> createPipelineLayout(PipelineLayoutDescription &description) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(GraphicsPipelineStateDescription &description) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescription &description) = 0;
 
-    [[nodiscard]] virtual std::shared_ptr<Texture> createTexture2D(const Texture2DDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::shared_ptr<Texture> createTexture2D(const Texture2DDescription &description) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescription &description) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescription &description) = 0;
 
   public:
     Renderer(const Renderer &) = delete;

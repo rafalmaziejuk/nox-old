@@ -8,13 +8,13 @@ namespace nox {
 
 class GLBuffer : public Buffer, public GLWithState {
   public:
-    GLBuffer(const BufferDescriptor &descriptor, GLState &state);
+    GLBuffer(const BufferDescription &description, GLState &state);
     ~GLBuffer() override;
 
     [[nodiscard]] uint32_t getHandle() const { return m_handle; }
 
   protected:
-    [[nodiscard]] static bool validateInput(const BufferDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const BufferDescription &description);
 
   private:
     uint32_t m_handle{0u};
@@ -22,7 +22,7 @@ class GLBuffer : public Buffer, public GLWithState {
 
 class GLVertexBuffer final : public GLBuffer {
   public:
-    [[nodiscard]] static bool validateInput(const VertexBufferDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const VertexBufferDescription &description);
 
     using GLBuffer::GLBuffer;
 
@@ -36,7 +36,7 @@ class GLVertexBuffer final : public GLBuffer {
 
 class GLIndexBuffer final : public GLBuffer {
   public:
-    [[nodiscard]] static bool validateInput(const IndexBufferDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const IndexBufferDescription &description);
 
     using GLBuffer::GLBuffer;
 

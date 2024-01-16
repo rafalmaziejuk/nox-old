@@ -60,19 +60,19 @@ SandboxExample::SandboxExample() {
 
     m_renderer = Renderer::create(RendererBackend::OPENGL);
 
-    OpenGLSurfaceAttributesDescriptor surfaceAttributesDescriptor{};
-    SurfaceDescriptor surfaceDescriptor{};
-    surfaceDescriptor.surfaceBackendDescriptor = m_window.getSurfaceBackendDescriptor();
-    surfaceDescriptor.surfaceAttributesDescriptor = surfaceAttributesDescriptor;
+    OpenGLSurfaceAttributesDescription surfaceAttributesDescription{};
+    SurfaceDescription surfaceDescription{};
+    surfaceDescription.surfaceBackendDescription = m_window.getSurfaceBackendDescription();
+    surfaceDescription.surfaceAttributesDescription = surfaceAttributesDescription;
 
-    SwapchainDescriptor swapchainDescriptor{};
-    swapchainDescriptor.surfaceDescriptor = surfaceDescriptor;
-    swapchainDescriptor.size = m_window.getSize();
-    swapchainDescriptor.presentMode = OpenGLPresentMode{true};
-    m_swapchain = m_renderer->createSwapchain(swapchainDescriptor);
+    SwapchainDescription swapchainDescription{};
+    swapchainDescription.surfaceDescription = surfaceDescription;
+    swapchainDescription.size = m_window.getSize();
+    swapchainDescription.presentMode = OpenGLPresentMode{true};
+    m_swapchain = m_renderer->createSwapchain(swapchainDescription);
 
-    CommandListDescriptor commandListDescriptor{};
-    m_commandList = m_renderer->createCommandList(commandListDescriptor);
+    CommandListDescription commandListDescription{};
+    m_commandList = m_renderer->createCommandList(commandListDescription);
 }
 
 void SandboxExample::initialize() {
@@ -84,14 +84,14 @@ void SandboxExample::initialize() {
 }
 
 void SandboxExample::onUpdate() {
-    RenderPassBeginDescriptor renderPassBeginDescriptor{};
-    renderPassBeginDescriptor.renderPass = m_renderPass.get();
-    renderPassBeginDescriptor.framebuffer = m_framebuffer.get();
-    renderPassBeginDescriptor.clearValues = {
+    RenderPassBeginDescription renderPassBeginDescription{};
+    renderPassBeginDescription.renderPass = m_renderPass.get();
+    renderPassBeginDescription.framebuffer = m_framebuffer.get();
+    renderPassBeginDescription.clearValues = {
         {Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f}},
     };
 
-    m_commandList->beginRenderPass(renderPassBeginDescriptor);
+    m_commandList->beginRenderPass(renderPassBeginDescription);
     {
         m_graphicsPipelineState->bind();
         m_commandList->setViewport(m_swapchain->getSize());
@@ -105,97 +105,97 @@ void SandboxExample::onUpdate() {
 }
 
 void SandboxExample::createBuffer() {
-    VertexBufferDescriptor vertexBufferDescriptor{};
-    vertexBufferDescriptor.usage = BufferUsage::STATIC;
-    vertexBufferDescriptor.size = sizeof(vertices);
-    vertexBufferDescriptor.data = vertices;
-    vertexBufferDescriptor.vertexAttributes = {
+    VertexBufferDescription vertexBufferDescription{};
+    vertexBufferDescription.usage = BufferUsage::STATIC;
+    vertexBufferDescription.size = sizeof(vertices);
+    vertexBufferDescription.data = vertices;
+    vertexBufferDescription.vertexAttributes = {
         VertexAttributeFormat::RG32F,
         VertexAttributeFormat::RG32F,
     };
-    m_vertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescriptor);
+    m_vertexBuffer = m_renderer->createVertexBuffer(vertexBufferDescription);
 
-    IndexBufferDescriptor indexBufferDescriptor{};
-    indexBufferDescriptor.usage = BufferUsage::STATIC;
-    indexBufferDescriptor.size = sizeof(indices);
-    indexBufferDescriptor.data = indices;
-    indexBufferDescriptor.format = VertexAttributeFormat::R32UI;
-    m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescriptor);
+    IndexBufferDescription indexBufferDescription{};
+    indexBufferDescription.usage = BufferUsage::STATIC;
+    indexBufferDescription.size = sizeof(indices);
+    indexBufferDescription.data = indices;
+    indexBufferDescription.format = VertexAttributeFormat::R32UI;
+    m_indexBuffer = m_renderer->createIndexBuffer(indexBufferDescription);
 }
 
 void SandboxExample::createTexture() {
     base::Image containerImage("assets/container.jpg");
 
-    Texture2DDescriptor textureDescriptor{};
-    textureDescriptor.format = ImageFormat::RGB8_UNORM;
-    textureDescriptor.size = containerImage.size;
-    m_texture = m_renderer->createTexture2D(textureDescriptor);
+    Texture2DDescription textureDescription{};
+    textureDescription.format = ImageFormat::RGB8_UNORM;
+    textureDescription.size = containerImage.size;
+    m_texture = m_renderer->createTexture2D(textureDescription);
 
-    TextureWriteDescriptor textureWriteDescriptor{};
-    textureWriteDescriptor.data = containerImage.data;
-    textureWriteDescriptor.dataFormat = ImageFormat::RGB8UI;
-    textureWriteDescriptor.subresource.baseMipmapLevel = 0u;
-    textureWriteDescriptor.size = {containerImage.size.x(), containerImage.size.y(), 0u};
-    m_texture->write(textureWriteDescriptor);
+    TextureWriteDescription textureWriteDescription{};
+    textureWriteDescription.data = containerImage.data;
+    textureWriteDescription.dataFormat = ImageFormat::RGB8UI;
+    textureWriteDescription.subresource.baseMipmapLevel = 0u;
+    textureWriteDescription.size = {containerImage.size.x(), containerImage.size.y(), 0u};
+    m_texture->write(textureWriteDescription);
 }
 
 void SandboxExample::createRenderPass() {
-    AttachmentDescriptor attachmentDescriptor{};
-    attachmentDescriptor.format = m_swapchain->getSurfaceFormat();
-    attachmentDescriptor.loadOp = AttachmentLoadOp::CLEAR;
-    attachmentDescriptor.storeOp = AttachmentStoreOp::STORE;
+    AttachmentDescription attachmentDescription{};
+    attachmentDescription.format = m_swapchain->getSurfaceFormat();
+    attachmentDescription.loadOp = AttachmentLoadOp::CLEAR;
+    attachmentDescription.storeOp = AttachmentStoreOp::STORE;
 
-    RenderPassDescriptor renderPassDescriptor{};
-    renderPassDescriptor.attachmentsDescriptors = {
-        {attachmentDescriptor},
+    RenderPassDescription renderPassDescription{};
+    renderPassDescription.attachmentsDescriptions = {
+        {attachmentDescription},
     };
-    m_renderPass = m_renderer->createRenderPass(renderPassDescriptor);
+    m_renderPass = m_renderer->createRenderPass(renderPassDescription);
 }
 
 void SandboxExample::createFramebuffer() {
-    FramebufferDescriptor framebufferDescriptor{};
-    framebufferDescriptor.attachments = m_swapchain->getPresentableTextures();
-    framebufferDescriptor.renderPass = m_renderPass.get();
-    framebufferDescriptor.size = m_swapchain->getSize();
-    m_framebuffer = m_renderer->createFramebuffer(framebufferDescriptor);
+    FramebufferDescription framebufferDescription{};
+    framebufferDescription.attachments = m_swapchain->getPresentableTextures();
+    framebufferDescription.renderPass = m_renderPass.get();
+    framebufferDescription.size = m_swapchain->getSize();
+    m_framebuffer = m_renderer->createFramebuffer(framebufferDescription);
 }
 
 void SandboxExample::createGraphicsPipelineState() {
-    GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
-    graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
+    GraphicsPipelineStateDescription graphicsPipelineStateDescription{};
+    graphicsPipelineStateDescription.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
-    DescriptorSetLayoutBinding descriptorSetLayoutBinding{};
-    descriptorSetLayoutBinding.bindingIndex = 0u;
-    descriptorSetLayoutBinding.resourceType = ResourceType::TEXTURE;
-    descriptorSetLayoutBinding.textureResourceDescriptors = {
+    DescriptionSetLayoutBinding descriptionSetLayoutBinding{};
+    descriptionSetLayoutBinding.bindingIndex = 0u;
+    descriptionSetLayoutBinding.resourceType = ResourceType::TEXTURE;
+    descriptionSetLayoutBinding.textureResourceDescriptions = {
         {m_texture},
     };
 
-    DescriptorSetLayout descriptorSetLayout{};
-    descriptorSetLayout.bindings = {
-        descriptorSetLayoutBinding,
+    DescriptionSetLayout descriptionSetLayout{};
+    descriptionSetLayout.bindings = {
+        descriptionSetLayoutBinding,
     };
 
-    PipelineLayoutDescriptor pipelineLayoutDescriptor{};
-    pipelineLayoutDescriptor.setLayouts = {
-        descriptorSetLayout,
+    PipelineLayoutDescription pipelineLayoutDescription{};
+    pipelineLayoutDescription.setLayouts = {
+        descriptionSetLayout,
     };
-    graphicsPipelineStateDescriptor.pipelineLayout = m_renderer->createPipelineLayout(pipelineLayoutDescriptor);
+    graphicsPipelineStateDescription.pipelineLayout = m_renderer->createPipelineLayout(pipelineLayoutDescription);
 
-    ShaderDescriptor vertexShaderDescriptor{};
-    vertexShaderDescriptor.type = ShaderType::VERTEX;
-    auto vertexShader = m_renderer->createShader(vertexShaderDescriptor, triangleVertexShaderSource);
+    ShaderDescription vertexShaderDescription{};
+    vertexShaderDescription.type = ShaderType::VERTEX;
+    auto vertexShader = m_renderer->createShader(vertexShaderDescription, triangleVertexShaderSource);
 
-    ShaderDescriptor fragmentShaderDescriptor{};
-    fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
-    auto fragmentShader = m_renderer->createShader(fragmentShaderDescriptor, triangleFragmentShaderSource);
+    ShaderDescription fragmentShaderDescription{};
+    fragmentShaderDescription.type = ShaderType::FRAGMENT;
+    auto fragmentShader = m_renderer->createShader(fragmentShaderDescription, triangleFragmentShaderSource);
 
-    graphicsPipelineStateDescriptor.shaderStages = {
+    graphicsPipelineStateDescription.shaderStages = {
         vertexShader.get(),
         fragmentShader.get(),
     };
 
-    m_graphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);
+    m_graphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescription);
 }
 
 } // namespace nox

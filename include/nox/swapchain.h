@@ -16,8 +16,8 @@ struct OpenGLPresentMode {
 
 using PresentMode = std::variant<OpenGLPresentMode>;
 
-struct SwapchainDescriptor {
-    SurfaceDescriptor surfaceDescriptor;
+struct SwapchainDescription {
+    SurfaceDescription surfaceDescription;
     Vector2D<uint32_t> size;
     PresentMode presentMode;
 };

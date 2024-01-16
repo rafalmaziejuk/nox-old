@@ -16,7 +16,7 @@ enum class ShaderType {
     MAX
 };
 
-struct ShaderDescriptor {
+struct ShaderDescription {
     ShaderType type;
 };
 

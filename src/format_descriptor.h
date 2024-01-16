@@ -7,17 +7,17 @@
 
 namespace nox {
 
-struct ImageFormatDescriptor {
+struct ImageFormatDescription {
     bool isColor{false};
     bool isDepth{false};
     bool isStencil{false};
     bool isDepthStencil{false};
 };
 
-using ImageFormatDescriptors = std::array<ImageFormatDescriptor, static_cast<size_t>(ImageFormat::MAX)>;
+using ImageFormatDescriptions = std::array<ImageFormatDescription, static_cast<size_t>(ImageFormat::MAX)>;
 
 // clang-format off
-inline constexpr ImageFormatDescriptors imageFormatDescriptors{{
+inline constexpr ImageFormatDescriptions imageFormatDescriptions{{
     {true , false, false, false}, // R8UI
     {true , false, false, false}, // R16UI
     {true , false, false, false}, // R32UI
@@ -84,9 +84,9 @@ inline constexpr ImageFormatDescriptors imageFormatDescriptors{{
 }};
 // clang-format on
 
-[[nodiscard]] inline ImageFormatDescriptor getImageFormatDescriptor(ImageFormat format) {
+[[nodiscard]] inline ImageFormatDescription getImageFormatDescription(ImageFormat format) {
     auto index = static_cast<size_t>(format);
-    return imageFormatDescriptors.at(index);
+    return imageFormatDescriptions.at(index);
 }
 
 enum class VertexAttributeDataType : uint8_t {
@@ -100,17 +100,17 @@ enum class VertexAttributeDataType : uint8_t {
     FLOAT
 };
 
-struct VertexAttributeFormatDescriptor {
+struct VertexAttributeFormatDescription {
     VertexAttributeDataType vertexAttributeDataType;
     uint8_t componentsCount{0u};
     uint8_t stride{0u};
     bool isNormalized{false};
 };
 
-using VertexAttributeFormatDescriptors = std::array<VertexAttributeFormatDescriptor, static_cast<size_t>(VertexAttributeFormat::MAX)>;
+using VertexAttributeFormatDescriptions = std::array<VertexAttributeFormatDescription, static_cast<size_t>(VertexAttributeFormat::MAX)>;
 
 // clang-format off
-inline constexpr VertexAttributeFormatDescriptors vertexAttributeFormatDescriptors{{
+inline constexpr VertexAttributeFormatDescriptions vertexAttributeFormatDescriptions{{
     {VertexAttributeDataType::UNSIGNED_BYTE , 1u, 1u * 1u, false}, // R8UI
     {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, false}, // R16UI
     {VertexAttributeDataType::UNSIGNED_INT  , 1u, 1u * 4u, false}, // R32UI
@@ -170,9 +170,9 @@ inline constexpr VertexAttributeFormatDescriptors vertexAttributeFormatDescripto
 }};
 // clang-format on
 
-[[nodiscard]] inline VertexAttributeFormatDescriptor getVertexAttributeFormatDescriptor(VertexAttributeFormat format) {
+[[nodiscard]] inline VertexAttributeFormatDescription getVertexAttributeFormatDescription(VertexAttributeFormat format) {
     auto index = static_cast<size_t>(format);
-    return vertexAttributeFormatDescriptors.at(index);
+    return vertexAttributeFormatDescriptions.at(index);
 }
 
 } // namespace nox

@@ -14,7 +14,7 @@ struct BufferUsage {
     };
 };
 
-struct BufferDescriptor {
+struct BufferDescription {
     uint32_t usage;
     uint32_t size;
     const void *data;
@@ -22,11 +22,11 @@ struct BufferDescriptor {
 
 using VertexAttributes = std::vector<VertexAttributeFormat>;
 
-struct VertexBufferDescriptor : BufferDescriptor {
+struct VertexBufferDescription : BufferDescription {
     VertexAttributes vertexAttributes;
 };
 
-struct IndexBufferDescriptor : BufferDescriptor {
+struct IndexBufferDescription : BufferDescription {
     VertexAttributeFormat format;
 };
 

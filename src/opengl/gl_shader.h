@@ -8,9 +8,9 @@ namespace nox {
 
 class GLShader final : public Shader {
   public:
-    [[nodiscard]] static bool validateInput(const ShaderDescriptor &descriptor, std::string_view source);
+    [[nodiscard]] static bool validateInput(const ShaderDescription &description, std::string_view source);
 
-    explicit GLShader(const ShaderDescriptor &descriptor);
+    explicit GLShader(const ShaderDescription &description);
     ~GLShader() override;
 
     ShaderType getType() const override { return m_type; }

@@ -20,19 +20,19 @@ using ClearColorValue = std::variant<Vector4D<float>, Vector4D<int32_t>, Vector4
 using ClearValue = std::variant<ClearColorValue, ClearDepthStencilValue>;
 using ClearValues = std::vector<ClearValue>;
 
-struct RenderPassBeginDescriptor {
+struct RenderPassBeginDescription {
     const RenderPass *renderPass;
     const Framebuffer *framebuffer;
     ClearValues clearValues;
 };
 
-struct CommandListDescriptor {};
+struct CommandListDescription {};
 
 class NOX_EXPORT CommandList {
   public:
     virtual void setViewport(const Viewport &viewport) = 0;
 
-    virtual void beginRenderPass(const RenderPassBeginDescriptor &descriptor) = 0;
+    virtual void beginRenderPass(const RenderPassBeginDescription &description) = 0;
     virtual void endRenderPass() = 0;
 
     virtual void draw(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;

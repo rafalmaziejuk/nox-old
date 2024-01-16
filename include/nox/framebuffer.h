@@ -12,7 +12,7 @@ namespace nox {
 
 using AttachmentsContainer = std::vector<const Texture *>;
 
-struct FramebufferDescriptor {
+struct FramebufferDescription {
     AttachmentsContainer attachments;
     const RenderPass *renderPass;
     Vector2D<uint32_t> size;

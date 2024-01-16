@@ -6,16 +6,16 @@ namespace nox {
 
 class GLRenderPass final : public RenderPass {
   public:
-    [[nodiscard]] static bool validateInput(const RenderPassDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const RenderPassDescription &description);
 
-    explicit GLRenderPass(const RenderPassDescriptor &descriptor);
+    explicit GLRenderPass(const RenderPassDescription &description);
 
-    const AttachmentsDescriptorsContainer &getAttachmentsDescriptors() const {
-        return m_attachmentsDescriptors;
+    const AttachmentsDescriptionsContainer &getAttachmentsDescriptions() const {
+        return m_attachmentsDescriptions;
     }
 
   private:
-    AttachmentsDescriptorsContainer m_attachmentsDescriptors{};
+    AttachmentsDescriptionsContainer m_attachmentsDescriptions{};
 };
 
 } // namespace nox

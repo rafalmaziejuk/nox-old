@@ -1,4 +1,4 @@
-#include "format_descriptor.h"
+#include "format_description.h"
 #include "nox_assert.h"
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_helper.h"
@@ -26,30 +26,30 @@ GLbitfield mapBufferUsageToBitfield(uint32_t usage) {
 
 } // namespace
 
-bool GLBuffer::validateInput(const BufferDescriptor &descriptor) {
+bool GLBuffer::validateInput(const BufferDescription &description) {
     bool result = true;
 
-    result &= (descriptor.size > 0u);
-    result &= (descriptor.data != nullptr);
+    result &= (description.size > 0u);
+    result &= (description.data != nullptr);
 
     return result;
 }
 
-GLBuffer::GLBuffer(const BufferDescriptor &descriptor, GLState &state) : GLWithState{state} {
-    auto flags = mapBufferUsageToBitfield(descriptor.usage);
+GLBuffer::GLBuffer(const BufferDescription &description, GLState &state) : GLWithState{state} {
+    auto flags = mapBufferUsageToBitfield(description.usage);
     glCreateBuffers(1, &m_handle);
-    glNamedBufferStorage(m_handle, descriptor.size, descriptor.data, flags);
+    glNamedBufferStorage(m_handle, description.size, description.data, flags);
 }
 
 GLBuffer::~GLBuffer() {
     glDeleteBuffers(1, &m_handle);
 }
 
-bool GLVertexBuffer::validateInput(const VertexBufferDescriptor &descriptor) {
+bool GLVertexBuffer::validateInput(const VertexBufferDescription &description) {
     bool result = true;
 
-    result &= GLBuffer::validateInput(descriptor);
-    result &= (!descriptor.vertexAttributes.empty());
+    result &= GLBuffer::validateInput(description);
+    result &= (!description.vertexAttributes.empty());
 
     return result;
 }
@@ -64,10 +64,10 @@ void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
     m_vertexArrayIndex = index;
 }
 
-bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
+bool GLIndexBuffer::validateInput(const IndexBufferDescription &description) {
     bool result = true;
 
-    result &= GLBuffer::validateInput(descriptor);
+    result &= GLBuffer::validateInput(description);
 
     return result;
 }
@@ -82,8 +82,8 @@ void GLIndexBuffer::bind() {
 }
 
 void GLIndexBuffer::setIndexType(VertexAttributeFormat format) {
-    auto descriptor = getVertexAttributeFormatDescriptor(format);
-    m_indexType = mapVertexAttributeDataTypeToEnum(descriptor.vertexAttributeDataType);
+    auto description = getVertexAttributeFormatDescription(format);
+    m_indexType = mapVertexAttributeDataTypeToEnum(description.vertexAttributeDataType);
 }
 
 } // namespace nox

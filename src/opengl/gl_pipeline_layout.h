@@ -4,14 +4,14 @@ namespace nox {
 
 class GLPipelineLayout final : public PipelineLayout {
   public:
-    [[nodiscard]] static bool validateInput(const PipelineLayoutDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const PipelineLayoutDescription &description);
 
-    explicit GLPipelineLayout(PipelineLayoutDescriptor &descriptor);
+    explicit GLPipelineLayout(PipelineLayoutDescription &description);
 
     void bind() const;
 
   private:
-    DescriptorSetLayoutBindings m_bindings;
+    DescriptionSetLayoutBindings m_bindings;
 };
 
 } // namespace nox

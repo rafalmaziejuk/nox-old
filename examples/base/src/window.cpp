@@ -33,17 +33,17 @@ void Window::processEvents() const {
     glfwPollEvents();
 }
 
-SurfaceBackendDescriptor Window::getSurfaceBackendDescriptor() const {
+SurfaceBackendDescription Window::getSurfaceBackendDescription() const {
 #if defined(WIN32)
-    WindowsSurfaceBackendDescriptor surfaceBackendDescriptor{};
-    surfaceBackendDescriptor.windowHandle = static_cast<void *>(glfwGetWin32Window(m_handle));
+    WindowsSurfaceBackendDescription surfaceBackendDescription{};
+    surfaceBackendDescription.windowHandle = static_cast<void *>(glfwGetWin32Window(m_handle));
 #elif defined(__linux__)
-    X11SurfaceBackendDescriptor surfaceBackendDescriptor{};
-    surfaceBackendDescriptor.displayHandle = static_cast<void *>(glfwGetX11Display());
-    surfaceBackendDescriptor.windowHandle = static_cast<uint64_t>(glfwGetX11Window(m_handle));
+    X11SurfaceBackendDescription surfaceBackendDescription{};
+    surfaceBackendDescription.displayHandle = static_cast<void *>(glfwGetX11Display());
+    surfaceBackendDescription.windowHandle = static_cast<uint64_t>(glfwGetX11Window(m_handle));
 #endif
 
-    return surfaceBackendDescriptor;
+    return surfaceBackendDescription;
 }
 
 Vector2D<uint32_t> Window::getSize() const {

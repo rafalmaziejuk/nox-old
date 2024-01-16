@@ -1,4 +1,4 @@
-#include "format_descriptor.h"
+#include "format_description.h"
 #include "nox_assert.h"
 #include "opengl/gl_helper.h"
 #include "opengl/gl_vertex_array.h"
@@ -14,18 +14,18 @@ GLVertexArray::GLVertexArray(const VertexAttributes &vertexAttributes) {
 
     for (size_t i = 0u; i < vertexAttributes.size(); i++) {
         const auto &vertexAttribute = vertexAttributes[i];
-        auto descriptor = getVertexAttributeFormatDescriptor(vertexAttribute);
+        auto description = getVertexAttributeFormatDescription(vertexAttribute);
         auto index = static_cast<GLuint>(i);
-        auto componentsCount = static_cast<GLint>(descriptor.componentsCount);
-        auto dataType = mapVertexAttributeDataTypeToEnum(descriptor.vertexAttributeDataType);
-        auto normalized = static_cast<GLboolean>(descriptor.isNormalized);
+        auto componentsCount = static_cast<GLint>(description.componentsCount);
+        auto dataType = mapVertexAttributeDataTypeToEnum(description.vertexAttributeDataType);
+        auto normalized = static_cast<GLboolean>(description.isNormalized);
         auto offset = m_stride;
 
         glEnableVertexArrayAttrib(m_handle, index);
         glVertexArrayAttribFormat(m_handle, index, componentsCount, dataType, normalized, offset);
         glVertexArrayAttribBinding(m_handle, index, m_currentBindingIndex);
 
-        m_stride += static_cast<GLuint>(descriptor.stride);
+        m_stride += static_cast<GLuint>(description.stride);
     }
 }
 

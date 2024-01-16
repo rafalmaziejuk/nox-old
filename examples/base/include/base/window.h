@@ -18,7 +18,7 @@ class Window {
     [[nodiscard]] bool shouldClose() const;
     void processEvents() const;
 
-    [[nodiscard]] SurfaceBackendDescriptor getSurfaceBackendDescriptor() const;
+    [[nodiscard]] SurfaceBackendDescription getSurfaceBackendDescription() const;
     [[nodiscard]] Vector2D<uint32_t> getSize() const;
 
   private:

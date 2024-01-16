@@ -41,7 +41,7 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
 
 } // namespace
 
-bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescriptor &descriptor) {
+bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescription &description) {
     auto validateShader = [](const Shader *shader) -> bool {
         if (shader == nullptr) {
             return false;
@@ -53,15 +53,15 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
     };
     bool result = true;
 
-    result &= (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
-    result &= (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE);
+    result &= (std::all_of(description.shaderStages.begin(), description.shaderStages.end(), validateShader));
+    result &= (mapPrimitiveTopologyToEnum(description.primitiveTopology) != GL_NONE);
 
     return result;
 }
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state} {
-    m_pipelineLayout = std::move(descriptor.pipelineLayout);
-    m_primitiveTopology = mapPrimitiveTopologyToEnum(descriptor.primitiveTopology);
+GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescription &description, GLState &state) : GLWithState{state} {
+    m_pipelineLayout = std::move(description.pipelineLayout);
+    m_primitiveTopology = mapPrimitiveTopologyToEnum(description.primitiveTopology);
 
     glCreateProgramPipelines(1, &m_handle);
 }

@@ -2,14 +2,14 @@
 
 namespace nox {
 
-bool GLRenderPass::validateInput(const RenderPassDescriptor &descriptor) {
+bool GLRenderPass::validateInput(const RenderPassDescription &description) {
     bool result = true;
 
-    result &= (!descriptor.attachmentsDescriptors.empty());
+    result &= (!description.attachmentsDescriptions.empty());
 
     return result;
 }
 
-GLRenderPass::GLRenderPass(const RenderPassDescriptor &descriptor) : m_attachmentsDescriptors{descriptor.attachmentsDescriptors} {}
+GLRenderPass::GLRenderPass(const RenderPassDescription &description) : m_attachmentsDescriptions{description.attachmentsDescriptions} {}
 
 } // namespace nox

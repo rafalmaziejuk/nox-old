@@ -12,7 +12,7 @@ using AttachmentsPointsContainer = std::vector<AttachmentPoint>;
 
 class GLFramebuffer : public Framebuffer {
   public:
-    [[nodiscard]] static bool validateInput(const FramebufferDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const FramebufferDescription &description);
     [[nodiscard]] static bool isDefaultFramebuffer(const AttachmentsContainer &attachments);
 
   public:
@@ -36,7 +36,7 @@ class GLFramebuffer : public Framebuffer {
 
 class GLFramebufferWithAttachments final : public GLFramebuffer {
   public:
-    explicit GLFramebufferWithAttachments(const FramebufferDescriptor &descriptor);
+    explicit GLFramebufferWithAttachments(const FramebufferDescription &description);
 
   private:
     void attachColorAttachments(const AttachmentsContainer &attachments);

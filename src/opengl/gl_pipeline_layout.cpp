@@ -3,21 +3,21 @@
 
 namespace nox {
 
-bool GLPipelineLayout::validateInput(const PipelineLayoutDescriptor &descriptor) {
+bool GLPipelineLayout::validateInput(const PipelineLayoutDescription &description) {
     bool result = true;
 
-    for (const auto &layout : descriptor.setLayouts) {
+    for (const auto &layout : description.setLayouts) {
         result &= (!layout.bindings.empty());
 
         for (const auto &binding : layout.bindings) {
-            result &= (!binding.textureResourceDescriptors.empty());
+            result &= (!binding.textureResourceDescriptions.empty());
 
             if (result) {
-                if (!binding.textureResourceDescriptors.empty()) {
+                if (!binding.textureResourceDescriptions.empty()) {
                     result &= (binding.resourceType == ResourceType::TEXTURE);
 
-                    for (const auto &resourceDescriptor : binding.textureResourceDescriptors) {
-                        result &= (resourceDescriptor.texture != nullptr);
+                    for (const auto &resourceDescription : binding.textureResourceDescriptions) {
+                        result &= (resourceDescription.texture != nullptr);
                     }
                 }
             }
@@ -27,8 +27,8 @@ bool GLPipelineLayout::validateInput(const PipelineLayoutDescriptor &descriptor)
     return result;
 }
 
-GLPipelineLayout::GLPipelineLayout(PipelineLayoutDescriptor &descriptor) {
-    for (const auto &layout : descriptor.setLayouts) {
+GLPipelineLayout::GLPipelineLayout(PipelineLayoutDescription &description) {
+    for (const auto &layout : description.setLayouts) {
         m_bindings.reserve(layout.bindings.size());
         m_bindings.insert(m_bindings.end(), layout.bindings.begin(), layout.bindings.end());
     }
@@ -39,8 +39,8 @@ void GLPipelineLayout::bind() const {
 
     for (const auto &binding : m_bindings) {
         if (binding.resourceType == ResourceType::TEXTURE) {
-            for (const auto &textureResourceDescriptor : binding.textureResourceDescriptors) {
-                const auto *glTexture = static_cast<const GLTexture *>(textureResourceDescriptor.texture.get());
+            for (const auto &textureResourceDescription : binding.textureResourceDescriptions) {
+                const auto *glTexture = static_cast<const GLTexture *>(textureResourceDescription.texture.get());
                 glTexture->bind(static_cast<uint32_t>(currentTextureResourceBindingIndex));
                 currentTextureResourceBindingIndex++;
             }

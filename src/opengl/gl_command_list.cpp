@@ -10,17 +10,17 @@
 
 namespace nox {
 
-bool GLCommandList::validateInput(const RenderPassBeginDescriptor &descriptor) {
+bool GLCommandList::validateInput(const RenderPassBeginDescription &description) {
     bool result = true;
 
-    result &= (descriptor.framebuffer != nullptr);
-    result &= (descriptor.renderPass != nullptr);
-    result &= (!descriptor.clearValues.empty());
+    result &= (description.framebuffer != nullptr);
+    result &= (description.renderPass != nullptr);
+    result &= (!description.clearValues.empty());
 
     return result;
 }
 
-GLCommandList::GLCommandList([[maybe_unused]] const CommandListDescriptor &descriptor,
+GLCommandList::GLCommandList([[maybe_unused]] const CommandListDescription &description,
                              GLState &state) : GLWithState{state} {}
 
 void GLCommandList::setViewport(const Viewport &viewport) {
@@ -32,12 +32,12 @@ void GLCommandList::setViewport(const Viewport &viewport) {
     glDepthRangef(viewport.nearClip, viewport.farClip);
 }
 
-void GLCommandList::beginRenderPass(const RenderPassBeginDescriptor &descriptor) {
-    NOX_ASSERT(validateInput(descriptor));
+void GLCommandList::beginRenderPass(const RenderPassBeginDescription &description) {
+    NOX_ASSERT(validateInput(description));
 
-    const auto *glFramebuffer = static_cast<const GLFramebuffer *>(descriptor.framebuffer);
+    const auto *glFramebuffer = static_cast<const GLFramebuffer *>(description.framebuffer);
     glFramebuffer->bind();
-    glFramebuffer->clearAttachments(descriptor.clearValues, descriptor.renderPass);
+    glFramebuffer->clearAttachments(description.clearValues, description.renderPass);
 }
 
 void GLCommandList::endRenderPass() {}

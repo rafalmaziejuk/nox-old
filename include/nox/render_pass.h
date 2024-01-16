@@ -18,15 +18,15 @@ enum class AttachmentStoreOp {
     DONT_CARE
 };
 
-struct AttachmentDescriptor {
+struct AttachmentDescription {
     ImageFormat format;
     AttachmentLoadOp loadOp;
     AttachmentStoreOp storeOp;
 };
-using AttachmentsDescriptorsContainer = std::vector<AttachmentDescriptor>;
+using AttachmentsDescriptionsContainer = std::vector<AttachmentDescription>;
 
-struct RenderPassDescriptor {
-    AttachmentsDescriptorsContainer attachmentsDescriptors;
+struct RenderPassDescription {
+    AttachmentsDescriptionsContainer attachmentsDescriptions;
 };
 
 class NOX_EXPORT RenderPass {

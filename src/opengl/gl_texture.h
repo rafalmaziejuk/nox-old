@@ -6,7 +6,7 @@ namespace nox {
 
 class GLTexture : public Texture {
   public:
-    GLTexture(const TextureDescriptor &descriptor, TextureType type);
+    GLTexture(const TextureDescription &description, TextureType type);
     ~GLTexture() override;
 
     TextureType getType() const override;
@@ -24,11 +24,11 @@ class GLTexture : public Texture {
 
 class GLTexture2D final : public GLTexture {
   public:
-    [[nodiscard]] static bool validateInput(const Texture2DDescriptor &descriptor);
+    [[nodiscard]] static bool validateInput(const Texture2DDescription &description);
 
-    GLTexture2D(const Texture2DDescriptor &descriptor);
+    GLTexture2D(const Texture2DDescription &description);
 
-    void write(const TextureWriteDescriptor &descriptor) override;
+    void write(const TextureWriteDescription &description) override;
 
     [[nodiscard]] bool isPresentable() const { return m_isPresentable; }
     void setPresentable() { m_isPresentable = true; }
