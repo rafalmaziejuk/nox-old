@@ -1,7 +1,9 @@
 #include "nox_assert.h"
+#include "opengl/gl_framebuffer.h"
 #include "opengl/gl_graphics_pipeline_state.h"
 #include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_program.h"
+#include "opengl/gl_render_pass.h"
 #include "opengl/gl_shader.h"
 
 #include <glad/gl.h>
@@ -53,16 +55,18 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
     };
     bool result = true;
 
+    result &= (descriptor.pipelineLayout != nullptr);
+    result &= (descriptor.renderPass != nullptr);
     result &= (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
     result &= (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE);
 
     return result;
 }
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state} {
-    m_pipelineLayout = std::move(descriptor.pipelineLayout);
-    m_primitiveTopology = mapPrimitiveTopologyToEnum(descriptor.primitiveTopology);
-
+GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state},
+                                                                                                                m_pipelineLayout{std::move(descriptor.pipelineLayout)},
+                                                                                                                m_subpassIndex{descriptor.subpassIndex},
+                                                                                                                m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
     glCreateProgramPipelines(1, &m_handle);
 }
 
@@ -71,11 +75,16 @@ GLGraphicsPipelineState::~GLGraphicsPipelineState() {
 }
 
 void GLGraphicsPipelineState::bind() {
-    auto &state = getState();
-    state.primitiveTopology = m_primitiveTopology;
+    NOX_ASSERT(state->currentFramebuffer != nullptr);
+    NOX_ASSERT(state->currentRenderPass != nullptr);
+
+    state->primitiveTopology = m_primitiveTopology;
 
     const auto *glPipelineLayout = static_cast<const GLPipelineLayout *>(m_pipelineLayout.get());
     glPipelineLayout->bind();
+
+    const auto &subpassDescriptor = state->currentRenderPass->getSubpassDescriptor(m_subpassIndex);
+    state->currentFramebuffer->bindAttachments(subpassDescriptor, *glPipelineLayout);
 
     glBindProgramPipeline(m_handle);
 }

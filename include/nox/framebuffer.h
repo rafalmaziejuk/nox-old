@@ -10,10 +10,10 @@
 
 namespace nox {
 
-using AttachmentsContainer = std::vector<const Texture *>;
+using Attachments = std::vector<const Texture *>;
 
 struct FramebufferDescriptor {
-    AttachmentsContainer attachments;
+    Attachments attachments;
     const RenderPass *renderPass;
     Vector2D<uint32_t> size;
 };

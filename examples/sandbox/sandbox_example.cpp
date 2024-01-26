@@ -140,15 +140,27 @@ void SandboxExample::createTexture() {
 }
 
 void SandboxExample::createRenderPass() {
+    RenderPassDescriptor renderPassDescriptor{};
+
     AttachmentDescriptor attachmentDescriptor{};
     attachmentDescriptor.format = m_swapchain->getSurfaceFormat();
     attachmentDescriptor.loadOp = AttachmentLoadOp::CLEAR;
     attachmentDescriptor.storeOp = AttachmentStoreOp::STORE;
-
-    RenderPassDescriptor renderPassDescriptor{};
-    renderPassDescriptor.attachmentsDescriptors = {
+    renderPassDescriptor.attachmentDescriptors = {
         {attachmentDescriptor},
     };
+
+    AttachmentReference attachmentReference{};
+    attachmentReference.index = 0u;
+
+    SubpassDescriptor subpassDescriptor{};
+    subpassDescriptor.colorAttachmentReferences = {
+        attachmentReference,
+    };
+    renderPassDescriptor.subpassDescriptors = {
+        subpassDescriptor,
+    };
+
     m_renderPass = m_renderer->createRenderPass(renderPassDescriptor);
 }
 
@@ -163,6 +175,19 @@ void SandboxExample::createFramebuffer() {
 void SandboxExample::createGraphicsPipelineState() {
     GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
     graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
+
+    ShaderDescriptor vertexShaderDescriptor{};
+    vertexShaderDescriptor.type = ShaderType::VERTEX;
+    auto vertexShader = m_renderer->createShader(vertexShaderDescriptor, triangleVertexShaderSource);
+
+    ShaderDescriptor fragmentShaderDescriptor{};
+    fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
+    auto fragmentShader = m_renderer->createShader(fragmentShaderDescriptor, triangleFragmentShaderSource);
+
+    graphicsPipelineStateDescriptor.shaderStages = {
+        vertexShader.get(),
+        fragmentShader.get(),
+    };
 
     DescriptorSetLayoutBinding descriptorSetLayoutBinding{};
     descriptorSetLayoutBinding.bindingIndex = 0u;
@@ -182,18 +207,8 @@ void SandboxExample::createGraphicsPipelineState() {
     };
     graphicsPipelineStateDescriptor.pipelineLayout = m_renderer->createPipelineLayout(pipelineLayoutDescriptor);
 
-    ShaderDescriptor vertexShaderDescriptor{};
-    vertexShaderDescriptor.type = ShaderType::VERTEX;
-    auto vertexShader = m_renderer->createShader(vertexShaderDescriptor, triangleVertexShaderSource);
-
-    ShaderDescriptor fragmentShaderDescriptor{};
-    fragmentShaderDescriptor.type = ShaderType::FRAGMENT;
-    auto fragmentShader = m_renderer->createShader(fragmentShaderDescriptor, triangleFragmentShaderSource);
-
-    graphicsPipelineStateDescriptor.shaderStages = {
-        vertexShader.get(),
-        fragmentShader.get(),
-    };
+    graphicsPipelineStateDescriptor.renderPass = m_renderPass.get();
+    graphicsPipelineStateDescriptor.subpassIndex = 0u;
 
     m_graphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);
 }
