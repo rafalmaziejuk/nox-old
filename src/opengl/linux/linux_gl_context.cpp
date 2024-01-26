@@ -74,7 +74,7 @@ bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descrip
 
     eglBindAPI(EGL_OPENGL_API);
 
-    std::array<int32_t, 13> framebufferConfigAttributes{EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+    std::array<int32_t, 15> framebufferConfigAttributes{EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                                         EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
                                                         EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
                                                         EGL_BUFFER_SIZE, descriptor.pixelFormatDescriptor.colorBits,

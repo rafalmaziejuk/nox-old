@@ -2,8 +2,10 @@
 
 #include <nox/export.h>
 #include <nox/pipeline_layout.h>
+#include <nox/render_pass.h>
 #include <nox/shader.h>
 
+#include <cstdint>
 #include <vector>
 
 namespace nox {
@@ -17,6 +19,8 @@ enum class PrimitiveTopology {
 struct GraphicsPipelineStateDescriptor {
     ShaderStages shaderStages;
     std::unique_ptr<PipelineLayout> pipelineLayout;
+    const RenderPass *renderPass;
+    uint32_t subpassIndex;
     PrimitiveTopology primitiveTopology;
 };
 

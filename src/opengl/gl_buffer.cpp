@@ -55,7 +55,7 @@ bool GLVertexBuffer::validateInput(const VertexBufferDescriptor &descriptor) {
 }
 
 void GLVertexBuffer::bind() {
-    auto &vertexArrayRegistry = getState().vertexArrayRegistry;
+    auto &vertexArrayRegistry = state->vertexArrayRegistry;
     vertexArrayRegistry[m_vertexArrayIndex].bind();
     vertexArrayRegistry.setBoundVertexArrayIndex(m_vertexArrayIndex);
 }
@@ -73,10 +73,9 @@ bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
 }
 
 void GLIndexBuffer::bind() {
-    auto &state = getState();
-    state.indexType = m_indexType;
+    state->indexType = m_indexType;
 
-    auto &vertexArrayRegistry = state.vertexArrayRegistry;
+    auto &vertexArrayRegistry = state->vertexArrayRegistry;
     auto &vertexArray = vertexArrayRegistry[vertexArrayRegistry.getBoundVertexArrayIndex()];
     vertexArray.setIndexBuffer(getHandle());
 }

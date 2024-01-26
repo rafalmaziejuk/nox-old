@@ -4,26 +4,26 @@
 
 namespace nox {
 
+class GLFramebuffer;
+class GLRenderPass;
+
 struct GLState {
     GLVertexArrayRegistry vertexArrayRegistry;
+    const GLFramebuffer *currentFramebuffer{nullptr};
+    const GLRenderPass *currentRenderPass{nullptr};
 
     uint32_t indexType;
     uint32_t primitiveTopology;
 };
 
-class GLWithState {
-  public:
-    explicit GLWithState(GLState &state) : m_state{&state} {}
+struct GLWithState {
+    explicit GLWithState(GLState &state) : state{&state} {}
     virtual ~GLWithState() = default;
 
-    GLState &getState() const { return *m_state; }
-
-  public:
     GLWithState(const GLWithState &) = delete;
     GLWithState &operator=(const GLWithState &) = delete;
 
-  private:
-    GLState *m_state{nullptr};
+    GLState *state{nullptr};
 };
 
 } // namespace nox

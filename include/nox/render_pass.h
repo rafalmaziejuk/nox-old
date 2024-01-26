@@ -3,6 +3,7 @@
 #include <nox/export.h>
 #include <nox/format.h>
 
+#include <cstdint>
 #include <vector>
 
 namespace nox {
@@ -23,10 +24,23 @@ struct AttachmentDescriptor {
     AttachmentLoadOp loadOp;
     AttachmentStoreOp storeOp;
 };
-using AttachmentsDescriptorsContainer = std::vector<AttachmentDescriptor>;
+using AttachmentDescriptors = std::vector<AttachmentDescriptor>;
+
+struct AttachmentReference {
+    uint32_t index;
+};
+using ColorAttachmentReferences = std::vector<AttachmentReference>;
+using DepthStencilAttachmentReference = AttachmentReference;
+
+struct SubpassDescriptor {
+    ColorAttachmentReferences colorAttachmentReferences;
+    DepthStencilAttachmentReference depthStencilAttachmentReference;
+};
+using SubpassDescriptors = std::vector<SubpassDescriptor>;
 
 struct RenderPassDescriptor {
-    AttachmentsDescriptorsContainer attachmentsDescriptors;
+    AttachmentDescriptors attachmentDescriptors;
+    SubpassDescriptors subpassDescriptors;
 };
 
 class NOX_EXPORT RenderPass {

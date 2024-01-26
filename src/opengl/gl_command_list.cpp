@@ -36,22 +36,31 @@ void GLCommandList::beginRenderPass(const RenderPassBeginDescriptor &descriptor)
     NOX_ASSERT(validateInput(descriptor));
 
     const auto *glFramebuffer = static_cast<const GLFramebuffer *>(descriptor.framebuffer);
+    const auto *glRenderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
+    state->currentFramebuffer = glFramebuffer;
+    state->currentRenderPass = glRenderPass;
+
+    const auto &attachmentDescriptors = glRenderPass->getAttachmentDescriptors();
     glFramebuffer->bind();
-    glFramebuffer->clearAttachments(descriptor.clearValues, descriptor.renderPass);
+    glFramebuffer->clearAttachments(descriptor.clearValues, attachmentDescriptors);
+    glFramebuffer->invalidateAttachments(attachmentDescriptors);
 }
 
-void GLCommandList::endRenderPass() {}
+void GLCommandList::endRenderPass() {
+    state->currentFramebuffer = nullptr;
+    state->currentRenderPass = nullptr;
+}
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
-    glDrawArrays(getState().primitiveTopology,
+    glDrawArrays(state->primitiveTopology,
                  static_cast<GLint>(firstVertexIndex),
                  static_cast<GLsizei>(vertexCount));
 }
 
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
-    glDrawElements(getState().primitiveTopology,
+    glDrawElements(state->primitiveTopology,
                    static_cast<GLsizei>(vertexCount),
-                   getState().indexType,
+                   state->indexType,
                    nullptr);
 }
 

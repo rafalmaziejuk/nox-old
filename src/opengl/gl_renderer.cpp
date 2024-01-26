@@ -93,11 +93,11 @@ std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescrip
 std::unique_ptr<Framebuffer> GLRenderer::createFramebuffer(const FramebufferDescriptor &descriptor) {
     NOX_ASSERT(GLFramebuffer::validateInput(descriptor));
 
-    std::unique_ptr<GLFramebuffer> framebuffer{nullptr};
-    if (GLFramebuffer::isDefaultFramebuffer(descriptor.attachments)) {
+    std::unique_ptr<GLFramebufferBase> framebuffer{nullptr};
+    if (GLFramebufferBase::isDefaultFramebuffer(descriptor.attachments)) {
         framebuffer = std::make_unique<GLDefaultFramebuffer>();
     } else {
-        framebuffer = std::make_unique<GLFramebufferWithAttachments>(descriptor);
+        framebuffer = std::make_unique<GLFramebuffer>(descriptor);
     }
 
     NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer->validate(), "Framebuffer isn't valid");
