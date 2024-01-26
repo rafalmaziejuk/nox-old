@@ -43,21 +43,21 @@ struct Vector {
     bool operator==(const Vector<Type, componentsCount> &other) const { return (values == other.values); }
     bool operator!=(const Vector<Type, componentsCount> &other) const { return (values != other.values); }
 
-    Type x() const { return values[0]; }
-    Type y() const { return values[1]; }
-    Type z() const {
+    constexpr Type x() const { return values[0]; }
+    constexpr Type y() const { return values[1]; }
+    constexpr Type z() const {
         static_assert(componentsCount >= 3u && componentsCount <= 4u);
         return values[2];
     }
-    Type w() const {
+    constexpr Type w() const {
         static_assert(componentsCount == 4u);
         return values[3];
     }
 
-    Type r() const { return x(); }
-    Type g() const { return y(); }
-    Type b() const { return z(); }
-    Type a() const { return w(); }
+    constexpr Type r() const { return x(); }
+    constexpr Type g() const { return y(); }
+    constexpr Type b() const { return z(); }
+    constexpr Type a() const { return w(); }
 
     std::array<Type, componentsCount> values{};
 };
