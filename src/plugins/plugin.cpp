@@ -33,7 +33,9 @@ std::string createPluginFilename(std::string_view name, std::string_view extensi
     constexpr auto infix = "nox-";
     constexpr auto postfix = (usePostfix ? "-d" : "");
     auto toLower = [](std::string str) {
-        std::transform(str.begin(), str.end(), str.begin(), [](unsigned char c) { return static_cast<char>(std::tolower(c)); });
+        std::transform(str.begin(), str.end(), str.begin(), [](auto c) {
+            return static_cast<char>(std::tolower(c));
+        });
         return str;
     };
 

@@ -5,7 +5,6 @@
 #include <nox/framebuffer.h>
 #include <nox/export.h>
 #include <nox/graphics_pipeline_state.h>
-#include <nox/pipeline_layout.h>
 #include <nox/render_pass.h>
 #include <nox/shader.h>
 #include <nox/swapchain.h>
@@ -39,8 +38,6 @@ class NOX_EXPORT Renderer {
     [[nodiscard]] virtual std::unique_ptr<Buffer> createIndexBuffer(const IndexBufferDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) = 0;
-
-    [[nodiscard]] virtual std::unique_ptr<PipelineLayout> createPipelineLayout(PipelineLayoutDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) = 0;
 

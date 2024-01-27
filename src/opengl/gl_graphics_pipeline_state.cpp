@@ -1,8 +1,6 @@
 #include "asserts.h"
 #include "opengl/gl_framebuffer.h"
 #include "opengl/gl_graphics_pipeline_state.h"
-#include "opengl/gl_pipeline_layout.h"
-#include "opengl/gl_program.h"
 #include "opengl/gl_render_pass.h"
 #include "opengl/gl_shader.h"
 
@@ -50,12 +48,11 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
         }
 
         const auto &glShader = static_cast<const GLShader *>(shader);
-
         return (mapShaderTypeToBitfield(glShader->getType()) != GL_NONE);
     };
     bool result = true;
 
-    result &= (descriptor.pipelineLayout != nullptr);
+    result &= (GLPipelineLayout::validateInput(descriptor.pipelineLayoutDescriptor));
     result &= (descriptor.renderPass != nullptr);
     result &= (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
     result &= (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE);
@@ -64,7 +61,7 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
 }
 
 GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state},
-                                                                                                                m_pipelineLayout{std::move(descriptor.pipelineLayout)},
+                                                                                                                m_pipelineLayout{descriptor.pipelineLayoutDescriptor},
                                                                                                                 m_subpassIndex{descriptor.subpassIndex},
                                                                                                                 m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
     glCreateProgramPipelines(1, &m_handle);
@@ -75,16 +72,28 @@ GLGraphicsPipelineState::~GLGraphicsPipelineState() {
 }
 
 void GLGraphicsPipelineState::bind() {
-    NOX_ASSERT(state->currentFramebuffer != nullptr);
     NOX_ASSERT(state->currentRenderPass != nullptr);
+    NOX_ASSERT(state->currentFramebuffer != nullptr);
 
     state->primitiveTopology = m_primitiveTopology;
 
-    const auto *glPipelineLayout = static_cast<const GLPipelineLayout *>(m_pipelineLayout.get());
-    glPipelineLayout->bind();
+    const auto *currentRenderPass = state->currentRenderPass;
+    const auto *currentFramebuffer = state->currentFramebuffer;
+    const auto &subpassDescriptor = currentRenderPass->getSubpassDescriptor(m_subpassIndex);
+    const auto &inputAttachmentReferences = subpassDescriptor.inputAttachmentReferences;
+    const auto &colorAttachmentReferences = subpassDescriptor.colorAttachmentReferences;
+    const auto &depthStencilAttachmentReference = subpassDescriptor.depthStencilAttachmentReference;
 
-    const auto &subpassDescriptor = state->currentRenderPass->getSubpassDescriptor(m_subpassIndex);
-    state->currentFramebuffer->bindAttachments(subpassDescriptor, *glPipelineLayout);
+    NOX_ASSERT(currentFramebuffer->validateInputAttachments(inputAttachmentReferences,
+                                                            m_pipelineLayout));
+
+    NOX_ASSERT(currentFramebuffer->validateDepthStencilAttachment(depthStencilAttachmentReference,
+                                                                  m_pipelineLayout));
+
+    currentFramebuffer->bindColorAttachments(colorAttachmentReferences);
+    for (const auto &binding : m_pipelineLayout) {
+        binding->bind();
+    }
 
     glBindProgramPipeline(m_handle);
 }

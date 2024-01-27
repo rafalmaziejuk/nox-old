@@ -27,12 +27,16 @@ struct AttachmentDescriptor {
 using AttachmentDescriptors = std::vector<AttachmentDescriptor>;
 
 struct AttachmentReference {
-    uint32_t index;
+    static constexpr auto attachmentUnused = ~0u;
+
+    uint32_t index{attachmentUnused};
 };
+using InputAttachmentReferences = std::vector<AttachmentReference>;
 using ColorAttachmentReferences = std::vector<AttachmentReference>;
 using DepthStencilAttachmentReference = AttachmentReference;
 
 struct SubpassDescriptor {
+    InputAttachmentReferences inputAttachmentReferences;
     ColorAttachmentReferences colorAttachmentReferences;
     DepthStencilAttachmentReference depthStencilAttachmentReference;
 };

@@ -6,6 +6,7 @@ bool GLRenderPass::validateInput(const RenderPassDescriptor &descriptor) {
     bool result = true;
 
     result &= (!descriptor.attachmentDescriptors.empty());
+    result &= (!descriptor.subpassDescriptors.empty());
 
     return result;
 }

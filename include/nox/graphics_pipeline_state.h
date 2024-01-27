@@ -18,7 +18,7 @@ enum class PrimitiveTopology {
 
 struct GraphicsPipelineStateDescriptor {
     ShaderStages shaderStages;
-    std::unique_ptr<PipelineLayout> pipelineLayout;
+    PipelineLayoutDescriptor pipelineLayoutDescriptor;
     const RenderPass *renderPass;
     uint32_t subpassIndex;
     PrimitiveTopology primitiveTopology;

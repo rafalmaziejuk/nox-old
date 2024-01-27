@@ -201,11 +201,9 @@ void SandboxExample::createGraphicsPipelineState() {
         descriptorSetLayoutBinding,
     };
 
-    PipelineLayoutDescriptor pipelineLayoutDescriptor{};
-    pipelineLayoutDescriptor.setLayouts = {
+    graphicsPipelineStateDescriptor.pipelineLayoutDescriptor.setLayouts = {
         descriptorSetLayout,
     };
-    graphicsPipelineStateDescriptor.pipelineLayout = m_renderer->createPipelineLayout(pipelineLayoutDescriptor);
 
     graphicsPipelineStateDescriptor.renderPass = m_renderPass.get();
     graphicsPipelineStateDescriptor.subpassIndex = 0u;

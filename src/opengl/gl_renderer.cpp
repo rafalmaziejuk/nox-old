@@ -58,12 +58,6 @@ std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descrip
     return shader;
 }
 
-std::unique_ptr<PipelineLayout> GLRenderer::createPipelineLayout(PipelineLayoutDescriptor &descriptor) {
-    NOX_ASSERT(GLPipelineLayout::validateInput(descriptor));
-
-    return std::make_unique<GLPipelineLayout>(descriptor);
-}
-
 std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) {
     NOX_ASSERT(GLGraphicsPipelineState::validateInput(descriptor));
 
