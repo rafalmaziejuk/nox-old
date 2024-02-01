@@ -1,4 +1,4 @@
-#include "nox_assert.h"
+#include "asserts.h"
 #include "opengl/windows/windows_gl_context.h"
 
 #include <glad/wgl.h>

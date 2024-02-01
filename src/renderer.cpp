@@ -1,4 +1,4 @@
-#include "nox_assert.h"
+#include "asserts.h"
 #include "renderer_factory_registry.h"
 
 #include <nox/renderer.h>

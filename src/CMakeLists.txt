@@ -32,8 +32,12 @@ target_compile_options(
 target_compile_definitions(
     ${NOX_LIB_NAME}
     PRIVATE
-    # Platform specific definitions
+    # Windows specific definitions
     $<$<PLATFORM_ID:Windows>: WIN32_LEAN_AND_MEAN>
+    $<$<PLATFORM_ID:Windows>: NOX_WINDOWS>
+
+    #Linux specific definitions
+    $<$<PLATFORM_ID:Linux>: NOX_LINUX>
 
     # Compiler specific definitions
     $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>: NOX_USE_PLUGIN_PREFIX>
@@ -77,8 +81,9 @@ generate_export_header(
 # --------------------------------------------------
 set(NOX_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/asserts.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/asserts.h
     ${CMAKE_CURRENT_SOURCE_DIR}/format_descriptor.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/nox_assert.h
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/renderer_factory_registry.h
