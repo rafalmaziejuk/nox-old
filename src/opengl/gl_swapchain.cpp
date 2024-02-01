@@ -1,4 +1,4 @@
-#include "nox_assert.h"
+#include "asserts.h"
 #include "opengl/gl_context.h"
 #include "opengl/gl_swapchain.h"
 

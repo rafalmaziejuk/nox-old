@@ -1,4 +1,4 @@
-#include "nox_assert.h"
+#include "asserts.h"
 #include "plugins/linux/linux_dynamic_plugin.h"
 
 #include <dlfcn.h>

@@ -1,4 +1,4 @@
-#include "nox_assert.h"
+#include "asserts.h"
 #include "opengl/linux/linux_gl_context.h"
 #include "opengl/linux/x11_gl_context.h"
 

@@ -1,5 +1,5 @@
+#include "asserts.h"
 #include "format_descriptor.h"
-#include "nox_assert.h"
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_helper.h"
 

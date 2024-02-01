@@ -1,7 +1,7 @@
 #pragma once
 
+#include "asserts.h"
 #include "format_descriptor.h"
-#include "nox_assert.h"
 
 #include <glad/gl.h>
 
