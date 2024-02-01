@@ -1,4 +1,4 @@
-#include "nox_assert.h"
+#include "asserts.h"
 #include "plugins/windows/windows_dynamic_plugin.h"
 
 namespace nox {

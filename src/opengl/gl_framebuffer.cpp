@@ -1,5 +1,5 @@
+#include "asserts.h"
 #include "format_descriptor.h"
-#include "nox_assert.h"
 #include "opengl/gl_framebuffer.h"
 #include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_render_pass.h"
