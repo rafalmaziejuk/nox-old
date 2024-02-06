@@ -2,10 +2,10 @@
 
 namespace nox {
 
-inline bool debugBreakEnabled = true;
-
-void setDebugBreakEnabled(bool value);
-[[nodiscard]] bool isDebugBreakEnabled();
+[[nodiscard]] inline bool &getDebugBreakEnabled() {
+    static bool debugBreakEnabled = true;
+    return debugBreakEnabled;
+}
 
 } // namespace nox
 
@@ -22,7 +22,7 @@ void setDebugBreakEnabled(bool value);
     #define NOX_ASSERT(condition) (void)(0)
 #else
     #define NOX_ASSERT(condition)                      \
-        if (!(condition) && (isDebugBreakEnabled())) { \
+        if (!(condition) && (getDebugBreakEnabled())) { \
             NOX_DEBUG_BREAK();                         \
         }
 #endif

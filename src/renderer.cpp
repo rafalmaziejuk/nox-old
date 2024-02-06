@@ -6,12 +6,14 @@
 namespace nox {
 
 RendererPtr Renderer::create(RendererBackend backend) {
-    NOX_ENSURE_RETURN_NULLPTR_MSG(RendererFactoryRegistry::loadRendererPlugin(backend), "Couldn't load renderer plugin");
+    auto &registry = RendererFactoryRegistry::instance();
+    NOX_ENSURE_RETURN_NULLPTR(registry.initialize(backend));
 
-    auto renderer = RendererFactoryRegistry::createRenderer();
+    const auto &[createRenderer, destroyRenderer] = registry.getFactory(backend);
+    auto *renderer = createRenderer();
     NOX_ASSERT_MSG(renderer != nullptr, "Couldn't create renderer");
 
-    return renderer;
+    return {renderer, destroyRenderer};
 }
 
 } // namespace nox
