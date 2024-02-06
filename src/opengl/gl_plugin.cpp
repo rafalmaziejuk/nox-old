@@ -14,7 +14,8 @@ NOX_PLUGIN_REGISTER(OPENGL) {
         renderer = nullptr;
     };
 
-    nox::RendererFactoryRegistry::initializeFactory(nox::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
+    auto &registry = nox::RendererFactoryRegistry::instance();
+    registry.registerFactory(nox::RendererBackend::OPENGL, {createRenderer, destroyRenderer});
 
     return true;
 }
