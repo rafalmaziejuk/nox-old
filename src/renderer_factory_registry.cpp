@@ -22,15 +22,29 @@ std::unique_ptr<Plugin> createRendererPlugin(RendererBackend backend) {
     return nullptr;
 }
 
-std::optional<RendererFactory> rendererFactory{};
-std::unique_ptr<Plugin> rendererPlugin{nullptr};
-RendererBackend rendererBackend{RendererBackend::NONE};
-
 } // namespace
 
-bool RendererFactoryRegistry::loadRendererPlugin(RendererBackend backend) {
-    if (rendererFactory.has_value()) {
-        NOX_ENSURE_RETURN_FALSE_MSG(backend == rendererBackend, "Creation of different API renderers isn't allowed");
+struct RendererFactoryRegistry::Impl {
+    std::optional<RendererFactory> rendererFactory{};
+    std::unique_ptr<Plugin> rendererPlugin{nullptr};
+    RendererBackend rendererBackend{RendererBackend::NONE};
+};
+
+RendererFactoryRegistry::RendererFactoryRegistry() : m_impl{new Impl} {}
+
+RendererFactoryRegistry::~RendererFactoryRegistry() {
+    delete m_impl;
+    m_impl = nullptr;
+}
+
+RendererFactoryRegistry &RendererFactoryRegistry::instance() {
+    static RendererFactoryRegistry instance{};
+    return instance;
+}
+
+bool RendererFactoryRegistry::initialize(RendererBackend backend) {
+    if (m_impl->rendererFactory.has_value()) {
+        NOX_ENSURE_RETURN_FALSE_MSG(backend == m_impl->rendererBackend, "Creation of different API renderers isn't allowed");
         return true;
     }
 
@@ -38,22 +52,22 @@ bool RendererFactoryRegistry::loadRendererPlugin(RendererBackend backend) {
     NOX_ENSURE_RETURN_FALSE_MSG(plugin != nullptr, "Couldn't create renderer plugin");
     NOX_ENSURE_RETURN_FALSE_MSG(plugin->pluginRegister(), "Couldn't register renderer plugin");
     NOX_ENSURE_RETURN_FALSE_MSG(plugin->pluginVersion() == NOX_PLUGIN_API_VERSION, "Plugin API version mismatch");
-    NOX_ENSURE_RETURN_FALSE_MSG(rendererFactory.has_value(), "Couldn't initialize renderer factory");
-    rendererPlugin = std::move(plugin);
+    NOX_ENSURE_RETURN_FALSE_MSG(m_impl->rendererFactory.has_value(), "Couldn't initialize renderer factory");
+    m_impl->rendererPlugin = std::move(plugin);
 
     return true;
 }
 
-RendererPtr RendererFactoryRegistry::createRenderer() {
-    NOX_ENSURE_RETURN_NULLPTR_MSG(rendererFactory.has_value(), "Renderer factory hasn't been properly initialized");
-
-    const auto &[createRenderer, destroyRenderer] = rendererFactory.value();
-    return {createRenderer(), destroyRenderer};
+void RendererFactoryRegistry::registerFactory(RendererBackend backend, const RendererFactory &factory) {
+    m_impl->rendererBackend = backend;
+    m_impl->rendererFactory = factory;
 }
 
-void RendererFactoryRegistry::initializeFactory(RendererBackend backend, const RendererFactory &factory) {
-    rendererBackend = backend;
-    rendererFactory = factory;
+const RendererFactory &RendererFactoryRegistry::getFactory(RendererBackend backend) const {
+    NOX_ASSERT_MSG(m_impl->rendererFactory.has_value(), "Renderer factory hasn't been initialized");
+    NOX_ASSERT_MSG(backend == m_impl->rendererBackend, "Renderer factory for given backend hasn't been initialized");
+
+    return *(m_impl->rendererFactory);
 }
 
 } // namespace nox
