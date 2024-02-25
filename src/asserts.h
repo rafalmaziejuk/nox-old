@@ -1,33 +1,15 @@
 #pragma once
 
-namespace nox {
-
-[[nodiscard]] inline bool &getDebugBreakEnabled() {
-    static bool debugBreakEnabled = true;
-    return debugBreakEnabled;
-}
-
-} // namespace nox
-
 // clang-format off
-
-#if defined(NOX_WINDOWS)
-    #define NOX_DEBUG_BREAK() __debugbreak()
-#elif defined(NOX_LINUX)
-    #include <signal.h>
-    #define NOX_DEBUG_BREAK() raise(SIGTRAP)
-#endif
 
 #if defined(NOX_DISABLE_ASSERTS) || !defined(NOX_DEBUG)
     #define NOX_ASSERT(condition) (void)(0)
 #else
-    #define NOX_ASSERT(condition)                      \
-        if (!(condition) && (getDebugBreakEnabled())) { \
-            NOX_DEBUG_BREAK();                         \
-        }
+    #include <cassert>
+    #define NOX_ASSERT(condition) assert(condition)
 #endif
 
-#define NOX_ASSERT_MSG(condition, message) NOX_ASSERT(condition)
+#define NOX_ASSERT_MSG(condition, message) NOX_ASSERT((condition) && (message))
 
 #define NOX_ENSURE_RETURN_FALSE(condition) \
     if (!(condition)) {                    \

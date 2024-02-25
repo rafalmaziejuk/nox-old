@@ -40,16 +40,15 @@ bool GLFramebufferBase::validateInput(const FramebufferDescriptor &descriptor) {
 }
 
 bool GLFramebufferBase::isDefaultFramebuffer(const Attachments &attachments) {
-    if (attachments.size() > 1u) {
-        return false;
+    if (const auto *glTexture = dynamic_cast<const GLTexture2D *>(attachments.back())) {
+        if (!glTexture->isPresentable()) {
+            return false;
+        }
     }
 
-    const auto *glTexture = dynamic_cast<const GLTexture2D *>(attachments.back());
-    if (glTexture == nullptr) {
-        return false;
-    }
+    NOX_ASSERT_MSG(attachments.size() == 1u, "More than one attachment when using default framebuffer is not allowed");
 
-    return glTexture->isPresentable();
+    return true;
 }
 
 GLFramebufferBase::~GLFramebufferBase() {
@@ -60,6 +59,10 @@ GLFramebufferBase::~GLFramebufferBase() {
 
 bool GLFramebufferBase::validate() const {
     return (glCheckNamedFramebufferStatus(m_handle, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+}
+
+void GLFramebufferBase::bind() const {
+    glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
 }
 
 void GLFramebufferBase::clearAttachments(const ClearValues &values, const AttachmentDescriptors &attachmentDescriptors) const {
@@ -93,6 +96,16 @@ void GLFramebufferBase::clearAttachments(const ClearValues &values, const Attach
     }
 }
 
+void GLFramebufferBase::bindColorAttachments(const ColorAttachmentReferences &attachmentReferences) const {
+    std::vector<GLenum> attachmentPoints;
+    for (const auto &attachmentReference : attachmentReferences) {
+        attachmentPoints.push_back(GL_COLOR_ATTACHMENT0 + attachmentReference.index);
+    }
+    glNamedFramebufferDrawBuffers(m_handle,
+                                  static_cast<GLsizei>(attachmentPoints.size()),
+                                  attachmentPoints.data());
+}
+
 void GLFramebufferBase::invalidateAttachments(const AttachmentDescriptors &attachmentDescriptors) const {
     AttachmentPoints attachmentsToInvalidate;
     for (size_t i = 0u; i < m_attachmentPoints.size(); i++) {
@@ -122,16 +135,26 @@ void GLFramebufferBase::invalidateAttachments(const AttachmentDescriptors &attac
     glInvalidateNamedFramebufferData(m_handle, attachmentsToInvalidateCount, attachmentsToInvalidate.data());
 }
 
-void GLFramebufferBase::bindAttachments(const SubpassDescriptor &subpassDescriptor, const GLPipelineLayout &pipelineLayout) const {
-    const auto &colorAttachmentReferences = subpassDescriptor.colorAttachmentReferences;
-
-    std::vector<GLenum> attachmentPoints;
-    for (const auto &colorAttachmentReference : colorAttachmentReferences) {
-        attachmentPoints.push_back(GL_COLOR_ATTACHMENT0 + colorAttachmentReference.index);
+bool GLFramebufferBase::validateInputAttachments(const InputAttachmentReferences &attachmentReferences,
+                                                 const GLPipelineLayout &pipelineLayout) const {
+    bool result = true;
+    for (const auto &attachmentReference : attachmentReferences) {
+        if (attachmentReference.index != AttachmentReference::attachmentUnused) {
+            result &= validateAttachment(attachmentReference, pipelineLayout);
+        }
     }
-    glNamedFramebufferDrawBuffers(m_handle,
-                                  static_cast<GLsizei>(attachmentPoints.size()),
-                                  attachmentPoints.data());
+
+    return result;
+}
+
+bool GLFramebufferBase::validateDepthStencilAttachment(const DepthStencilAttachmentReference &attachmentReference,
+                                                       const GLPipelineLayout &pipelineLayout) const {
+    bool result = true;
+    if (attachmentReference.index != AttachmentReference::attachmentUnused) {
+        result &= validateAttachment(attachmentReference, pipelineLayout);
+    }
+
+    return result;
 }
 
 void GLFramebufferBase::clearColorAttachment(const ClearColorValue *value, int32_t index) const {
@@ -164,8 +187,24 @@ void GLFramebufferBase::clearDepthStencilAttachment(const ClearDepthStencilValue
     glClearNamedFramebufferfi(m_handle, GL_DEPTH_STENCIL, 0, value->depth, static_cast<GLint>(value->stencil));
 }
 
-void GLFramebufferBase::bind() const {
-    glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
+bool GLFramebufferBase::validateAttachment(const AttachmentReference &attachmentReference, const GLPipelineLayout &pipelineLayout) const {
+    NOX_ASSERT(attachmentReference.index < m_attachmentPoints.size());
+
+    auto attachmentPoint = m_attachmentPoints[attachmentReference.index];
+    GLint attachmentType = GL_NONE;
+    glGetNamedFramebufferAttachmentParameteriv(m_handle,
+                                               attachmentPoint,
+                                               GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE,
+                                               &attachmentType);
+    NOX_ASSERT(attachmentType == GL_NONE);
+
+    GLint attachmentHandle = 0;
+    glGetNamedFramebufferAttachmentParameteriv(m_handle,
+                                               attachmentPoint,
+                                               GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME,
+                                               &attachmentHandle);
+
+    return pipelineLayout.contains(attachmentHandle);
 }
 
 GLFramebuffer::GLFramebuffer(const FramebufferDescriptor &descriptor) {
