@@ -1,5 +1,6 @@
 #pragma once
 
+#include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_program.h"
 #include "opengl/gl_state.h"
 
@@ -19,7 +20,7 @@ class GLGraphicsPipelineState final : public GraphicsPipelineState, public GLWit
     [[nodiscard]] bool bindShaderStages(const ShaderStages &shaderStages);
 
   private:
-    std::unique_ptr<PipelineLayout> m_pipelineLayout{nullptr};
+    GLPipelineLayout m_pipelineLayout;
     GLProgram m_program{};
     uint32_t m_subpassIndex{0u};
     uint32_t m_primitiveTopology{0u};

@@ -11,7 +11,8 @@
 namespace nox {
 
 enum class ResourceType {
-    TEXTURE
+    TEXTURE,
+    INPUT_ATTACHMENT
 };
 
 struct TextureResourceDescriptor {
@@ -33,18 +34,6 @@ using DescriptorSetLayouts = std::vector<DescriptorSetLayout>;
 
 struct PipelineLayoutDescriptor {
     DescriptorSetLayouts setLayouts;
-};
-
-class NOX_EXPORT PipelineLayout {
-  public:
-    PipelineLayout(const PipelineLayout &) = delete;
-    PipelineLayout &operator=(const PipelineLayout &) = delete;
-    PipelineLayout(PipelineLayout &&) = delete;
-    PipelineLayout &operator=(PipelineLayout &&) = delete;
-    virtual ~PipelineLayout() = default;
-
-  protected:
-    PipelineLayout() = default;
 };
 
 } // namespace nox

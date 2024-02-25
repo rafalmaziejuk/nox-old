@@ -20,8 +20,6 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) override;
 
-    std::unique_ptr<PipelineLayout> createPipelineLayout(PipelineLayoutDescriptor &descriptor) override;
-
     std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) override;
 
     std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) override;
