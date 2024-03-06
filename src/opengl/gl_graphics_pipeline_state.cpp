@@ -75,24 +75,26 @@ void GLGraphicsPipelineState::bind() {
     NOX_ASSERT(state->currentRenderPass != nullptr);
     NOX_ASSERT(state->currentFramebuffer != nullptr);
 
-    state->primitiveTopology = m_primitiveTopology;
-
     const auto *currentRenderPass = state->currentRenderPass;
     const auto *currentFramebuffer = state->currentFramebuffer;
     const auto &subpassDescriptor = currentRenderPass->getSubpassDescriptor(m_subpassIndex);
     const auto &inputAttachmentReferences = subpassDescriptor.inputAttachmentReferences;
     const auto &colorAttachmentReferences = subpassDescriptor.colorAttachmentReferences;
-    const auto &depthStencilAttachmentReference = subpassDescriptor.depthStencilAttachmentReference;
 
-    NOX_ASSERT(currentFramebuffer->validateInputAttachments(inputAttachmentReferences,
-                                                            m_pipelineLayout));
-
-    NOX_ASSERT(currentFramebuffer->validateDepthStencilAttachment(depthStencilAttachmentReference,
-                                                                  m_pipelineLayout));
+    state->primitiveTopology = m_primitiveTopology;
 
     currentFramebuffer->bindColorAttachments(colorAttachmentReferences);
-    for (const auto &binding : m_pipelineLayout) {
-        binding->bind();
+
+    const auto &inputAttachmentBindings = m_pipelineLayout.getInputAttachmentBindings();
+    for (const auto &reference : inputAttachmentReferences) {
+        if (reference.index != AttachmentReference::attachmentUnused) {
+            inputAttachmentBindings[reference.index].bind();
+        }
+    }
+
+    const auto &textureBindings = m_pipelineLayout.getTextureBindings();
+    for (const auto &binding : textureBindings) {
+        binding.bind();
     }
 
     glBindProgramPipeline(m_handle);

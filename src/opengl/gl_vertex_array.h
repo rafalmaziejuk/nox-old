@@ -8,6 +8,7 @@ namespace nox {
 
 class GLVertexArray {
   public:
+    GLVertexArray();
     explicit GLVertexArray(const VertexAttributes &vertexAttributes);
     ~GLVertexArray();
 

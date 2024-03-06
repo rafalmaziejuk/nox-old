@@ -20,7 +20,7 @@ bool GLCommandList::validateInput(const RenderPassBeginDescriptor &descriptor) {
     return result;
 }
 
-GLCommandList::GLCommandList([[maybe_unused]] const CommandListDescriptor &descriptor,
+GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/,
                              GLState &state) : GLWithState{state} {}
 
 void GLCommandList::setViewport(const Viewport &viewport) {
@@ -47,6 +47,8 @@ void GLCommandList::beginRenderPass(const RenderPassBeginDescriptor &descriptor)
 }
 
 void GLCommandList::endRenderPass() {
+    state->currentFramebuffer->unbind();
+
     state->currentFramebuffer = nullptr;
     state->currentRenderPass = nullptr;
 }

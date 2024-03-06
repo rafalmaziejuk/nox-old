@@ -166,7 +166,7 @@ void SandboxExample::createRenderPass() {
 
 void SandboxExample::createFramebuffer() {
     FramebufferDescriptor framebufferDescriptor{};
-    framebufferDescriptor.attachments = m_swapchain->getPresentableTextures();
+    framebufferDescriptor.attachments = m_swapchain->getSwapchainTextures();
     framebufferDescriptor.renderPass = m_renderPass.get();
     framebufferDescriptor.size = m_swapchain->getSize();
     m_framebuffer = m_renderer->createFramebuffer(framebufferDescriptor);
