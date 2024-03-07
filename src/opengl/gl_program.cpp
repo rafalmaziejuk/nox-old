@@ -45,4 +45,12 @@ bool GLProgram::link() const {
     return true;
 }
 
+void GLProgram::bind() const {
+    glUseProgram(m_handle);
+}
+
+void GLProgram::unbind() const { // NOLINT(readability-convert-member-functions-to-static)
+    glUseProgram(0u);
+}
+
 } // namespace nox

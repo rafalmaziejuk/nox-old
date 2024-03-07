@@ -11,47 +11,29 @@ class GLResourceBinding {
     explicit GLResourceBinding(uint32_t index) : m_bindingIndex{index} {}
     virtual ~GLResourceBinding() = default;
 
-    [[nodiscard]] virtual ResourceType getResourceType() = 0;
-    [[nodiscard]] virtual std::vector<uint32_t> getHandles() const = 0;
-
     virtual void bind() const = 0;
-
-  public:
-    GLResourceBinding(const GLResourceBinding &) = delete;
-    GLResourceBinding &operator=(const GLResourceBinding &) = delete;
 
   protected:
     uint32_t m_bindingIndex;
 };
 
-class GLTextureResourceBinding : public GLResourceBinding {
+class GLTextureBinding : public GLResourceBinding {
   public:
-    GLTextureResourceBinding(const DescriptorSetLayoutBinding &binding);
-    ~GLTextureResourceBinding() override = default;
-
-    [[nodiscard]] ResourceType getResourceType() override {
-        return ResourceType::TEXTURE;
-    }
-
-    std::vector<uint32_t> getHandles() const override;
+    GLTextureBinding(const DescriptorSetLayoutBinding &binding);
 
     void bind() const override;
 
-  private:
+  protected:
     std::vector<std::shared_ptr<GLTexture>> m_textures;
 };
 
-class GLInputAttachmentResourceBinding final : public GLTextureResourceBinding {
+class GLInputAttachmentBinding final : public GLTextureBinding {
   public:
-    using GLTextureResourceBinding::GLTextureResourceBinding;
-    ~GLInputAttachmentResourceBinding() override = default;
-
-    [[nodiscard]] ResourceType getResourceType() override {
-        return ResourceType::INPUT_ATTACHMENT;
-    }
+    using GLTextureBinding::GLTextureBinding;
 };
 
-using GLResourceBindings = std::vector<std::unique_ptr<GLResourceBinding>>;
+using GLTextureBindings = std::vector<GLTextureBinding>;
+using GLInputAttachmentBindings = std::vector<GLInputAttachmentBinding>;
 
 class GLPipelineLayout final {
   public:
@@ -59,15 +41,12 @@ class GLPipelineLayout final {
 
     explicit GLPipelineLayout(const PipelineLayoutDescriptor &descriptor);
 
-    GLResourceBindings::iterator begin() { return m_bindings.begin(); }
-    GLResourceBindings::iterator end() { return m_bindings.end(); }
-    GLResourceBindings::const_iterator begin() const { return m_bindings.begin(); }
-    GLResourceBindings::const_iterator end() const { return m_bindings.end(); }
-
-    [[nodiscard]] bool contains(uint32_t handle) const;
+    [[nodiscard]] const GLTextureBindings &getTextureBindings() { return m_textureBindings; }
+    [[nodiscard]] const GLInputAttachmentBindings &getInputAttachmentBindings() { return m_inputAttachmentBindings; }
 
   private:
-    GLResourceBindings m_bindings;
+    GLTextureBindings m_textureBindings;
+    GLInputAttachmentBindings m_inputAttachmentBindings;
 };
 
 } // namespace nox

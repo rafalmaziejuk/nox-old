@@ -14,6 +14,9 @@ class GLProgram {
     void attachShader(uint32_t shaderHandle) const;
     [[nodiscard]] bool link() const;
 
+    void bind() const;
+    void unbind() const;
+
   public:
     GLProgram(const GLProgram &) = delete;
     GLProgram &operator=(const GLProgram &) = delete;

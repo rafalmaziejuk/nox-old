@@ -21,7 +21,10 @@ RendererBackend GLRenderer::getRendererBackend() const {
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
     NOX_ASSERT(GLSwapchain::validateInput(descriptor));
 
-    return std::make_unique<GLSwapchain>(descriptor);
+    auto context = GLContext::create(descriptor.surfaceDescriptor);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(context != nullptr, "Couldn't create context");
+
+    return std::make_unique<GLSwapchain>(descriptor, std::move(context));
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescriptor &descriptor) {
@@ -87,13 +90,7 @@ std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescrip
 std::unique_ptr<Framebuffer> GLRenderer::createFramebuffer(const FramebufferDescriptor &descriptor) {
     NOX_ASSERT(GLFramebuffer::validateInput(descriptor));
 
-    std::unique_ptr<GLFramebufferBase> framebuffer{nullptr};
-    if (GLFramebufferBase::isDefaultFramebuffer(descriptor.attachments)) {
-        framebuffer = std::make_unique<GLDefaultFramebuffer>();
-    } else {
-        framebuffer = std::make_unique<GLFramebuffer>(descriptor);
-    }
-
+    auto framebuffer = std::make_unique<GLFramebuffer>(descriptor);
     NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer->validate(), "Framebuffer isn't valid");
 
     return framebuffer;

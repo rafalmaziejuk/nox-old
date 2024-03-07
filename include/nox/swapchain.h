@@ -26,7 +26,7 @@ class NOX_EXPORT Swapchain {
   public:
     [[nodiscard]] virtual Vector2D<uint32_t> getSize() const = 0;
     [[nodiscard]] virtual ImageFormat getSurfaceFormat() const = 0;
-    [[nodiscard]] virtual std::vector<const Texture *> getPresentableTextures() const = 0;
+    [[nodiscard]] virtual std::vector<const Texture *> getSwapchainTextures() const = 0;
 
     virtual void present() const = 0;
 

@@ -9,9 +9,11 @@
 
 namespace nox {
 
-GLVertexArray::GLVertexArray(const VertexAttributes &vertexAttributes) {
+GLVertexArray::GLVertexArray() {
     glCreateVertexArrays(1, &m_handle);
+}
 
+GLVertexArray::GLVertexArray(const VertexAttributes &vertexAttributes) : GLVertexArray{} {
     for (size_t i = 0u; i < vertexAttributes.size(); i++) {
         const auto &vertexAttribute = vertexAttributes[i];
         auto descriptor = getVertexAttributeFormatDescriptor(vertexAttribute);
