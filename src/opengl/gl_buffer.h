@@ -6,9 +6,9 @@
 
 namespace nox {
 
-class GLBuffer : public Buffer, public GLWithState {
+class GLBuffer : public Buffer {
   public:
-    GLBuffer(const BufferDescriptor &descriptor, GLState &state);
+    explicit GLBuffer(const BufferDescriptor &descriptor);
     ~GLBuffer() override;
 
     [[nodiscard]] uint32_t getHandle() const { return m_handle; }
@@ -25,10 +25,12 @@ class GLVertexBuffer final : public GLBuffer {
     [[nodiscard]] static bool validateInput(const VertexBufferDescriptor &descriptor);
 
     using GLBuffer::GLBuffer;
-
-    void bind() override;
+    ~GLVertexBuffer() override;
 
     void setVertexArrayIndex(uint32_t index);
+    [[nodiscard]] uint32_t getVertexArrayIndex() const {
+        return m_vertexArrayIndex;
+    }
 
   private:
     uint32_t m_vertexArrayIndex{0u};
@@ -40,9 +42,10 @@ class GLIndexBuffer final : public GLBuffer {
 
     using GLBuffer::GLBuffer;
 
-    void bind() override;
-
     void setIndexType(VertexAttributeFormat format);
+    [[nodiscard]] uint32_t getIndexType() const {
+        return m_indexType;
+    }
 
   private:
     uint32_t m_indexType{0u};

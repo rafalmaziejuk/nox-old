@@ -1,7 +1,5 @@
 #pragma once
 
-#include "opengl/gl_state.h"
-
 #include <nox/renderer.h>
 
 namespace nox {
@@ -29,9 +27,6 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) override;
 
     std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescriptor &descriptor) override;
-
-  private:
-    GLState m_state{};
 };
 
 } // namespace nox

@@ -1,7 +1,7 @@
 #include "asserts.h"
 #include "format_descriptor.h"
 #include "opengl/gl_buffer.h"
-#include "opengl/gl_helper.h"
+#include "opengl/gl_vertex_array.h"
 
 #include <glad/gl.h>
 
@@ -24,6 +24,18 @@ GLbitfield mapBufferUsageToBitfield(uint32_t usage) {
     return flags;
 }
 
+GLenum mapVertexAttributeDataTypeToEnum(VertexAttributeDataType type) {
+    switch (type) {
+    case VertexAttributeDataType::UNSIGNED_BYTE: return GL_UNSIGNED_BYTE;
+    case VertexAttributeDataType::UNSIGNED_SHORT: return GL_UNSIGNED_SHORT;
+    case VertexAttributeDataType::UNSIGNED_INT: return GL_UNSIGNED_INT;
+    default: break;
+    }
+
+    NOX_ASSERT(false);
+    return GL_NONE;
+}
+
 } // namespace
 
 bool GLBuffer::validateInput(const BufferDescriptor &descriptor) {
@@ -35,7 +47,7 @@ bool GLBuffer::validateInput(const BufferDescriptor &descriptor) {
     return result;
 }
 
-GLBuffer::GLBuffer(const BufferDescriptor &descriptor, GLState &state) : GLWithState{state} {
+GLBuffer::GLBuffer(const BufferDescriptor &descriptor) {
     auto flags = mapBufferUsageToBitfield(descriptor.usage);
     glCreateBuffers(1, &m_handle);
     glNamedBufferStorage(m_handle, descriptor.size, descriptor.data, flags);
@@ -54,10 +66,9 @@ bool GLVertexBuffer::validateInput(const VertexBufferDescriptor &descriptor) {
     return result;
 }
 
-void GLVertexBuffer::bind() {
-    auto &vertexArrayRegistry = state->vertexArrayRegistry;
-    vertexArrayRegistry[m_vertexArrayIndex].bind();
-    vertexArrayRegistry.setBoundVertexArrayIndex(m_vertexArrayIndex);
+GLVertexBuffer::~GLVertexBuffer() {
+    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
+    vertexArrayRegistry.unregisterVertexArray(m_vertexArrayIndex);
 }
 
 void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
@@ -70,14 +81,6 @@ bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
     result &= GLBuffer::validateInput(descriptor);
 
     return result;
-}
-
-void GLIndexBuffer::bind() {
-    state->indexType = m_indexType;
-
-    auto &vertexArrayRegistry = state->vertexArrayRegistry;
-    auto &vertexArray = vertexArrayRegistry[vertexArrayRegistry.getBoundVertexArrayIndex()];
-    vertexArray.setIndexBuffer(getHandle());
 }
 
 void GLIndexBuffer::setIndexType(VertexAttributeFormat format) {

@@ -1,6 +1,5 @@
 #include "asserts.h"
 #include "format_descriptor.h"
-#include "opengl/gl_helper.h"
 #include "opengl/gl_texture.h"
 
 #include <glad/gl.h>

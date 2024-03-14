@@ -10,11 +10,11 @@ class GLRenderPass final : public RenderPass {
 
     explicit GLRenderPass(const RenderPassDescriptor &descriptor);
 
-    const AttachmentDescriptors &getAttachmentDescriptors() const {
+    [[nodiscard]] const AttachmentDescriptors &getAttachmentDescriptors() const {
         return m_attachmentDescriptors;
     }
 
-    const SubpassDescriptor &getSubpassDescriptor(uint32_t index) const {
+    [[nodiscard]] const SubpassDescriptor &getSubpassDescriptor(uint32_t index) const {
         return m_subpassDescriptors.at(index);
     }
 

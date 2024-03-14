@@ -2,22 +2,33 @@
 
 #include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_program.h"
-#include "opengl/gl_state.h"
 
 #include <nox/graphics_pipeline_state.h>
 
 namespace nox {
 
-class GLGraphicsPipelineState final : public GraphicsPipelineState, public GLWithState {
+class GLGraphicsPipelineState final : public GraphicsPipelineState {
   public:
     [[nodiscard]] static bool validateInput(const GraphicsPipelineStateDescriptor &descriptor);
 
-    GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor, GLState &state);
+    explicit GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor);
     ~GLGraphicsPipelineState() override;
 
-    void bind() override;
+    [[nodiscard]] const GLPipelineLayout &getPipelineLayout() const {
+        return m_pipelineLayout;
+    }
 
-    [[nodiscard]] bool bindShaderStages(const ShaderStages &shaderStages);
+    [[nodiscard]] uint32_t getSubpassIndex() const {
+        return m_subpassIndex;
+    }
+
+    [[nodiscard]] uint32_t getPrimitiveTopology() const {
+        return m_primitiveTopology;
+    }
+
+    void bind() const;
+
+    [[nodiscard]] bool bindShaderStages(const ShaderStages &shaderStages) const;
 
   private:
     GLPipelineLayout m_pipelineLayout;
