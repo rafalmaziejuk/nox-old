@@ -1,9 +1,8 @@
 #include "asserts.h"
 #include "opengl/gl_context.h"
-#include "opengl/gl_program.h"
 #include "opengl/gl_shader.h"
 #include "opengl/gl_swapchain.h"
-#include "opengl/gl_texture.h"
+#include "opengl/gl_vertex_array.h"
 
 #include <glad/gl.h>
 
@@ -118,8 +117,11 @@ std::vector<const Texture *> GLSwapchain::getSwapchainTextures() const {
 }
 
 void GLSwapchain::present() const {
+    const auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
+    const auto &emptyVertexArray = vertexArrayRegistry.getVertexArray(0u);
+
+    emptyVertexArray.bind();
     m_swapchainTexture.bind(0u);
-    m_emptyVertexArray.bind();
 
     m_presentProgram.bind();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);

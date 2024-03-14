@@ -26,9 +26,6 @@ struct GraphicsPipelineStateDescriptor {
 
 class NOX_EXPORT GraphicsPipelineState {
   public:
-    virtual void bind() = 0;
-
-  public:
     GraphicsPipelineState(const GraphicsPipelineState &) = delete;
     GraphicsPipelineState &operator=(const GraphicsPipelineState &) = delete;
     GraphicsPipelineState(GraphicsPipelineState &&) = delete;

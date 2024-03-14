@@ -24,21 +24,22 @@ std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor
     auto context = GLContext::create(descriptor.surfaceDescriptor);
     NOX_ENSURE_RETURN_NULLPTR_MSG(context != nullptr, "Couldn't create context");
 
+    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
+    vertexArrayRegistry.initialize();
+
     return std::make_unique<GLSwapchain>(descriptor, std::move(context));
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescriptor &descriptor) {
     NOX_ASSERT(GLVertexBuffer::validateInput(descriptor));
 
-    auto &vertexArrayRegistry = m_state.vertexArrayRegistry;
-    if (!vertexArrayRegistry.contains(descriptor.vertexAttributes)) {
-        vertexArrayRegistry.registerVertexArray(descriptor.vertexAttributes);
-    }
+    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
+    auto vertexArrayIndex = vertexArrayRegistry.registerVertexArray(descriptor.vertexAttributes);
+    auto &vertexArray = vertexArrayRegistry.getVertexArray(vertexArrayIndex);
 
-    auto vertexArrayIndex = vertexArrayRegistry.find(descriptor.vertexAttributes);
-    auto buffer = std::make_unique<GLVertexBuffer>(descriptor, m_state);
+    auto buffer = std::make_unique<GLVertexBuffer>(descriptor);
     buffer->setVertexArrayIndex(vertexArrayIndex);
-    vertexArrayRegistry[vertexArrayIndex].setVertexBuffer(buffer->getHandle());
+    vertexArray.setVertexBuffer(buffer->getHandle());
 
     return buffer;
 }
@@ -46,7 +47,7 @@ std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescrip
 std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const IndexBufferDescriptor &descriptor) {
     NOX_ASSERT(GLIndexBuffer::validateInput(descriptor));
 
-    auto buffer = std::make_unique<GLIndexBuffer>(descriptor, m_state);
+    auto buffer = std::make_unique<GLIndexBuffer>(descriptor);
     buffer->setIndexType(descriptor.format);
 
     return buffer;
@@ -64,7 +65,7 @@ std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descrip
 std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) {
     NOX_ASSERT(GLGraphicsPipelineState::validateInput(descriptor));
 
-    auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor, m_state);
+    auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor);
     NOX_ENSURE_RETURN_NULLPTR_MSG(pipeline->bindShaderStages(descriptor.shaderStages),
                                   "Couldn't bind graphics pipeline shader stages");
 
@@ -72,7 +73,7 @@ std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(G
 }
 
 std::unique_ptr<CommandList> GLRenderer::createCommandList(const CommandListDescriptor &descriptor) {
-    return std::make_unique<GLCommandList>(descriptor, m_state);
+    return std::make_unique<GLCommandList>(descriptor);
 }
 
 std::shared_ptr<Texture> GLRenderer::createTexture2D(const Texture2DDescriptor &descriptor) {

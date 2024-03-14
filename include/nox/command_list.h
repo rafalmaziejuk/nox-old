@@ -1,7 +1,9 @@
 #pragma once
 
+#include <nox/buffer.h>
 #include <nox/export.h>
 #include <nox/framebuffer.h>
+#include <nox/graphics_pipeline_state.h>
 #include <nox/render_pass.h>
 #include <nox/vector.h>
 #include <nox/viewport.h>
@@ -34,6 +36,10 @@ class NOX_EXPORT CommandList {
 
     virtual void beginRenderPass(const RenderPassBeginDescriptor &descriptor) = 0;
     virtual void endRenderPass() = 0;
+
+    virtual void bindGraphicsPipelineState(const GraphicsPipelineState &pipelineState) = 0;
+    virtual void bindVertexBuffer(const Buffer &buffer) = 0;
+    virtual void bindIndexBuffer(const Buffer &buffer) = 0;
 
     virtual void draw(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
     virtual void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
