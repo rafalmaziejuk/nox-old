@@ -93,11 +93,11 @@ void SandboxExample::onUpdate() {
 
     m_commandList->beginRenderPass(renderPassBeginDescriptor);
     {
-        m_graphicsPipelineState->bind();
         m_commandList->setViewport(m_swapchain->getSize());
+        m_commandList->bindGraphicsPipelineState(*m_graphicsPipelineState);
 
-        m_vertexBuffer->bind();
-        m_indexBuffer->bind();
+        m_commandList->bindVertexBuffer(*m_vertexBuffer);
+        m_commandList->bindIndexBuffer(*m_indexBuffer);
 
         m_commandList->drawIndexed(0u, 6u);
     }

@@ -32,9 +32,6 @@ struct IndexBufferDescriptor : BufferDescriptor {
 
 class NOX_EXPORT Buffer {
   public:
-    virtual void bind() = 0;
-
-  public:
     Buffer(const Buffer &) = delete;
     Buffer &operator=(const Buffer &) = delete;
     Buffer(Buffer &&) = delete;

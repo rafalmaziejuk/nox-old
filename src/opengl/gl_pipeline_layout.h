@@ -41,8 +41,13 @@ class GLPipelineLayout final {
 
     explicit GLPipelineLayout(const PipelineLayoutDescriptor &descriptor);
 
-    [[nodiscard]] const GLTextureBindings &getTextureBindings() { return m_textureBindings; }
-    [[nodiscard]] const GLInputAttachmentBindings &getInputAttachmentBindings() { return m_inputAttachmentBindings; }
+    [[nodiscard]] const GLTextureBindings &getTextureBindings() const {
+        return m_textureBindings;
+    }
+
+    [[nodiscard]] const GLInputAttachmentBindings &getInputAttachmentBindings() const {
+        return m_inputAttachmentBindings;
+    }
 
   private:
     GLTextureBindings m_textureBindings;

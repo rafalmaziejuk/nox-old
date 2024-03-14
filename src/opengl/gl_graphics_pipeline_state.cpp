@@ -60,10 +60,9 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
     return result;
 }
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor, GLState &state) : GLWithState{state},
-                                                                                                                m_pipelineLayout{descriptor.pipelineLayoutDescriptor},
-                                                                                                                m_subpassIndex{descriptor.subpassIndex},
-                                                                                                                m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
+GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) : m_pipelineLayout{descriptor.pipelineLayoutDescriptor},
+                                                                                                m_subpassIndex{descriptor.subpassIndex},
+                                                                                                m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
     glCreateProgramPipelines(1, &m_handle);
 }
 
@@ -71,36 +70,11 @@ GLGraphicsPipelineState::~GLGraphicsPipelineState() {
     glDeleteProgramPipelines(1, &m_handle);
 }
 
-void GLGraphicsPipelineState::bind() {
-    NOX_ASSERT(state->currentRenderPass != nullptr);
-    NOX_ASSERT(state->currentFramebuffer != nullptr);
-
-    const auto *currentRenderPass = state->currentRenderPass;
-    const auto *currentFramebuffer = state->currentFramebuffer;
-    const auto &subpassDescriptor = currentRenderPass->getSubpassDescriptor(m_subpassIndex);
-    const auto &inputAttachmentReferences = subpassDescriptor.inputAttachmentReferences;
-    const auto &colorAttachmentReferences = subpassDescriptor.colorAttachmentReferences;
-
-    state->primitiveTopology = m_primitiveTopology;
-
-    currentFramebuffer->bindColorAttachments(colorAttachmentReferences);
-
-    const auto &inputAttachmentBindings = m_pipelineLayout.getInputAttachmentBindings();
-    for (const auto &reference : inputAttachmentReferences) {
-        if (reference.index != AttachmentReference::attachmentUnused) {
-            inputAttachmentBindings[reference.index].bind();
-        }
-    }
-
-    const auto &textureBindings = m_pipelineLayout.getTextureBindings();
-    for (const auto &binding : textureBindings) {
-        binding.bind();
-    }
-
+void GLGraphicsPipelineState::bind() const {
     glBindProgramPipeline(m_handle);
 }
 
-bool GLGraphicsPipelineState::bindShaderStages(const ShaderStages &shaderStages) {
+bool GLGraphicsPipelineState::bindShaderStages(const ShaderStages &shaderStages) const {
     GLbitfield stages = GL_NONE;
     for (const auto *shader : shaderStages) {
         const auto *glShader = static_cast<const GLShader *>(shader);

@@ -2,7 +2,6 @@
 
 #include "opengl/gl_program.h"
 #include "opengl/gl_texture.h"
-#include "opengl/gl_vertex_array.h"
 
 #include <nox/swapchain.h>
 
@@ -24,7 +23,6 @@ class GLSwapchain final : public Swapchain {
 
   private:
     GLProgram m_presentProgram{};
-    GLVertexArray m_emptyVertexArray{};
     std::unique_ptr<GLContext> m_context{nullptr};
     GLTexture2D m_swapchainTexture;
     Vector2D<uint32_t> m_size;
