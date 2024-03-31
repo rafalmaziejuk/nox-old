@@ -131,4 +131,9 @@ enum class VertexAttributeFormat {
     MAX
 };
 
+enum class UniformDataFormat {
+    NONE,
+    FLOAT1
+};
+
 } // namespace nox

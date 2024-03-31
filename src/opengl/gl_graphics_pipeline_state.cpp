@@ -52,7 +52,7 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
     };
     bool result = true;
 
-    result &= (GLPipelineLayout::validateInput(descriptor.pipelineLayoutDescriptor));
+    result &= (descriptor.pipelineLayout != nullptr);
     result &= (descriptor.renderPass != nullptr);
     result &= (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
     result &= (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE);
@@ -60,10 +60,11 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
     return result;
 }
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) : m_pipelineLayout{descriptor.pipelineLayoutDescriptor},
-                                                                                                m_subpassIndex{descriptor.subpassIndex},
+GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) : m_subpassIndex{descriptor.subpassIndex},
                                                                                                 m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
     glCreateProgramPipelines(1, &m_handle);
+
+    m_pipelineLayout = static_cast<const GLPipelineLayout *>(descriptor.pipelineLayout);
 }
 
 GLGraphicsPipelineState::~GLGraphicsPipelineState() {

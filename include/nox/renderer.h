@@ -2,6 +2,7 @@
 
 #include <nox/buffer.h>
 #include <nox/command_list.h>
+#include <nox/descriptor_set.h>
 #include <nox/framebuffer.h>
 #include <nox/export.h>
 #include <nox/graphics_pipeline_state.h>
@@ -12,7 +13,6 @@
 
 #include <functional>
 #include <memory>
-#include <string_view>
 
 namespace nox {
 
@@ -39,15 +39,19 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) = 0;
 
+    [[nodiscard]] virtual std::unique_ptr<PipelineLayout> createPipelineLayout(const PipelineLayoutDescriptor &descriptor) = 0;
+
     [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) = 0;
 
-    [[nodiscard]] virtual std::shared_ptr<Texture> createTexture2D(const Texture2DDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<Texture> createTexture2D(const Texture2DDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescriptor &descriptor) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<DescriptorSetPool> createDescriptorSetPool(const DescriptorSetPoolDescriptor &descriptor) = 0;
 
   public:
     Renderer(const Renderer &) = delete;

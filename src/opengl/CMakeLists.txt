@@ -81,6 +81,10 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_command_list.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_descriptor_set.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_descriptor_set.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_descriptor_set_pool.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_descriptor_set_pool.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_framebuffer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_graphics_pipeline_state.cpp

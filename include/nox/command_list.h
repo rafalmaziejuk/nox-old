@@ -1,6 +1,7 @@
 #pragma once
 
 #include <nox/buffer.h>
+#include <nox/descriptor_set.h>
 #include <nox/export.h>
 #include <nox/framebuffer.h>
 #include <nox/graphics_pipeline_state.h>
@@ -22,10 +23,23 @@ using ClearColorValue = std::variant<Vector4D<float>, Vector4D<int32_t>, Vector4
 using ClearValue = std::variant<ClearColorValue, ClearDepthStencilValue>;
 using ClearValues = std::vector<ClearValue>;
 
-struct RenderPassBeginDescriptor {
+struct RenderPassBeginInfo {
     const RenderPass *renderPass;
     const Framebuffer *framebuffer;
     ClearValues clearValues;
+};
+
+struct DescriptorSetsBindInfo {
+    const PipelineLayout *pipelineLayout;
+    std::vector<DescriptorSet>::const_iterator first;
+    std::vector<DescriptorSet>::const_iterator last;
+};
+
+struct UniformsBindInfo {
+    const PipelineLayout *pipelineLayout;
+    uint32_t offset;
+    uint32_t size;
+    const void *data;
 };
 
 struct CommandListDescriptor {};
@@ -34,12 +48,14 @@ class NOX_EXPORT CommandList {
   public:
     virtual void setViewport(const Viewport &viewport) = 0;
 
-    virtual void beginRenderPass(const RenderPassBeginDescriptor &descriptor) = 0;
+    virtual void beginRenderPass(const RenderPassBeginInfo &info) = 0;
     virtual void endRenderPass() = 0;
 
     virtual void bindGraphicsPipelineState(const GraphicsPipelineState &pipelineState) = 0;
     virtual void bindVertexBuffer(const Buffer &buffer) = 0;
     virtual void bindIndexBuffer(const Buffer &buffer) = 0;
+    virtual void bindDescriptorSets(const DescriptorSetsBindInfo &info) = 0;
+    virtual void bindUniforms(const UniformsBindInfo &info) = 0;
 
     virtual void draw(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
     virtual void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;

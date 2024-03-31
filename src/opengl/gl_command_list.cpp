@@ -9,16 +9,6 @@
 
 namespace nox {
 
-bool GLCommandList::validateInput(const RenderPassBeginDescriptor &descriptor) {
-    bool result = true;
-
-    result &= (descriptor.framebuffer != nullptr);
-    result &= (descriptor.renderPass != nullptr);
-    result &= (!descriptor.clearValues.empty());
-
-    return result;
-}
-
 GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/) {}
 
 void GLCommandList::setViewport(const Viewport &viewport) {
@@ -30,17 +20,19 @@ void GLCommandList::setViewport(const Viewport &viewport) {
     glDepthRangef(viewport.nearClip, viewport.farClip);
 }
 
-void GLCommandList::beginRenderPass(const RenderPassBeginDescriptor &descriptor) {
-    NOX_ASSERT(validateInput(descriptor));
+void GLCommandList::beginRenderPass(const RenderPassBeginInfo &info) {
+    NOX_ASSERT(info.framebuffer != nullptr);
+    NOX_ASSERT(info.renderPass != nullptr);
+    NOX_ASSERT(!info.clearValues.empty());
 
-    const auto *glFramebuffer = static_cast<const GLFramebuffer *>(descriptor.framebuffer);
-    const auto *glRenderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
+    const auto *glFramebuffer = static_cast<const GLFramebuffer *>(info.framebuffer);
+    const auto *glRenderPass = static_cast<const GLRenderPass *>(info.renderPass);
     m_state.currentFramebuffer = glFramebuffer;
     m_state.currentRenderPass = glRenderPass;
 
     const auto &attachmentDescriptors = glRenderPass->getAttachmentDescriptors();
     glFramebuffer->bind();
-    glFramebuffer->clearAttachments(descriptor.clearValues, attachmentDescriptors);
+    glFramebuffer->clearAttachments(info.clearValues, attachmentDescriptors);
     glFramebuffer->invalidateAttachments(attachmentDescriptors);
 }
 
@@ -55,28 +47,18 @@ void GLCommandList::bindGraphicsPipelineState(const GraphicsPipelineState &pipel
     NOX_ASSERT(m_state.currentRenderPass != nullptr);
     NOX_ASSERT(m_state.currentFramebuffer != nullptr);
 
-    const auto *pipeline = static_cast<const GLGraphicsPipelineState *>(&pipelineState);
+    m_state.currentPipeline = static_cast<const GLGraphicsPipelineState *>(&pipelineState);
+
+    const auto *currentPipeline = m_state.currentPipeline;
     const auto *currentRenderPass = m_state.currentRenderPass;
     const auto *currentFramebuffer = m_state.currentFramebuffer;
 
-    const auto &pipelineLayout = pipeline->getPipelineLayout();
-    const auto &subpassDescriptor = currentRenderPass->getSubpassDescriptor(pipeline->getSubpassIndex());
-    const auto &inputAttachmentBindings = pipelineLayout.getInputAttachmentBindings();
-    for (const auto &reference : subpassDescriptor.inputAttachmentReferences) {
-        if (reference.index != AttachmentReference::attachmentUnused) {
-            inputAttachmentBindings[reference.index].bind();
-        }
-    }
+    const auto &subpassDescriptor = currentRenderPass->getSubpassDescriptor(currentPipeline->getSubpassIndex());
     currentFramebuffer->bindColorAttachments(subpassDescriptor.colorAttachmentReferences);
 
-    const auto &textureBindings = pipelineLayout.getTextureBindings();
-    for (const auto &binding : textureBindings) {
-        binding.bind();
-    }
+    m_state.primitiveTopology = currentPipeline->getPrimitiveTopology();
 
-    m_state.primitiveTopology = pipeline->getPrimitiveTopology();
-
-    pipeline->bind();
+    currentPipeline->bind();
 }
 
 void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
@@ -99,6 +81,31 @@ void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
 
     auto &vertexArray = vertexArrayRegistry.getVertexArray(vertexArrayIndex);
     vertexArray.setIndexBuffer(indexBuffer->getHandle());
+}
+
+void GLCommandList::bindDescriptorSets(const DescriptorSetsBindInfo &info) {
+    NOX_ASSERT(m_state.currentPipeline != nullptr);
+    NOX_ASSERT(info.pipelineLayout != nullptr);
+
+    const auto *currentPipeline = m_state.currentPipeline;
+    const auto *currentRenderPass = m_state.currentRenderPass;
+    const auto &subpassDescriptor = currentRenderPass->getSubpassDescriptor(currentPipeline->getSubpassIndex());
+
+    for (const auto &reference : subpassDescriptor.inputAttachmentReferences) {
+        if (reference.index != AttachmentReference::attachmentUnused) {
+            inputAttachmentBindings[reference.index].bind();
+        }
+    }
+
+    const auto &textureBindings = pipelineLayout->getTextureBindings();
+    for (const auto &binding : textureBindings) {
+        binding.bind();
+    }
+}
+
+void GLCommandList::bindUniforms(const UniformsBindInfo &info) {
+    NOX_ASSERT(info.size > 0u);
+    NOX_ASSERT(info.data != nullptr);
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {

@@ -84,14 +84,14 @@ void SandboxExample::initialize() {
 }
 
 void SandboxExample::onUpdate() {
-    RenderPassBeginDescriptor renderPassBeginDescriptor{};
-    renderPassBeginDescriptor.renderPass = m_renderPass.get();
-    renderPassBeginDescriptor.framebuffer = m_framebuffer.get();
-    renderPassBeginDescriptor.clearValues = {
+    RenderPassBeginInfo renderPassBeginInfo{};
+    renderPassBeginInfo.renderPass = m_renderPass.get();
+    renderPassBeginInfo.framebuffer = m_framebuffer.get();
+    renderPassBeginInfo.clearValues = {
         {Vector4D<float>{0.1f, 0.1f, 0.1f, 1.0f}},
     };
 
-    m_commandList->beginRenderPass(renderPassBeginDescriptor);
+    m_commandList->beginRenderPass(renderPassBeginInfo);
     {
         m_commandList->setViewport(m_swapchain->getSize());
         m_commandList->bindGraphicsPipelineState(*m_graphicsPipelineState);
@@ -191,21 +191,28 @@ void SandboxExample::createGraphicsPipelineState() {
 
     DescriptorSetLayoutBinding descriptorSetLayoutBinding{};
     descriptorSetLayoutBinding.bindingIndex = 0u;
-    descriptorSetLayoutBinding.resourceType = ResourceType::TEXTURE;
-    descriptorSetLayoutBinding.textureResourceDescriptors = {
-        {m_texture},
-    };
+    descriptorSetLayoutBinding.descriptorType = DescriptorType::TEXTURE;
+    descriptorSetLayoutBinding.descriptorCount = 1u;
 
     DescriptorSetLayout descriptorSetLayout{};
     descriptorSetLayout.bindings = {
         descriptorSetLayoutBinding,
     };
 
-    graphicsPipelineStateDescriptor.pipelineLayoutDescriptor.setLayouts = {
+    PipelineLayoutDescriptor pipelineLayoutDescriptor{};
+    pipelineLayoutDescriptor.uniformDescriptors = {
+        {"uOffset", UniformDataFormat::FLOAT1},
+
+    };
+    pipelineLayoutDescriptor.setLayouts = {
         descriptorSetLayout,
     };
+    m_pipelineLayout = m_renderer->createPipelineLayout(pipelineLayoutDescriptor);
+
+    // create descriptor set
 
     graphicsPipelineStateDescriptor.renderPass = m_renderPass.get();
+    graphicsPipelineStateDescriptor.pipelineLayout = m_pipelineLayout.get();
     graphicsPipelineStateDescriptor.subpassIndex = 0u;
 
     m_graphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);

@@ -25,6 +25,7 @@ class SandboxExample : public base::Example {
     std::unique_ptr<RenderPass> m_renderPass{nullptr};
     std::unique_ptr<Framebuffer> m_framebuffer{nullptr};
     std::unique_ptr<GraphicsPipelineState> m_graphicsPipelineState{nullptr};
+    std::unique_ptr<PipelineLayout> m_pipelineLayout{nullptr};
     std::shared_ptr<Texture> m_texture{nullptr};
 };
 
