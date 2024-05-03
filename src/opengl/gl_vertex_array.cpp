@@ -70,14 +70,14 @@ GLVertexArrayRegistry &GLVertexArrayRegistry::instance() {
     return registry;
 }
 
+GLVertexArrayRegistry::GLVertexArrayRegistry() {
+    m_vertexArrays.emplace_back(GLVertexArray({}), 0u);
+}
+
 GLVertexArrayRegistry::~GLVertexArrayRegistry() {
     NOX_ASSERT(m_vertexArrays.size() == 1u);
 
     erase(0u);
-}
-
-void GLVertexArrayRegistry::initialize() {
-    [[maybe_unused]] auto index = registerVertexArray({});
 }
 
 uint32_t GLVertexArrayRegistry::registerVertexArray(const VertexAttributes &vertexAttributes) {

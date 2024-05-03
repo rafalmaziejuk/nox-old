@@ -24,9 +24,6 @@ std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor
     auto context = GLContext::create(descriptor.surfaceDescriptor);
     NOX_ENSURE_RETURN_NULLPTR_MSG(context != nullptr, "Couldn't create context");
 
-    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
-    vertexArrayRegistry.initialize();
-
     return std::make_unique<GLSwapchain>(descriptor, std::move(context));
 }
 

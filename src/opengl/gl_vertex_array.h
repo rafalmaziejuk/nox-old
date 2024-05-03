@@ -35,8 +35,6 @@ class GLVertexArrayRegistry final {
   public:
     [[nodiscard]] static GLVertexArrayRegistry &instance();
 
-    void initialize();
-
     [[nodiscard]] uint32_t registerVertexArray(const VertexAttributes &vertexAttributes);
     void unregisterVertexArray(uint32_t index);
 
@@ -52,7 +50,7 @@ class GLVertexArrayRegistry final {
     void erase(uint32_t index);
 
   public:
-    GLVertexArrayRegistry() = default;
+    GLVertexArrayRegistry();
     GLVertexArrayRegistry(const GLVertexArrayRegistry &) = delete;
     GLVertexArrayRegistry &operator=(const GLVertexArrayRegistry &) = delete;
     GLVertexArrayRegistry(GLVertexArrayRegistry &&) = delete;
