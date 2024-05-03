@@ -37,7 +37,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries." OFF)
 option(NOX_INSTALL "Generate installation target." ${NOX_MAIN_PROJECT})
 option(NOX_DISABLE_ASSERTS "Disable asserts" OFF)
 option(NOX_BUILD_EXAMPLES "Build examples." OFF)
-option(NOX_BUILD_UNIT_TESTS "Build unit tests." OFF)
+option(NOX_BUILD_TESTS "Build tests." ON)
 option(NOX_BUILD_RENDERER_OPENGL "Build OpenGL renderer." ON)
 
 cmake_dependent_option(NOX_PLATFORM_WINDOWS "Target platform Windows." ON "WIN32" OFF)
@@ -47,7 +47,7 @@ message(STATUS "BUILD_SHARED_LIBS = ${BUILD_SHARED_LIBS}")
 message(STATUS "NOX_INSTALL = ${NOX_INSTALL}")
 message(STATUS "NOX_DISABLE_ASSERTS = ${NOX_DISABLE_ASSERTS}")
 message(STATUS "NOX_BUILD_EXAMPLES = ${NOX_BUILD_EXAMPLES}")
-message(STATUS "NOX_BUILD_UNIT_TESTS = ${NOX_BUILD_UNIT_TESTS}")
+message(STATUS "NOX_BUILD_TESTS = ${NOX_BUILD_TESTS}")
 message(STATUS "NOX_BUILD_RENDERER_OPENGL = ${NOX_BUILD_RENDERER_OPENGL}")
 
 # --------------------------------------------------
@@ -71,8 +71,8 @@ if(NOX_BUILD_EXAMPLES)
     add_subdirectory(examples)
 endif()
 
-if(NOX_BUILD_UNIT_TESTS)
-    add_subdirectory(unit_tests)
+if(NOX_BUILD_TESTS)
+    add_subdirectory(tests)
 endif()
 
 # --------------------------------------------------

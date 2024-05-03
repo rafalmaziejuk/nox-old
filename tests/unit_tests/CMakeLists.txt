@@ -1,30 +1,12 @@
 # --------------------------------------------------
-# Setup googletest
-# --------------------------------------------------
-include(GoogleTest)
-
-set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
-set(BUILD_GMOCK OFF CACHE BOOL "" FORCE)
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-
-FetchContent_Declare(
-    googletest
-    URL https://github.com/google/googletest/archive/b796f7d.zip
-    DOWNLOAD_EXTRACT_TIMESTAMP ON
-)
-FetchContent_MakeAvailable(googletest)
-    
-set_target_properties(gtest PROPERTIES FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/gtest")
-set_target_properties(gtest_main PROPERTIES FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}/gtest")
-
-# --------------------------------------------------
 # Create unit tests executable
 # --------------------------------------------------
 add_executable(${NOX_UNIT_TESTS_EXE_NAME})
 target_include_directories(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
-    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
+    "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 )
 
 target_compile_features(${NOX_UNIT_TESTS_EXE_NAME} PUBLIC cxx_std_17)
@@ -34,12 +16,11 @@ if(BUILD_SHARED_LIBS)
 endif()
 
 gtest_discover_tests(${NOX_UNIT_TESTS_EXE_NAME})
-enable_testing()
 
 # --------------------------------------------------
 # Set properties
 # --------------------------------------------------
-set_target_properties(${NOX_UNIT_TESTS_EXE_NAME} PROPERTIES FOLDER ${NOX_FOLDER_NAME})
+set_target_properties(${NOX_UNIT_TESTS_EXE_NAME} PROPERTIES FOLDER ${NOX_TESTS_FOLDER_NAME})
 
 # --------------------------------------------------
 # Add dependencies
@@ -63,10 +44,16 @@ target_link_libraries(
 # --------------------------------------------------
 set(NOX_UNIT_TESTS_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/format_descriptor_tests.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_tests.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/plugins_tests.cpp
 )
 
 target_sources(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE ${NOX_UNIT_TESTS_SOURCES})
+
+# --------------------------------------------------
+# Add subdirectories
+# --------------------------------------------------
+add_subdirectory(mocks)
 
 nox_create_project_source_tree(${NOX_UNIT_TESTS_EXE_NAME})
