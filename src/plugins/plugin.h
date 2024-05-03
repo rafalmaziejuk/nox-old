@@ -31,6 +31,19 @@ class Plugin {
     PluginVersionFunctionType m_pluginVersionFunction{nullptr};
 };
 
+#if defined(NOX_USE_PLUGIN_PREFIX)
+inline constexpr auto usePrefix = true;
+#else
+inline constexpr auto usePrefix = false;
+#endif
+
+#if defined(NOX_USE_PLUGIN_POSTFIX)
+inline constexpr auto usePostfix = true;
+#else
+inline constexpr auto usePostfix = false;
+#endif
+
+template <bool usePrefix, bool usePostfix>
 [[nodiscard]] std::string createPluginFilename(std::string_view name, std::string_view extension);
 
 } // namespace nox
