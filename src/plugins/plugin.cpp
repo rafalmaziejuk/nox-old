@@ -4,22 +4,6 @@
 
 namespace nox {
 
-namespace {
-
-#if defined(NOX_USE_PLUGIN_PREFIX)
-constexpr auto usePrefix = true;
-#else
-constexpr auto usePrefix = false;
-#endif
-
-#if defined(NOX_USE_PLUGIN_POSTFIX)
-constexpr auto usePostfix = true;
-#else
-constexpr auto usePostfix = false;
-#endif
-
-} // namespace
-
 bool Plugin::pluginRegister() const {
     return m_pluginRegisterFunction();
 }
@@ -28,6 +12,7 @@ uint8_t Plugin::pluginVersion() const {
     return m_pluginVersionFunction();
 }
 
+template <bool usePrefix, bool usePostfix>
 std::string createPluginFilename(std::string_view name, std::string_view extension) {
     constexpr auto prefix = (usePrefix ? "lib" : "");
     constexpr auto infix = "nox-";
@@ -48,5 +33,10 @@ std::string createPluginFilename(std::string_view name, std::string_view extensi
     result += extension;
     return toLower(result);
 }
+
+template std::string createPluginFilename<false, false>(std::string_view, std::string_view);
+template std::string createPluginFilename<true, false>(std::string_view, std::string_view);
+template std::string createPluginFilename<false, true>(std::string_view, std::string_view);
+template std::string createPluginFilename<true, true>(std::string_view, std::string_view);
 
 } // namespace nox
