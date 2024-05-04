@@ -48,5 +48,5 @@
 #define NOX_PLUGIN_IMPORT(pluginName)
 
 #define NOX_PLUGIN_CREATE(pluginName) \
-    nox::Plugin::create(#pluginName)
+    nox::Plugin::create(createPluginName(#pluginName))
 #endif

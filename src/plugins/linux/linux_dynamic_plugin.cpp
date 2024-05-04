@@ -3,13 +3,14 @@
 
 #include <dlfcn.h>
 
+#include <filesystem>
+
 namespace nox {
 
-std::unique_ptr<Plugin> Plugin::create(std::string_view name) {
-    constexpr auto searchPath = "./";
-    constexpr auto extension = "so";
+std::unique_ptr<Plugin> Plugin::create(const std::string &name) {
+    constexpr auto extension = ".so";
 
-    const auto filename = searchPath + createPluginFilename<usePrefix, usePostfix>(name, extension);
+    const auto filename = std::filesystem::absolute(name + extension).string();
     auto plugin = std::make_unique<LinuxDynamicPlugin>();
     NOX_ENSURE_RETURN_NULLPTR(plugin->load(filename));
 

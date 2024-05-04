@@ -3,6 +3,8 @@
 #include <nox/export.h>
 #include <nox/renderer.h>
 
+#include <optional>
+
 namespace nox {
 
 using CreateRendererCallback = std::function<Renderer *()>;
@@ -16,7 +18,7 @@ class NOX_EXPORT RendererFactoryRegistry {
     [[nodiscard]] bool initialize(RendererBackend backend);
 
     void registerFactory(RendererBackend backend, const RendererFactory &factory);
-    [[nodiscard]] const RendererFactory &getFactory(RendererBackend backend) const;
+    [[nodiscard]] const std::optional<RendererFactory> &getFactory(RendererBackend backend) const;
 
   public:
     RendererFactoryRegistry(const RendererFactoryRegistry &) = delete;
