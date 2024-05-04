@@ -57,3 +57,10 @@ target_sources(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE ${NOX_UNIT_TESTS_SOURCES})
 add_subdirectory(mocks)
 
 nox_create_project_source_tree(${NOX_UNIT_TESTS_EXE_NAME})
+
+add_custom_target(
+    run-${NOX_UNIT_TESTS_EXE_NAME}
+    COMMAND ${NOX_UNIT_TESTS_EXE_NAME}
+)
+
+set_target_properties(run-${NOX_UNIT_TESTS_EXE_NAME} PROPERTIES FOLDER ${NOX_TESTS_FOLDER_NAME})
