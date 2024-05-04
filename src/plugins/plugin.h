@@ -1,14 +1,17 @@
 #pragma once
 
+#include <nox/export.h>
+
+#include <algorithm>
 #include <cstdint>
 #include <memory>
 #include <string>
 
 namespace nox {
 
-class Plugin {
+class NOX_EXPORT Plugin {
   public:
-    [[nodiscard]] static std::unique_ptr<Plugin> create(std::string_view name);
+    [[nodiscard]] static std::unique_ptr<Plugin> create(const std::string &name);
 
     [[nodiscard]] bool pluginRegister() const;
     [[nodiscard]] uint8_t pluginVersion() const;
@@ -32,18 +35,35 @@ class Plugin {
 };
 
 #if defined(NOX_USE_PLUGIN_PREFIX)
-inline constexpr auto usePrefix = true;
+inline constexpr auto usePluginPrefix = true;
 #else
-inline constexpr auto usePrefix = false;
+inline constexpr auto usePluginPrefix = false;
 #endif
 
 #if defined(NOX_USE_PLUGIN_POSTFIX)
-inline constexpr auto usePostfix = true;
+inline constexpr auto usePluginPostfix = true;
 #else
-inline constexpr auto usePostfix = false;
+inline constexpr auto usePluginPostfix = false;
 #endif
 
-template <bool usePrefix, bool usePostfix>
-[[nodiscard]] std::string createPluginFilename(std::string_view name, std::string_view extension);
+template <bool usePrefix = usePluginPrefix, bool usePostfix = usePluginPostfix>
+[[nodiscard]] inline std::string createPluginName(std::string_view name) {
+    constexpr auto prefix = (usePrefix ? "lib" : "");
+    constexpr auto infix = "nox-";
+    constexpr auto postfix = (usePostfix ? "-d" : "");
+    auto toLower = [](std::string str) {
+        std::transform(str.begin(), str.end(), str.begin(), [](auto c) {
+            return static_cast<char>(std::tolower(c));
+        });
+        return str;
+    };
+
+    std::string result;
+    result += prefix;
+    result += infix;
+    result += name.data();
+    result += postfix;
+    return toLower(result);
+}
 
 } // namespace nox

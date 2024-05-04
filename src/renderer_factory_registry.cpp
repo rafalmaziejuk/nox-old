@@ -2,8 +2,6 @@
 #include "renderer_factory_registry.h"
 #include "plugins/plugin_interface.h"
 
-#include <optional>
-
 #if defined(NOX_BUILD_RENDERER_OPENGL)
 NOX_PLUGIN_IMPORT(OPENGL);
 #endif
@@ -63,11 +61,11 @@ void RendererFactoryRegistry::registerFactory(RendererBackend backend, const Ren
     m_impl->rendererFactory = factory;
 }
 
-const RendererFactory &RendererFactoryRegistry::getFactory(RendererBackend backend) const {
+const std::optional<RendererFactory> &RendererFactoryRegistry::getFactory(RendererBackend backend) const {
     NOX_ASSERT_MSG(m_impl->rendererFactory.has_value(), "Renderer factory hasn't been initialized");
     NOX_ASSERT_MSG(backend == m_impl->rendererBackend, "Renderer factory for given backend hasn't been initialized");
 
-    return *(m_impl->rendererFactory);
+    return m_impl->rendererFactory;
 }
 
 } // namespace nox

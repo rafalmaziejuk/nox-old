@@ -1,56 +1,66 @@
 #include "plugins/plugin.h"
+#include "plugins/plugin_interface.h"
 
-#include "mocks/mock_plugin.h"
+#include "config.h"
 
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-TEST(PluginsTests, WhenCallingCreatePluginFilenameThenCorrectPluginFilenameIsReturned) {
-    constexpr auto pluginName = "plugin";
-    constexpr auto pluginExtension = "extension";
-
-    {
-        constexpr auto expectedPluginFilename = "nox-plugin.extension";
-        constexpr auto usePrefix = false;
-        constexpr auto usePostfix = false;
-
-        const auto pluginFilename = createPluginFilename<usePrefix, usePostfix>(pluginName, pluginExtension);
-        EXPECT_EQ(expectedPluginFilename, pluginFilename);
+class PluginsTestFixture : public ::testing::Test {
+  public:
+    void SetUp() override {
+        plugin = Plugin::create(test::dummyPluginName);
+        ASSERT_NE(nullptr, plugin);
     }
 
-    {
-        constexpr auto expectedPluginFilename = "libnox-plugin.extension";
-        constexpr auto usePrefix = true;
-        constexpr auto usePostfix = false;
+    std::unique_ptr<Plugin> plugin{nullptr};
+};
 
-        const auto pluginFilename = createPluginFilename<usePrefix, usePostfix>(pluginName, pluginExtension);
-        EXPECT_EQ(expectedPluginFilename, pluginFilename);
-    }
-
-    {
-        constexpr auto expectedPluginFilename = "nox-plugin-d.extension";
-        constexpr auto usePrefix = false;
-        constexpr auto usePostfix = true;
-
-        const auto pluginFilename = createPluginFilename<usePrefix, usePostfix>(pluginName, pluginExtension);
-        EXPECT_EQ(expectedPluginFilename, pluginFilename);
-    }
-
-    {
-        constexpr auto expectedPluginFilename = "libnox-plugin-d.extension";
-        constexpr auto usePrefix = true;
-        constexpr auto usePostfix = true;
-
-        const auto pluginFilename = createPluginFilename<usePrefix, usePostfix>(pluginName, pluginExtension);
-        EXPECT_EQ(expectedPluginFilename, pluginFilename);
-    }
+TEST_F(PluginsTestFixture, WhenCallingPluginVersionMethodThenCorrectPluginVersionIsReturned) {
+    EXPECT_EQ(NOX_PLUGIN_API_VERSION, plugin->pluginVersion());
 }
 
-TEST(PluginsTests, WhenCallingPluginRegisterAndPluginVersionMethodsThenCorrectValuesAreReturned) {
-    const auto mockPlugin = Plugin::create("mockPlugin");
-    ASSERT_NE(nullptr, mockPlugin);
+TEST_F(PluginsTestFixture, WhenCallingPluginRegisterMethodThenTrueIsReturned) {
+    EXPECT_TRUE(plugin->pluginRegister());
+}
 
-    EXPECT_EQ(MockPlugin::expectedPluginRegisterOutput, mockPlugin->pluginRegister());
-    EXPECT_EQ(MockPlugin::expectedPluginVersionOutput, mockPlugin->pluginVersion());
+TEST(PluginsTests, WhenCallingCreatePluginFilenameThenCorrectPluginFilenameIsReturned) {
+    constexpr auto pluginName = "plugin";
+
+    {
+        constexpr auto expectedPluginFilename = "nox-plugin";
+        constexpr auto usePrefix = false;
+        constexpr auto usePostfix = false;
+
+        const auto pluginFilename = createPluginName<usePrefix, usePostfix>(pluginName);
+        EXPECT_EQ(expectedPluginFilename, pluginFilename);
+    }
+
+    {
+        constexpr auto expectedPluginFilename = "libnox-plugin";
+        constexpr auto usePrefix = true;
+        constexpr auto usePostfix = false;
+
+        const auto pluginFilename = createPluginName<usePrefix, usePostfix>(pluginName);
+        EXPECT_EQ(expectedPluginFilename, pluginFilename);
+    }
+
+    {
+        constexpr auto expectedPluginFilename = "nox-plugin-d";
+        constexpr auto usePrefix = false;
+        constexpr auto usePostfix = true;
+
+        const auto pluginFilename = createPluginName<usePrefix, usePostfix>(pluginName);
+        EXPECT_EQ(expectedPluginFilename, pluginFilename);
+    }
+
+    {
+        constexpr auto expectedPluginFilename = "libnox-plugin-d";
+        constexpr auto usePrefix = true;
+        constexpr auto usePostfix = true;
+
+        const auto pluginFilename = createPluginName<usePrefix, usePostfix>(pluginName);
+        EXPECT_EQ(expectedPluginFilename, pluginFilename);
+    }
 }

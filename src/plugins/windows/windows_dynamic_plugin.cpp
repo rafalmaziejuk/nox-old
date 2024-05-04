@@ -3,9 +3,10 @@
 
 namespace nox {
 
-std::unique_ptr<Plugin> Plugin::create(std::string_view name) {
-    constexpr auto extension = "dll";
-    const auto filename = createPluginFilename<usePrefix, usePostfix>(name, extension);
+std::unique_ptr<Plugin> Plugin::create(const std::string &name) {
+    constexpr auto extension = ".dll";
+
+    const auto filename = name + extension;
     auto plugin = std::make_unique<WindowsDynamicPlugin>();
     NOX_ENSURE_RETURN_NULLPTR(plugin->load(filename));
 
