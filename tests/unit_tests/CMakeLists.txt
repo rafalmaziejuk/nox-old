@@ -11,6 +11,20 @@ target_include_directories(
 
 target_compile_features(${NOX_UNIT_TESTS_EXE_NAME} PUBLIC cxx_std_17)
 
+if(NOX_ENABLE_COVERAGE)
+    target_compile_options(
+        ${NOX_UNIT_TESTS_EXE_NAME}
+        PRIVATE
+        $<$<CXX_COMPILER_ID:GNU>: -O0 -g --coverage>
+    )
+
+    target_link_libraries(
+        ${NOX_UNIT_TESTS_EXE_NAME}
+        PRIVATE
+        $<$<CXX_COMPILER_ID:GNU>: --coverage>
+    )
+endif()
+
 if(BUILD_SHARED_LIBS)
     target_compile_definitions(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY)
 endif()
