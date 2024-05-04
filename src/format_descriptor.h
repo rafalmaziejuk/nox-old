@@ -3,6 +3,7 @@
 #include <nox/format.h>
 
 #include <array>
+#include <cstddef>
 #include <cstdint>
 
 namespace nox {

@@ -52,9 +52,6 @@ void GLCommandList::endRenderPass() {
 }
 
 void GLCommandList::bindGraphicsPipelineState(const GraphicsPipelineState &pipelineState) {
-    NOX_ASSERT(m_state.currentRenderPass != nullptr);
-    NOX_ASSERT(m_state.currentFramebuffer != nullptr);
-
     const auto *pipeline = static_cast<const GLGraphicsPipelineState *>(&pipelineState);
     const auto *currentRenderPass = m_state.currentRenderPass;
     const auto *currentFramebuffer = m_state.currentFramebuffer;
