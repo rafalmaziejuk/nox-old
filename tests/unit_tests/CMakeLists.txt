@@ -6,6 +6,7 @@ target_include_directories(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
     "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/tests>"
     "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>"
 )
 
@@ -65,11 +66,6 @@ set(NOX_UNIT_TESTS_SOURCES
 
 target_sources(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE ${NOX_UNIT_TESTS_SOURCES})
 
-# --------------------------------------------------
-# Add subdirectories
-# --------------------------------------------------
-add_subdirectory(mocks)
-
 nox_create_project_source_tree(${NOX_UNIT_TESTS_EXE_NAME})
 
 add_custom_target(
@@ -77,4 +73,9 @@ add_custom_target(
     COMMAND ${NOX_UNIT_TESTS_EXE_NAME}
 )
 
-set_target_properties(run-${NOX_UNIT_TESTS_EXE_NAME} PROPERTIES FOLDER ${NOX_TESTS_FOLDER_NAME})
+set_target_properties(
+    run-${NOX_UNIT_TESTS_EXE_NAME}
+    PROPERTIES
+    FOLDER "${NOX_TESTS_FOLDER_NAME}"
+    EXCLUDE_FROM_ALL TRUE
+)
