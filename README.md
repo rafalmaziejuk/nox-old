@@ -3,6 +3,7 @@
 <p align="center">
     <a href="https://github.com/rafalmaziejuk/nox/blob/master/LICENSE"><img alt="License" src="https://img.shields.io/badge/License-Apache_2.0-blue.svg" /></a>
     <a href="https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml"><img src="https://github.com/rafalmaziejuk/nox/actions/workflows/ci.yml/badge.svg?branch=master"/></a>
+    <a href="https://coveralls.io/github/rafalmaziejuk/nox?branch=master"><img src="https://coveralls.io/repos/github/rafalmaziejuk/nox/badge.svg?branch=master"/></a>
 </p>
 
 NOX is a C++17 library crafted for cross-platform graphics rendering, providing a unified API for modern graphics APIs such as Vulkan or D3D12, as well as OpenGL. Tailored for Windows and Linux development, NOX simplifies the intricacies of low-level graphics programming, enabling you to focus on creating immersive visual experiences.
