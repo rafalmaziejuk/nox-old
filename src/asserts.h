@@ -3,7 +3,7 @@
 // clang-format off
 
 #if defined(NOX_DISABLE_ASSERTS) || !defined(NOX_DEBUG)
-    #define NOX_ASSERT(condition) (void)(0)
+    #define NOX_ASSERT(condition) (void)(condition)
 #else
     #include <cassert>
     #define NOX_ASSERT(condition) assert(condition)
