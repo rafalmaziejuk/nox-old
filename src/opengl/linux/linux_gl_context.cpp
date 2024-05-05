@@ -110,8 +110,8 @@ void LinuxGLContext::swapBuffers() const {
     eglSwapBuffers(m_handleDisplay, m_handleSurface);
 }
 
-void LinuxGLContext::setSwapInterval(bool value) const {
-    eglSwapInterval(m_handleDisplay, static_cast<EGLint>(value));
+void LinuxGLContext::setSwapInterval(bool interval) const {
+    eglSwapInterval(m_handleDisplay, static_cast<EGLint>(interval));
 }
 
 } // namespace nox

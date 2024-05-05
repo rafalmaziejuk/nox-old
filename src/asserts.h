@@ -1,12 +1,22 @@
 #pragma once
 
+namespace nox {
+
+inline bool assertDisabled = false;
+
+[[nodiscard]] inline bool &getAssertDisabled() {
+    return assertDisabled;
+}
+
+} // namespace nox
+
 // clang-format off
 
 #if defined(NOX_DISABLE_ASSERTS) || !defined(NOX_DEBUG)
     #define NOX_ASSERT(condition) (void)(condition)
 #else
     #include <cassert>
-    #define NOX_ASSERT(condition) assert(condition)
+    #define NOX_ASSERT(condition) assert((condition) || (assertDisabled))
 #endif
 
 #define NOX_ASSERT_MSG(condition, message) NOX_ASSERT((condition) && (message))

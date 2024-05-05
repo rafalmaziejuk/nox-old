@@ -50,13 +50,6 @@ generate_export_header(
 # --------------------------------------------------
 # Link libraries
 # --------------------------------------------------
-add_subdirectory(${NOX_THIRD_PARTY_DIR}/glad glad)
-set_target_properties(
-    glad
-    PROPERTIES 
-    FOLDER "${NOX_THIRD_PARTY_FOLDER_NAME}"
-)
-
 target_link_libraries(
     ${NOX_OPENGL_LIB_NAME}
     PRIVATE

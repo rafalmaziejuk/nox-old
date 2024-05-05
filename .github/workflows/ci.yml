@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [ "master" ]
 
+env:
+  DISPLAY: ":99"
+  MESA_GL_VERSION_OVERRIDE: "4.6"
+
 defaults:
   run:
     shell: bash
@@ -104,8 +108,8 @@ jobs:
     - name: Analyze code
       run: cmake -DPROJECT_BINARY_DIR=build -P cmake/run_clang_tidy.cmake
 
-  coverage:
-    name: coverage ${{ matrix.platform.name }}
+  unit-tests:
+    name: unit-tests ${{ matrix.platform.name }}
     runs-on: ${{ matrix.platform.os }}
 
     strategy:
@@ -127,12 +131,31 @@ jobs:
 
     - name: Install dependencies
       run: |
+          set -e
+
           if [ "$RUNNER_OS" == "Linux" ]; then
-            sudo apt-get update && sudo apt-get install libxrandr-dev libxinerama-dev libxcursor-dev libxi-dev libxext-dev libgl1-mesa-dev gcovr
+            sudo apt-get update && sudo apt-get install xorg-dev libxrandr-dev libxcursor-dev libgl1-mesa-dev libegl1-mesa-dev libdrm-dev mesa-utils xvfb fluxbox gcovr
           fi
+
           if [ "$RUNNER_OS" == "Windows" ]; then
             pip install gcovr
           fi
+
+    - name: Create Display Linux
+      if: runner.os == 'Linux'
+      run: |
+          set -e
+
+          Xvfb $DISPLAY -screen 0 800x600x24 &
+          sleep 5
+          fluxbox > /dev/null 2>&1 &
+          sleep 5
+
+    - name: Install Windows Mesa3D
+      uses: ssciwr/setup-mesa-dist-win@v2
+      if: runner.os == 'Windows'
+      with:
+        build-type: 'release-msvc'
 
     - name: Configure
       run: cmake -S . -B build ${{ matrix.platform.flags }}

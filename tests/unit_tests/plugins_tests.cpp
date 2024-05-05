@@ -1,27 +1,23 @@
-#include "plugins/plugin.h"
-#include "plugins/plugin_interface.h"
+#include "src/plugins/plugin.h"
+#include "src/plugins/plugin_interface.h"
 
-#include "config.h"
+#include "tests/utilities/config.h"
 
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-class PluginsTestFixture : public ::testing::Test {
-  public:
-    void SetUp() override {
-        plugin = Plugin::create(test::dummyPluginName);
-        ASSERT_NE(nullptr, plugin);
-    }
+TEST(PluginsTests, WhenCallingPluginVersionMethodThenCorrectPluginVersionIsReturned) {
+    const auto plugin = Plugin::create(test::dummyPluginName);
+    ASSERT_NE(nullptr, plugin);
 
-    std::unique_ptr<Plugin> plugin{nullptr};
-};
-
-TEST_F(PluginsTestFixture, WhenCallingPluginVersionMethodThenCorrectPluginVersionIsReturned) {
     EXPECT_EQ(NOX_PLUGIN_API_VERSION, plugin->pluginVersion());
 }
 
-TEST_F(PluginsTestFixture, WhenCallingPluginRegisterMethodThenTrueIsReturned) {
+TEST(PluginsTests, WhenCallingPluginRegisterMethodThenTrueIsReturned) {
+    const auto plugin = Plugin::create(test::dummyPluginName);
+    ASSERT_NE(nullptr, plugin);
+
     EXPECT_TRUE(plugin->pluginRegister());
 }
 
