@@ -12,7 +12,7 @@ class GLContext : public Surface {
     [[nodiscard]] static std::unique_ptr<GLContext> create(const SurfaceDescriptor &descriptor);
 
     virtual void swapBuffers() const = 0;
-    virtual void setSwapInterval(bool value) const = 0;
+    virtual void setSwapInterval(bool interval) const = 0;
 
   public:
     GLContext() = default;

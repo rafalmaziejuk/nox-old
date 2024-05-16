@@ -84,9 +84,7 @@ bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
 }
 
 std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
-    if (!loadOpenGL()) {
-        return nullptr;
-    }
+    NOX_ENSURE_RETURN_NULLPTR_MSG(loadOpenGL(), "Couldn't preload WGL");
 
     const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
     const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
@@ -101,12 +99,9 @@ std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor
 WindowsGLContext::WindowsGLContext(const WindowsSurfaceBackendDescriptor &descriptor) {
     m_handleWindow = static_cast<HWND>(descriptor.windowHandle);
     m_handleDeviceContext = GetDC(m_handleWindow);
-    NOX_ASSERT_MSG(m_handleDeviceContext != nullptr, "Couldn't get device context for given window handle");
 }
 
 WindowsGLContext::~WindowsGLContext() {
-    NOX_ASSERT_MSG(IsWindow(m_handleWindow), "The window handle associated with OpenGL context is invalid");
-
     wglMakeCurrent(nullptr, nullptr);
     wglDeleteContext(m_handleRenderingContext);
     ReleaseDC(m_handleWindow, m_handleDeviceContext);
@@ -119,6 +114,8 @@ WindowsGLContext::~WindowsGLContext() {
 }
 
 bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
+    NOX_ENSURE_RETURN_FALSE_MSG(m_handleDeviceContext != nullptr, "Couldn't get device context");
+
     std::array<int32_t, 19> pixelFormatAttributes{WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
                                                   WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
                                                   WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
@@ -159,8 +156,8 @@ void WindowsGLContext::swapBuffers() const {
     SwapBuffers(m_handleDeviceContext);
 }
 
-void WindowsGLContext::setSwapInterval(bool value) const {
-    wglSwapIntervalEXT(static_cast<int32_t>(value));
+void WindowsGLContext::setSwapInterval(bool interval) const {
+    wglSwapIntervalEXT(static_cast<int32_t>(interval));
 }
 
 } // namespace nox

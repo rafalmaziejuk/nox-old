@@ -8,7 +8,7 @@ tools/__pycache__/
 # Files
 include/nox/export.h
 src/opengl/nox_opengl_export.h
-tests/config.h
+tests/utilities/config.h
 cmake/nox_config.cmake
 cmake/nox_config_version.cmake
 scripts/custom_config.cmd

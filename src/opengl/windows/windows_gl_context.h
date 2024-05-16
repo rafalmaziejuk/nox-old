@@ -12,7 +12,7 @@ class WindowsGLContext final : public GLContext {
     [[nodiscard]] bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor);
 
     void swapBuffers() const override;
-    void setSwapInterval(bool value) const override;
+    void setSwapInterval(bool interval) const override;
 
   private:
     HWND m_handleWindow{nullptr};

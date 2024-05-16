@@ -16,7 +16,7 @@ class LinuxGLContext : public GLContext {
     [[nodiscard]] bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor);
 
     void swapBuffers() const override;
-    void setSwapInterval(bool value) const override;
+    void setSwapInterval(bool interval) const override;
 
   protected:
     [[nodiscard]] virtual bool setDisplayHandle() = 0;
