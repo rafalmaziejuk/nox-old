@@ -1,10 +1,5 @@
 set(NOX_EXAMPLES_BASE_LIB_NAME "base")
-
-set(NOX_EXAMPLES_BASE_DIR "${PROJECT_SOURCE_DIR}/examples/base")
-set(NOX_EXAMPLES_BASE_THIRD_PARTY_DIR "${NOX_EXAMPLES_BASE_DIR}/third_party")
-
 set(NOX_EXAMPLES_BASE_FOLDER_NAME "${NOX_EXAMPLES_FOLDER_NAME}/base")
-set(NOX_EXAMPLES_BASE_THIRD_PARTY_FOLDER_NAME "${NOX_EXAMPLES_BASE_FOLDER_NAME}/third_party")
 
 # --------------------------------------------------
 # Create target
@@ -35,27 +30,6 @@ set_target_properties(
 # --------------------------------------------------
 # Link libraries
 # --------------------------------------------------
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
-add_subdirectory(${NOX_EXAMPLES_BASE_THIRD_PARTY_DIR}/glfw glfw)
-set_target_properties(
-    glfw
-    PROPERTIES 
-    FOLDER "${NOX_EXAMPLES_BASE_THIRD_PARTY_FOLDER_NAME}/glfw"
-)
-set_target_properties(
-    update_mappings
-    PROPERTIES
-    FOLDER "${NOX_EXAMPLES_BASE_THIRD_PARTY_FOLDER_NAME}/glfw"
-)
-
-add_subdirectory(${NOX_EXAMPLES_BASE_THIRD_PARTY_DIR}/stb_image stb_image)
-set_target_properties(
-    stb_image
-    PROPERTIES 
-    FOLDER "${NOX_EXAMPLES_BASE_THIRD_PARTY_FOLDER_NAME}/stb_image"
-)
-
 target_link_libraries(
     ${NOX_EXAMPLES_BASE_LIB_NAME}
     PUBLIC

@@ -12,10 +12,6 @@ X11GLContext::X11GLContext(const X11SurfaceBackendDescriptor &descriptor) {
 }
 
 X11GLContext::~X11GLContext() {
-    [[maybe_unused]] XWindowAttributes windowAttributes; // NOLINT
-    NOX_ASSERT_MSG(XGetWindowAttributes(m_handleDisplayX11, m_handleWindowX11, &windowAttributes),
-                   "The window handle associated with OpenGL context is invalid");
-
     m_handleDisplayX11 = nullptr;
     m_handleWindowX11 = 0u;
 }

@@ -67,6 +67,7 @@ endif()
 # --------------------------------------------------
 # Add subdirectories
 # --------------------------------------------------
+add_subdirectory(third_party)
 add_subdirectory(src)
 
 if(NOX_BUILD_EXAMPLES)
