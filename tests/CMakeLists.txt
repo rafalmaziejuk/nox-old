@@ -1,4 +1,9 @@
-set(NOX_TESTS_UTILITIES_LIB_NAME "utilities")
+# --------------------------------------------------
+# Set auxiliary variables
+# --------------------------------------------------
+set(NOX_TESTS_FIXTURES_LIB_NAME "fixtures")
+set(NOX_UNIT_TESTS_EXE_NAME "unit-tests")
+set(NOX_TESTS_FOLDER_NAME "${NOX_FOLDER_NAME}/tests")
 
 # --------------------------------------------------
 # Setup googletest
@@ -21,8 +26,11 @@ set_target_properties(gtest_main PROPERTIES FOLDER "${NOX_THIRD_PARTY_FOLDER_NAM
 
 enable_testing()
 
+get_filename_component(NOX_TESTS_DATA_DIR "${PROJECT_SOURCE_DIR}/tests/data" ABSOLUTE)
+configure_file(config.h.in "${CMAKE_CURRENT_SOURCE_DIR}/config.h")
+
 # --------------------------------------------------
 # Add subdirectories
 # --------------------------------------------------
-add_subdirectory(utilities)
+add_subdirectory(fixtures)
 add_subdirectory(unit_tests)

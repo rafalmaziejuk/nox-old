@@ -1,21 +1,19 @@
 #include "src/plugins/plugin.h"
 #include "src/plugins/plugin_interface.h"
 
-#include "tests/utilities/config.h"
-
 #include <gtest/gtest.h>
 
 using namespace nox;
 
 TEST(PluginsTests, WhenCallingPluginVersionMethodThenCorrectPluginVersionIsReturned) {
-    const auto plugin = Plugin::create(test::dummyPluginName);
+    const auto plugin = Plugin::create(tests::dummyPluginName);
     ASSERT_NE(nullptr, plugin);
 
     EXPECT_EQ(NOX_PLUGIN_API_VERSION, plugin->pluginVersion());
 }
 
 TEST(PluginsTests, WhenCallingPluginRegisterMethodThenTrueIsReturned) {
-    const auto plugin = Plugin::create(test::dummyPluginName);
+    const auto plugin = Plugin::create(tests::dummyPluginName);
     ASSERT_NE(nullptr, plugin);
 
     EXPECT_TRUE(plugin->pluginRegister());

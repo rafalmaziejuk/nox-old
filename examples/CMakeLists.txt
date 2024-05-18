@@ -1,3 +1,8 @@
+# --------------------------------------------------
+# Set auxiliary variables
+# --------------------------------------------------
+set(NOX_EXAMPLES_FOLDER_NAME "${NOX_FOLDER_NAME}/examples")
+
 macro(add_example_project NAME)
     # --------------------------------------------------
     # Create target

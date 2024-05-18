@@ -1,0 +1,8 @@
+#pragma once 
+
+namespace nox::tests {
+
+inline constexpr auto testDataDirectoryPath = "@NOX_TESTS_DATA_DIR@/";
+inline constexpr auto dummyPluginName = "@NOX_TESTS_DATA_DIR@/nox-dummy";
+
+}

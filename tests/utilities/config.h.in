@@ -1,8 +1,0 @@
-#pragma once 
-
-namespace nox::test {
-
-inline constexpr auto testDataDirectoryPath = "@NOX_TEST_DATA_DIR@/";
-inline constexpr auto dummyPluginName = "@NOX_TEST_DATA_DIR@/nox-dummy";
-
-}

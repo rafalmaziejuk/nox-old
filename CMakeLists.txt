@@ -12,7 +12,6 @@ include(CMakeDependentOption)
 include(GenerateExportHeader)
 include(GNUInstallDirs)
 include(FetchContent)
-include(auxiliary_vars)
 
 # --------------------------------------------------
 # Set global properties/variables
@@ -23,6 +22,12 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS OFF)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/bin")
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${PROJECT_BINARY_DIR}/lib")
+
+set(NOX_LIB_NAME "nox")
+set(NOX_OPENGL_LIB_NAME "nox-opengl")
+
+set(NOX_FOLDER_NAME "${NOX_LIB_NAME}")
+set(NOX_THIRD_PARTY_FOLDER_NAME "${NOX_FOLDER_NAME}/third_party")
 
 # --------------------------------------------------
 # Specify options
