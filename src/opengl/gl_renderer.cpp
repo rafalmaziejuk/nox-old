@@ -19,12 +19,13 @@ RendererBackend GLRenderer::getRendererBackend() const {
 }
 
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
-    NOX_ASSERT(GLSwapchain::validateInput(descriptor));
-
     auto context = GLContext::create(descriptor.surfaceDescriptor);
     NOX_ENSURE_RETURN_NULLPTR_MSG(context != nullptr, "Couldn't create context");
 
-    return std::make_unique<GLSwapchain>(descriptor, std::move(context));
+    auto swapchain = GLSwapchain::create(descriptor, std::move(context));
+    NOX_ENSURE_RETURN_NULLPTR_MSG(swapchain != nullptr, "Couldn't create swapchain");
+
+    return swapchain;
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescriptor &descriptor) {

@@ -17,7 +17,6 @@ std::unique_ptr<LinuxGLContext> createContext(const SurfaceBackendDescriptor &de
         return std::make_unique<X11GLContext>(*x11SurfaceBackendDescriptor);
     }
 
-    NOX_ASSERT(false);
     return nullptr;
 }
 

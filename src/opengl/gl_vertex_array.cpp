@@ -27,7 +27,8 @@ GLenum mapVertexAttributeDataTypeToEnum(VertexAttributeDataType type) {
 
 } // namespace
 
-GLVertexArray::GLVertexArray(VertexAttributes vertexAttributes) : m_vertexAttributes{std::move(vertexAttributes)} {
+GLVertexArray::GLVertexArray(VertexAttributes vertexAttributes)
+    : m_vertexAttributes{std::move(vertexAttributes)} {
     glCreateVertexArrays(1, &m_handle);
 
     for (size_t i = 0u; i < m_vertexAttributes.size(); i++) {

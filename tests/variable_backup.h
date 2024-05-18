@@ -5,7 +5,8 @@ namespace nox::tests {
 template <typename T>
 class VariableBackup {
   public:
-    VariableBackup(T *variable) : m_variable{variable},
+    VariableBackup(T *variable) 
+    : m_variable{variable},
                                   m_variableBackupValue{*variable} {}
 
     ~VariableBackup() {

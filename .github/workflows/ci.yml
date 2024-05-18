@@ -9,6 +9,7 @@ on:
 env:
   DISPLAY: ":99"
   MESA_GL_VERSION_OVERRIDE: "4.6"
+  MESA_GLSL_VERSION_OVERRIDE: "460"
 
 defaults:
   run:

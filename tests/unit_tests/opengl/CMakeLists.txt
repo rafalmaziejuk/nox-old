@@ -87,6 +87,7 @@ endif()
 set(NOX_UNIT_TESTS_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_context_tests.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_swapchain_tests.cpp
 )
 
 target_sources(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE ${NOX_UNIT_TESTS_OPENGL_SOURCES})

@@ -34,7 +34,8 @@ bool GLShader::validateInput(const ShaderDescriptor &descriptor, std::string_vie
     return result;
 }
 
-GLShader::GLShader(const ShaderDescriptor &descriptor) : m_type{descriptor.type} {
+GLShader::GLShader(const ShaderDescriptor &descriptor)
+    : m_type{descriptor.type} {
     m_handle = glCreateShader(mapShaderTypeToEnum(m_type));
 }
 

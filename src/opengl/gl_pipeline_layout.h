@@ -8,7 +8,9 @@ class GLTexture;
 
 class GLResourceBinding {
   public:
-    explicit GLResourceBinding(uint32_t index) : m_bindingIndex{index} {}
+    explicit GLResourceBinding(uint32_t index)
+        : m_bindingIndex{index} {}
+
     virtual ~GLResourceBinding() = default;
 
     virtual void bind() const = 0;

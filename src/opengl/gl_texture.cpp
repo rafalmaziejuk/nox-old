@@ -208,8 +208,9 @@ GLenum mapPixelDataType(ImageFormat format) {
 
 } // namespace
 
-GLTexture::GLTexture(const TextureDescriptor &descriptor, TextureType type) : m_type{type},
-                                                                              m_format{descriptor.format} {
+GLTexture::GLTexture(const TextureDescriptor &descriptor, TextureType type)
+    : m_type{type},
+      m_format{descriptor.format} {
     auto target = mapTextureTarget(m_type);
     glCreateTextures(target, 1, &m_handle);
 }
@@ -238,7 +239,8 @@ bool GLTexture2D::validateInput(const Texture2DDescriptor &descriptor) {
     return result;
 }
 
-GLTexture2D::GLTexture2D(const Texture2DDescriptor &descriptor) : GLTexture{descriptor, TextureType::TEXTURE2D} {
+GLTexture2D::GLTexture2D(const Texture2DDescriptor &descriptor)
+    : GLTexture{descriptor, TextureType::TEXTURE2D} {
     auto width = static_cast<GLsizei>(descriptor.size.x());
     auto height = static_cast<GLsizei>(descriptor.size.y());
     auto format = mapTextureFormat(descriptor.format);
