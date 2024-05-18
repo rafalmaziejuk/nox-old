@@ -29,6 +29,12 @@ if(BUILD_SHARED_LIBS)
     target_compile_definitions(${NOX_UNIT_TESTS_EXE_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY)
 endif()
 
+target_precompile_headers(
+    ${NOX_UNIT_TESTS_EXE_NAME}
+    PRIVATE
+    [["tests/config.h"]]
+)
+
 gtest_discover_tests(${NOX_UNIT_TESTS_EXE_NAME})
 
 # --------------------------------------------------
@@ -43,7 +49,7 @@ target_link_libraries(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
     ${NOX_LIB_NAME}
-    ${NOX_TESTS_UTILITIES_LIB_NAME}
+    ${NOX_TESTS_FIXTURES_LIB_NAME}
     GTest::gtest_main
 )
 

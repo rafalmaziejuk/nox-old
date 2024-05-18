@@ -1,4 +1,16 @@
 # --------------------------------------------------
+# Set auxiliary variables
+# --------------------------------------------------
+set(NOX_RENDERERS_FOLDER_NAME "${NOX_FOLDER_NAME}/renderers")
+
+if(BUILD_SHARED_LIBS)
+    set(NOX_DEBUG_POSTFIX "-d")
+else()
+    set(NOX_DEBUG_POSTFIX "-s-d")
+    set(NOX_RELEASE_POSTFIX "-s")
+endif()
+
+# --------------------------------------------------
 # Create nox target
 # --------------------------------------------------
 add_library(${NOX_LIB_NAME})
