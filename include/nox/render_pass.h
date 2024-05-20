@@ -9,14 +9,18 @@
 namespace nox {
 
 enum class AttachmentLoadOp {
+    NONE,
     LOAD,
     CLEAR,
-    DONT_CARE
+    DONT_CARE,
+    MAX
 };
 
 enum class AttachmentStoreOp {
+    NONE,
     STORE,
-    DONT_CARE
+    DONT_CARE,
+    MAX
 };
 
 struct AttachmentDescriptor {

@@ -13,7 +13,9 @@ namespace nox {
 using ShaderStages = std::vector<const Shader *>;
 
 enum class PrimitiveTopology {
-    TRIANGLE_LIST
+    NONE,
+    TRIANGLE_LIST,
+    MAX
 };
 
 struct GraphicsPipelineStateDescriptor {

@@ -21,7 +21,9 @@ struct TextureWriteDescriptor {
 };
 
 enum class TextureType {
-    TEXTURE2D
+    NONE,
+    TEXTURE2D,
+    MAX
 };
 
 struct TextureDescriptor {

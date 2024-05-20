@@ -19,6 +19,7 @@ using ImageFormatDescriptors = std::array<ImageFormatDescriptor, static_cast<siz
 
 // clang-format off
 inline constexpr ImageFormatDescriptors imageFormatDescriptors{{
+    {false, false, false, false}, // NONE
     {true , false, false, false}, // R8UI
     {true , false, false, false}, // R16UI
     {true , false, false, false}, // R32UI
@@ -91,6 +92,7 @@ inline constexpr ImageFormatDescriptors imageFormatDescriptors{{
 }
 
 enum class VertexAttributeDataType : uint8_t {
+    NONE,
     UNSIGNED_BYTE,
     UNSIGNED_SHORT,
     UNSIGNED_INT,
@@ -98,11 +100,12 @@ enum class VertexAttributeDataType : uint8_t {
     SHORT,
     INT,
     HALF_FLOAT,
-    FLOAT
+    FLOAT,
+    MAX
 };
 
 struct VertexAttributeFormatDescriptor {
-    VertexAttributeDataType vertexAttributeDataType;
+    VertexAttributeDataType vertexAttributeDataType{VertexAttributeDataType::NONE};
     uint8_t componentsCount{0u};
     uint8_t stride{0u};
     bool isNormalized{false};
@@ -112,6 +115,7 @@ using VertexAttributeFormatDescriptors = std::array<VertexAttributeFormatDescrip
 
 // clang-format off
 inline constexpr VertexAttributeFormatDescriptors vertexAttributeFormatDescriptors{{
+    {VertexAttributeDataType::NONE          , 0u, 0u     , false}, // NONE
     {VertexAttributeDataType::UNSIGNED_BYTE , 1u, 1u * 1u, false}, // R8UI
     {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, false}, // R16UI
     {VertexAttributeDataType::UNSIGNED_INT  , 1u, 1u * 4u, false}, // R32UI
