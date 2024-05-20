@@ -1,3 +1,4 @@
+#include "asserts.h"
 #include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_texture.h"
 
@@ -38,6 +39,9 @@ GLPipelineLayout::GLPipelineLayout(const PipelineLayoutDescriptor &descriptor) {
             case ResourceType::INPUT_ATTACHMENT:
                 m_inputAttachmentBindings.emplace_back(setLayoutBinding);
                 break;
+
+            default:
+                NOX_ASSERT(false);
             }
         }
     }

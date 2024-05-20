@@ -21,7 +21,10 @@ using SurfaceBackendDescriptor = std::variant<WindowsSurfaceBackendDescriptor,
 
 struct OpenGLSurfaceAttributesDescriptor {
     struct PixelFormatDescriptor {
-        uint8_t colorBits{32u};
+        uint8_t redBits{8u};
+        uint8_t greenBits{8u};
+        uint8_t blueBits{8u};
+        uint8_t alphaBits{8u};
         uint8_t depthBits{24u};
         uint8_t stencilBits{8u};
     } pixelFormatDescriptor;

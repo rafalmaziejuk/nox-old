@@ -8,7 +8,6 @@ namespace nox {
 
 class GLContext : public Surface {
   public:
-    [[nodiscard]] static bool validateInput(const SurfaceDescriptor &descriptor);
     [[nodiscard]] static std::unique_ptr<GLContext> create(const SurfaceDescriptor &descriptor);
 
     virtual void swapBuffers() const = 0;

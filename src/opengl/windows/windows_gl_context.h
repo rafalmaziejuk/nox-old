@@ -6,10 +6,9 @@ namespace nox {
 
 class WindowsGLContext final : public GLContext {
   public:
-    explicit WindowsGLContext(const WindowsSurfaceBackendDescriptor &descriptor);
     ~WindowsGLContext() override;
 
-    [[nodiscard]] bool initialize(const OpenGLSurfaceAttributesDescriptor &descriptor);
+    [[nodiscard]] bool initialize(const SurfaceDescriptor &descriptor);
 
     void swapBuffers() const override;
     void setSwapInterval(bool interval) const override;

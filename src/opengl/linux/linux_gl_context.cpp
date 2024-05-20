@@ -9,45 +9,27 @@
 
 namespace nox {
 
-bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
-    bool result = true;
+namespace {
 
-    auto validateSurfaceBackendDescriptor = [&descriptor]() -> bool {
-        const auto *x11SurfaceBackendDescriptor = std::get_if<X11SurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
-        if (x11SurfaceBackendDescriptor != nullptr) {
-            bool result = true;
-            result &= (x11SurfaceBackendDescriptor->windowHandle != 0u);
-            result &= (x11SurfaceBackendDescriptor->displayHandle != nullptr);
-            return result;
-        }
-
-        return false;
-    };
-    result &= validateSurfaceBackendDescriptor();
-
-    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
-    result &= (surfaceAttributesDescriptor != nullptr);
-    if (result) {
-        result &= (surfaceAttributesDescriptor->pixelFormatDescriptor.colorBits > 0u);
+std::unique_ptr<LinuxGLContext> createContext(const SurfaceBackendDescriptor &descriptor) {
+    const auto *x11SurfaceBackendDescriptor = std::get_if<X11SurfaceBackendDescriptor>(&descriptor);
+    if (x11SurfaceBackendDescriptor != nullptr) {
+        return std::make_unique<X11GLContext>(*x11SurfaceBackendDescriptor);
     }
 
-    return result;
+    NOX_ASSERT(false);
+    return nullptr;
 }
 
-std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
-    NOX_ENSURE_RETURN_NULLPTR_MSG(gladLoaderLoadEGL(nullptr), "Couldn't preload EGL");
+} // namespace
 
-    std::unique_ptr<LinuxGLContext> context{nullptr};
-    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
-    const auto *x11SurfaceBackendDescriptor = std::get_if<X11SurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
-    if (x11SurfaceBackendDescriptor != nullptr) {
-        context = std::make_unique<X11GLContext>(*x11SurfaceBackendDescriptor);
-    }
+std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
+    auto context = createContext(descriptor.surfaceBackendDescriptor);
     NOX_ENSURE_RETURN_NULLPTR(context != nullptr);
 
-    if (!context->initialize(*surfaceAttributesDescriptor)) {
-        return nullptr;
-    }
+    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
+    NOX_ENSURE_RETURN_NULLPTR(surfaceAttributesDescriptor != nullptr);
+    NOX_ENSURE_RETURN_NULLPTR(context->initialize(*surfaceAttributesDescriptor));
 
     return context;
 }
@@ -67,20 +49,22 @@ LinuxGLContext::~LinuxGLContext() {
 }
 
 bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadEGL(nullptr), "Couldn't preload EGL");
     NOX_ENSURE_RETURN_FALSE_MSG(setDisplayHandle(), "Couldn't get EGL display");
-
     NOX_ENSURE_RETURN_FALSE_MSG(eglInitialize(m_handleDisplay, nullptr, nullptr), "Couldn't initialize EGL");
     NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadEGL(m_handleDisplay), "Couldn't load EGL");
 
     eglBindAPI(EGL_OPENGL_API);
 
-    std::array<int32_t, 15> framebufferConfigAttributes{EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
+    std::array<int32_t, 19> framebufferConfigAttributes{EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                                         EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
                                                         EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
-                                                        EGL_BUFFER_SIZE, descriptor.pixelFormatDescriptor.colorBits,
+                                                        EGL_RED_SIZE, descriptor.pixelFormatDescriptor.redBits,
+                                                        EGL_GREEN_SIZE, descriptor.pixelFormatDescriptor.greenBits,
+                                                        EGL_BLUE_SIZE, descriptor.pixelFormatDescriptor.blueBits,
+                                                        EGL_ALPHA_SIZE, descriptor.pixelFormatDescriptor.alphaBits,
                                                         EGL_DEPTH_SIZE, descriptor.pixelFormatDescriptor.depthBits,
                                                         EGL_STENCIL_SIZE, descriptor.pixelFormatDescriptor.stencilBits,
-                                                        EGL_ALPHA_SIZE, (descriptor.pixelFormatDescriptor.colorBits == 32u) ? 8 : 0,
                                                         EGL_NONE};
     EGLConfig framebufferConfig{};
     EGLint framebufferConfigsCount{};
@@ -89,7 +73,7 @@ bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descrip
                     &framebufferConfig,
                     1,
                     &framebufferConfigsCount);
-    NOX_ENSURE_RETURN_FALSE_MSG(framebufferConfigsCount == 1, "Couldn't choose only one framebuffer config");
+    NOX_ENSURE_RETURN_FALSE_MSG(framebufferConfigsCount == 1, "Couldn't choose unique framebuffer config");
 
     constexpr std::array<int32_t, 7> contextAttributes{EGL_CONTEXT_MAJOR_VERSION, glMajorVersion,
                                                        EGL_CONTEXT_MINOR_VERSION, glMinorVersion,
