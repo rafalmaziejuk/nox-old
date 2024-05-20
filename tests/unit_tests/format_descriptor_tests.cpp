@@ -6,72 +6,73 @@ using namespace nox;
 
 TEST(FormatDescriptorTests, WhenGetImageFormatDescriptorIsCalledThenCorrectImageFormatDescriptorIsReturned) {
     constexpr ImageFormatDescriptors expectedImageFormatDescriptors{{
-        {true, false, false, false}, // R8UI
-        {true, false, false, false}, // R16UI
-        {true, false, false, false}, // R32UI
-        {true, false, false, false}, // RG8UI
-        {true, false, false, false}, // RG16UI
-        {true, false, false, false}, // RG32UI
-        {true, false, false, false}, // RGB8UI
-        {true, false, false, false}, // RGB16UI
-        {true, false, false, false}, // RGB32UI
-        {true, false, false, false}, // RGBA8UI
-        {true, false, false, false}, // RGBA16UI
-        {true, false, false, false}, // RGBA32UI
-        {true, false, false, false}, // R8I
-        {true, false, false, false}, // R16I
-        {true, false, false, false}, // R32I
-        {true, false, false, false}, // RG8I
-        {true, false, false, false}, // RG16I
-        {true, false, false, false}, // RG32I
-        {true, false, false, false}, // RGB8I
-        {true, false, false, false}, // RGB16I
-        {true, false, false, false}, // RGB32I
-        {true, false, false, false}, // RGBA8I
-        {true, false, false, false}, // RGBA16I
-        {true, false, false, false}, // RGBA32I
-        {true, false, false, false}, // R8_UNORM
-        {true, false, false, false}, // R16_UNORM
-        {true, false, false, false}, // R32_UNORM
-        {true, false, false, false}, // RG8_UNORM
-        {true, false, false, false}, // RG16_UNORM
-        {true, false, false, false}, // RG32_UNORM
-        {true, false, false, false}, // RGB8_UNORM
-        {true, false, false, false}, // RGB16_UNORM
-        {true, false, false, false}, // RGB32_UNORM
-        {true, false, false, false}, // RGBA8_UNORM
-        {true, false, false, false}, // RGBA16_UNORM
-        {true, false, false, false}, // RGBA32_UNORM
-        {true, false, false, false}, // R8_SNORM
-        {true, false, false, false}, // R16_SNORM
-        {true, false, false, false}, // R32_SNORM
-        {true, false, false, false}, // RG8_SNORM
-        {true, false, false, false}, // RG16_SNORM
-        {true, false, false, false}, // RG32_SNORM
-        {true, false, false, false}, // RGB8_SNORM
-        {true, false, false, false}, // RGB16_SNORM
-        {true, false, false, false}, // RGB32_SNORM
-        {true, false, false, false}, // RGBA8_SNORM
-        {true, false, false, false}, // RGBA16_SNORM
-        {true, false, false, false}, // RGBA32_SNORM
-        {true, false, false, false}, // R16F
-        {true, false, false, false}, // R32F
-        {true, false, false, false}, // RG16F
-        {true, false, false, false}, // RG32F
-        {true, false, false, false}, // RGB16F
-        {true, false, false, false}, // RGB32F
-        {true, false, false, false}, // RGBA16F
-        {true, false, false, false}, // RGBA32F
-        {false, true, false, false}, // DEPTH16
-        {false, true, false, false}, // DEPTH24
-        {false, true, false, false}, // DEPTH32
-        {false, true, false, false}, // DEPTH32F
-        {false, false, true, false}, // STENCIL8
-        {false, false, false, true}, // DEPTH24_STENCIL8
-        {false, false, false, true}  // DEPTH32F_STENCIL8
+        {false, false, false, false}, // NONE
+        {true, false, false, false},  // R8UI
+        {true, false, false, false},  // R16UI
+        {true, false, false, false},  // R32UI
+        {true, false, false, false},  // RG8UI
+        {true, false, false, false},  // RG16UI
+        {true, false, false, false},  // RG32UI
+        {true, false, false, false},  // RGB8UI
+        {true, false, false, false},  // RGB16UI
+        {true, false, false, false},  // RGB32UI
+        {true, false, false, false},  // RGBA8UI
+        {true, false, false, false},  // RGBA16UI
+        {true, false, false, false},  // RGBA32UI
+        {true, false, false, false},  // R8I
+        {true, false, false, false},  // R16I
+        {true, false, false, false},  // R32I
+        {true, false, false, false},  // RG8I
+        {true, false, false, false},  // RG16I
+        {true, false, false, false},  // RG32I
+        {true, false, false, false},  // RGB8I
+        {true, false, false, false},  // RGB16I
+        {true, false, false, false},  // RGB32I
+        {true, false, false, false},  // RGBA8I
+        {true, false, false, false},  // RGBA16I
+        {true, false, false, false},  // RGBA32I
+        {true, false, false, false},  // R8_UNORM
+        {true, false, false, false},  // R16_UNORM
+        {true, false, false, false},  // R32_UNORM
+        {true, false, false, false},  // RG8_UNORM
+        {true, false, false, false},  // RG16_UNORM
+        {true, false, false, false},  // RG32_UNORM
+        {true, false, false, false},  // RGB8_UNORM
+        {true, false, false, false},  // RGB16_UNORM
+        {true, false, false, false},  // RGB32_UNORM
+        {true, false, false, false},  // RGBA8_UNORM
+        {true, false, false, false},  // RGBA16_UNORM
+        {true, false, false, false},  // RGBA32_UNORM
+        {true, false, false, false},  // R8_SNORM
+        {true, false, false, false},  // R16_SNORM
+        {true, false, false, false},  // R32_SNORM
+        {true, false, false, false},  // RG8_SNORM
+        {true, false, false, false},  // RG16_SNORM
+        {true, false, false, false},  // RG32_SNORM
+        {true, false, false, false},  // RGB8_SNORM
+        {true, false, false, false},  // RGB16_SNORM
+        {true, false, false, false},  // RGB32_SNORM
+        {true, false, false, false},  // RGBA8_SNORM
+        {true, false, false, false},  // RGBA16_SNORM
+        {true, false, false, false},  // RGBA32_SNORM
+        {true, false, false, false},  // R16F
+        {true, false, false, false},  // R32F
+        {true, false, false, false},  // RG16F
+        {true, false, false, false},  // RG32F
+        {true, false, false, false},  // RGB16F
+        {true, false, false, false},  // RGB32F
+        {true, false, false, false},  // RGBA16F
+        {true, false, false, false},  // RGBA32F
+        {false, true, false, false},  // DEPTH16
+        {false, true, false, false},  // DEPTH24
+        {false, true, false, false},  // DEPTH32
+        {false, true, false, false},  // DEPTH32F
+        {false, false, true, false},  // STENCIL8
+        {false, false, false, true},  // DEPTH24_STENCIL8
+        {false, false, false, true}   // DEPTH32F_STENCIL8
     }};
 
-    for (size_t i = static_cast<size_t>(ImageFormat::R8UI); i < static_cast<size_t>(ImageFormat::MAX); i++) {
+    for (size_t i = static_cast<size_t>(ImageFormat::NONE); i < static_cast<size_t>(ImageFormat::MAX); i++) {
         const auto imageFormatDescriptor = getImageFormatDescriptor(static_cast<ImageFormat>(i));
         const auto &expectedImageFormatDescriptor = expectedImageFormatDescriptors.at(i);
         EXPECT_EQ(expectedImageFormatDescriptor.isColor, imageFormatDescriptor.isColor);
@@ -83,6 +84,7 @@ TEST(FormatDescriptorTests, WhenGetImageFormatDescriptorIsCalledThenCorrectImage
 
 TEST(FormatDescriptorTests, WhenGetVertexAttributeFormatDescriptorIsCalledThenCorrectVertexAttributeFormatDescriptorIsReturned) {
     constexpr VertexAttributeFormatDescriptors expectedVertexAttributeFormatDescriptors{{
+        {VertexAttributeDataType::NONE, 0u, 0u, false},                // NONE
         {VertexAttributeDataType::UNSIGNED_BYTE, 1u, 1u * 1u, false},  // R8UI
         {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, false}, // R16UI
         {VertexAttributeDataType::UNSIGNED_INT, 1u, 1u * 4u, false},   // R32UI
@@ -141,7 +143,7 @@ TEST(FormatDescriptorTests, WhenGetVertexAttributeFormatDescriptorIsCalledThenCo
         {VertexAttributeDataType::FLOAT, 4u, 4u * 4u, false}           // RGBA32F
     }};
 
-    for (size_t i = static_cast<size_t>(VertexAttributeFormat::R8UI); i < static_cast<size_t>(VertexAttributeFormat::MAX); i++) {
+    for (size_t i = static_cast<size_t>(VertexAttributeFormat::NONE); i < static_cast<size_t>(VertexAttributeFormat::MAX); i++) {
         const auto vertexAttributeFormatDescriptor = getVertexAttributeFormatDescriptor(static_cast<VertexAttributeFormat>(i));
         const auto &expectedVertexAttributeFormatDescriptor = expectedVertexAttributeFormatDescriptors.at(i);
         EXPECT_EQ(expectedVertexAttributeFormatDescriptor.vertexAttributeDataType, vertexAttributeFormatDescriptor.vertexAttributeDataType);

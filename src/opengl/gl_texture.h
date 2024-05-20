@@ -6,6 +6,7 @@ namespace nox {
 
 class GLTexture : public Texture {
   public:
+    GLTexture() = default;
     GLTexture(const TextureDescriptor &descriptor, TextureType type);
     ~GLTexture() override;
 
@@ -17,8 +18,8 @@ class GLTexture : public Texture {
     void bind(uint32_t index) const;
 
   protected:
-    TextureType m_type;
-    ImageFormat m_format;
+    TextureType m_type{TextureType::NONE};
+    ImageFormat m_format{ImageFormat::NONE};
     uint32_t m_handle{0u};
 };
 

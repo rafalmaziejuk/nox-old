@@ -7,6 +7,7 @@
 namespace nox {
 
 enum class ShaderType {
+    NONE,
     VERTEX,
     FRAGMENT,
     TESS_CONTROL,

@@ -5,6 +5,7 @@
 namespace nox {
 
 enum class ImageFormat {
+    NONE,
     R8UI,
     R16UI,
     R32UI,
@@ -72,6 +73,7 @@ enum class ImageFormat {
 };
 
 enum class VertexAttributeFormat {
+    NONE,
     R8UI,
     R16UI,
     R32UI,

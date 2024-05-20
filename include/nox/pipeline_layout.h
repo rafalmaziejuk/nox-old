@@ -11,8 +11,10 @@
 namespace nox {
 
 enum class ResourceType {
+    NONE,
     TEXTURE,
-    INPUT_ATTACHMENT
+    INPUT_ATTACHMENT,
+    MAX
 };
 
 struct TextureResourceDescriptor {
