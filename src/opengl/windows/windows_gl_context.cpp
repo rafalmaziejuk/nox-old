@@ -65,40 +65,11 @@ namespace {
 
 } // namespace
 
-bool GLContext::validateInput(const SurfaceDescriptor &descriptor) {
-    bool result = true;
-
-    const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
-    result &= (surfaceBackendDescriptor != nullptr);
-    if (result) {
-        result &= (surfaceBackendDescriptor->windowHandle != nullptr);
-    }
-
-    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
-    result &= (surfaceAttributesDescriptor != nullptr);
-    if (result) {
-        result &= (surfaceAttributesDescriptor->pixelFormatDescriptor.colorBits > 0u);
-    }
-
-    return result;
-}
-
 std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
-    NOX_ENSURE_RETURN_NULLPTR_MSG(loadOpenGL(), "Couldn't preload WGL");
-
-    const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
-    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
-    auto context = std::make_unique<WindowsGLContext>(*surfaceBackendDescriptor);
-    if (!context->initialize(*surfaceAttributesDescriptor)) {
-        return nullptr;
-    }
+    auto context = std::make_unique<WindowsGLContext>();
+    NOX_ENSURE_RETURN_NULLPTR(context->initialize(descriptor));
 
     return context;
-}
-
-WindowsGLContext::WindowsGLContext(const WindowsSurfaceBackendDescriptor &descriptor) {
-    m_handleWindow = static_cast<HWND>(descriptor.windowHandle);
-    m_handleDeviceContext = GetDC(m_handleWindow);
 }
 
 WindowsGLContext::~WindowsGLContext() {
@@ -113,18 +84,32 @@ WindowsGLContext::~WindowsGLContext() {
     gladLoaderUnloadGL();
 }
 
-bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
+bool WindowsGLContext::initialize(const SurfaceDescriptor &descriptor) {
+    NOX_ENSURE_RETURN_FALSE_MSG(loadOpenGL(), "Couldn't preload WGL");
+
+    const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
+    NOX_ENSURE_RETURN_FALSE(surfaceBackendDescriptor != nullptr);
+
+    const auto *surfaceAttributesDescriptor = std::get_if<OpenGLSurfaceAttributesDescriptor>(&descriptor.surfaceAttributesDescriptor);
+    NOX_ENSURE_RETURN_FALSE(surfaceAttributesDescriptor != nullptr);
+
+    m_handleWindow = static_cast<HWND>(surfaceBackendDescriptor->windowHandle);
+    NOX_ENSURE_RETURN_FALSE(m_handleWindow != nullptr);
+
+    m_handleDeviceContext = GetDC(m_handleWindow);
     NOX_ENSURE_RETURN_FALSE_MSG(m_handleDeviceContext != nullptr, "Couldn't get device context");
 
-    std::array<int32_t, 19> pixelFormatAttributes{WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
+    std::array<int32_t, 23> pixelFormatAttributes{WGL_DRAW_TO_WINDOW_ARB, GL_TRUE,
                                                   WGL_SUPPORT_OPENGL_ARB, GL_TRUE,
                                                   WGL_DOUBLE_BUFFER_ARB, GL_TRUE,
                                                   WGL_ACCELERATION_ARB, WGL_FULL_ACCELERATION_ARB,
                                                   WGL_PIXEL_TYPE_ARB, WGL_TYPE_RGBA_ARB,
-                                                  WGL_COLOR_BITS_ARB, descriptor.pixelFormatDescriptor.colorBits,
-                                                  WGL_DEPTH_BITS_ARB, descriptor.pixelFormatDescriptor.depthBits,
-                                                  WGL_STENCIL_BITS_ARB, descriptor.pixelFormatDescriptor.stencilBits,
-                                                  WGL_ALPHA_BITS_ARB, (descriptor.pixelFormatDescriptor.colorBits == 32u) ? 8 : 0,
+                                                  WGL_RED_BITS_ARB, surfaceAttributesDescriptor->pixelFormatDescriptor.redBits,
+                                                  WGL_GREEN_BITS_ARB, surfaceAttributesDescriptor->pixelFormatDescriptor.greenBits,
+                                                  WGL_BLUE_BITS_ARB, surfaceAttributesDescriptor->pixelFormatDescriptor.blueBits,
+                                                  WGL_ALPHA_BITS_ARB, surfaceAttributesDescriptor->pixelFormatDescriptor.alphaBits,
+                                                  WGL_DEPTH_BITS_ARB, surfaceAttributesDescriptor->pixelFormatDescriptor.depthBits,
+                                                  WGL_STENCIL_BITS_ARB, surfaceAttributesDescriptor->pixelFormatDescriptor.stencilBits,
                                                   0};
     int32_t pixelFormat{};
     UINT formatsCount{};
@@ -134,7 +119,7 @@ bool WindowsGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descr
                             1,
                             &pixelFormat,
                             &formatsCount);
-    NOX_ENSURE_RETURN_FALSE_MSG(formatsCount == 1u, "Couldn't choose only one pixel format");
+    NOX_ENSURE_RETURN_FALSE_MSG(formatsCount == 1u, "Couldn't choose unique pixel format");
 
     PIXELFORMATDESCRIPTOR pixelFormatDescriptor;
     DescribePixelFormat(m_handleDeviceContext, pixelFormat, sizeof(pixelFormatDescriptor), &pixelFormatDescriptor);

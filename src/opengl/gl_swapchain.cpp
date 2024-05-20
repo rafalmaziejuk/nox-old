@@ -85,7 +85,6 @@ constexpr auto presentFragmentShaderSource = R"(
 bool GLSwapchain::validateInput(const SwapchainDescriptor &descriptor) {
     bool result = true;
 
-    result &= GLContext::validateInput(descriptor.surfaceDescriptor);
     result &= (std::get_if<OpenGLPresentMode>(&descriptor.presentMode) != nullptr);
 
     return result;

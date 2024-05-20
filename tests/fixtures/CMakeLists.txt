@@ -32,9 +32,8 @@ target_link_libraries(
 # --------------------------------------------------
 set(NOX_TESTS_FIXTURES_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
-    ${CMAKE_CURRENT_SOURCE_DIR}/assert_disabled_fixture.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_fixture.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/renderer_fixture.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/window_fixture.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/window_fixture.h
 )
 
 target_sources(${NOX_TESTS_FIXTURES_LIB_NAME} PRIVATE ${NOX_TESTS_FIXTURES_SOURCES})

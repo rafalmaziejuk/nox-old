@@ -1,60 +1,58 @@
+#include "src/asserts.h"
 #include "src/opengl/gl_context.h"
 
-#include "tests/fixtures/assert_disabled_fixture.h"
-#include "tests/fixtures/renderer_fixture.h"
+#include "tests/fixtures/window_fixture.h"
 
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-using GLContextFixture = tests::RendererFixture;
+struct GLContextFixture : public tests::WindowFixture,
+                          public ::testing::Test {
+    void SetUp() override {
+        tests::WindowFixture::setUp();
+    }
+
+    void TearDown() override {
+        tests::WindowFixture::tearDown();
+    }
+};
 
 TEST_F(GLContextFixture, GivenValidSurfaceDescriptorWhenCallingCreateContextThenContextIsSuccessfullyCreated) {
-    OpenGLSurfaceAttributesDescriptor surfaceAttributesDescriptor{};
     SurfaceDescriptor surfaceDescriptor{};
     surfaceDescriptor.surfaceBackendDescriptor = surfaceBackendDescriptor;
-    surfaceDescriptor.surfaceAttributesDescriptor = surfaceAttributesDescriptor;
+    surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
 
     const auto context = GLContext::create(surfaceDescriptor);
     ASSERT_NE(nullptr, context);
 }
 
-TEST_F(GLContextFixture, GivenSurfaceDescriptorWhenCallingContextValidateInputThenCorrectValueIsReturned) {
-    // Valid input
-    {
-        SurfaceDescriptor surfaceDescriptor{};
-        surfaceDescriptor.surfaceBackendDescriptor = surfaceBackendDescriptor;
-        surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
+TEST_F(GLContextFixture, GivenInvalidSurfaceBackendDescriptorWhenCallingCreateContextThenNullptrIsReturned) {
+    tests::VariableBackup<bool> assertDisabledBackup{&assertDisabled};
+    assertDisabled = true;
 
-        const auto result = GLContext::validateInput(surfaceDescriptor);
-        EXPECT_TRUE(result);
-    }
-
-    // Invalid input
-    {
-        auto getInvalidSurfaceBackendDescriptor = []() {
+    auto getInvalidSurfaceBackendDescriptor = []() {
 #if defined(WIN32)
-            return X11SurfaceBackendDescriptor{};
+        return X11SurfaceBackendDescriptor{};
 #elif defined(__linux__)
-            return WindowsSurfaceBackendDescriptor{};
+        return WindowsSurfaceBackendDescriptor{};
 #endif
-        };
+    };
 
-        SurfaceDescriptor surfaceDescriptor{};
-        surfaceDescriptor.surfaceBackendDescriptor = getInvalidSurfaceBackendDescriptor();
-        surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
+    SurfaceDescriptor surfaceDescriptor{};
+    surfaceDescriptor.surfaceBackendDescriptor = getInvalidSurfaceBackendDescriptor();
+    surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
 
-        const auto result = GLContext::validateInput(surfaceDescriptor);
-        EXPECT_FALSE(result);
-    }
+    const auto context = GLContext::create(surfaceDescriptor);
+    EXPECT_EQ(nullptr, context);
 }
 
-struct GLContextAssertDisabledFixture : public GLContextFixture,
-                                        public tests::AssertDisabledFixture {};
+TEST_F(GLContextFixture, GivenInvalidSurfaceAttributesDescriptorWhenCallingCreateContextThenNullptrIsReturned) {
+    tests::VariableBackup<bool> assertDisabledBackup{&assertDisabled};
+    assertDisabled = true;
 
-TEST_F(GLContextAssertDisabledFixture, GivenInvalidSurfaceAttributesDescriptorWhenCallingCreateContextThenNullptrIsReturned) {
     OpenGLSurfaceAttributesDescriptor invalidSurfaceAttributesDescriptor;
-    invalidSurfaceAttributesDescriptor.pixelFormatDescriptor.colorBits = 64u;
+    invalidSurfaceAttributesDescriptor.pixelFormatDescriptor.redBits = 64u;
     invalidSurfaceAttributesDescriptor.pixelFormatDescriptor.depthBits = 64u;
     invalidSurfaceAttributesDescriptor.pixelFormatDescriptor.stencilBits = 64u;
 
