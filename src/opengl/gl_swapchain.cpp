@@ -16,27 +16,7 @@ ImageFormat queryDefaultFramebufferImageFormat() {
     GLint alphaBits = 0;
     glGetNamedFramebufferAttachmentParameteriv(defaultFramebufferHandle, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE, &alphaBits);
 
-    GLint componentType = 0;
-    glGetNamedFramebufferAttachmentParameteriv(defaultFramebufferHandle, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE, &componentType);
-    NOX_ASSERT(componentType != GL_NONE);
-
-    switch (componentType) {
-    case GL_INT:
-        return ((alphaBits != 0) ? ImageFormat::RGBA8I : ImageFormat::RGB8I);
-
-    case GL_UNSIGNED_INT:
-        return ((alphaBits != 0) ? ImageFormat::RGBA8UI : ImageFormat::RGB8UI);
-
-    case GL_SIGNED_NORMALIZED:
-        return ((alphaBits != 0) ? ImageFormat::RGBA8_SNORM : ImageFormat::RGB8_SNORM);
-
-    case GL_UNSIGNED_NORMALIZED:
-        return ((alphaBits != 0) ? ImageFormat::RGBA8_UNORM : ImageFormat::RGB8_UNORM);
-
-    default:
-        NOX_ASSERT(false);
-        return {};
-    }
+    return ((alphaBits != 0) ? ImageFormat::RGBA8_UNORM : ImageFormat::RGB8_UNORM);
 }
 
 constexpr auto presentVertexShaderSource = R"(
@@ -82,37 +62,24 @@ constexpr auto presentFragmentShaderSource = R"(
 
 } // namespace
 
-bool GLSwapchain::validateInput(const SwapchainDescriptor &descriptor) {
-    bool result = true;
-
-    result &= (std::get_if<OpenGLPresentMode>(&descriptor.presentMode) != nullptr);
-
-    return result;
-}
-
-GLSwapchain::GLSwapchain(const SwapchainDescriptor &descriptor, std::unique_ptr<GLContext> context) : m_context{std::move(context)},
-                                                                                                      m_swapchainTexture{{{queryDefaultFramebufferImageFormat()},
-                                                                                                                          descriptor.size}},
-                                                                                                      m_size{descriptor.size} {
+std::unique_ptr<GLSwapchain> GLSwapchain::create(const SwapchainDescriptor &descriptor, std::unique_ptr<GLContext> context) {
     const auto *presentMode = std::get_if<OpenGLPresentMode>(&descriptor.presentMode);
-    m_context->setSwapInterval(presentMode->vSync);
+    NOX_ENSURE_RETURN_NULLPTR(presentMode != nullptr);
+    context->setSwapInterval(presentMode->vSync);
 
-    const GLShader presentVertexShader{{ShaderType::VERTEX}};
-    auto result = presentVertexShader.compile(presentVertexShaderSource);
-    NOX_ASSERT(result);
+    auto swapchain = std::make_unique<GLSwapchain>(std::move(context), descriptor.size);
+    NOX_ENSURE_RETURN_NULLPTR(swapchain->initializePresentationProgram());
 
-    const GLShader presentFragmentShader{{ShaderType::FRAGMENT}};
-    result = presentFragmentShader.compile(presentFragmentShaderSource);
-    NOX_ASSERT(result);
-
-    m_presentProgram.attachShader(presentVertexShader.getHandle());
-    m_presentProgram.attachShader(presentFragmentShader.getHandle());
-    result = m_presentProgram.link();
-    NOX_ASSERT(result);
+    return swapchain;
 }
+
+GLSwapchain::GLSwapchain(std::unique_ptr<GLContext> context, Vector2D<uint32_t> size)
+    : m_context{std::move(context)},
+      m_presentationTexture{{{queryDefaultFramebufferImageFormat()}, size}},
+      m_size{size} {}
 
 std::vector<const Texture *> GLSwapchain::getSwapchainTextures() const {
-    return {1u, &m_swapchainTexture};
+    return {1u, &m_presentationTexture};
 }
 
 void GLSwapchain::present() const {
@@ -120,21 +87,35 @@ void GLSwapchain::present() const {
     const auto &emptyVertexArray = vertexArrayRegistry.getVertexArray(0u);
 
     emptyVertexArray.bind();
-    m_swapchainTexture.bind(0u);
+    m_presentationTexture.bind(0u);
 
-    m_presentProgram.bind();
+    m_presentationProgram.bind();
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-    m_presentProgram.unbind();
+    m_presentationProgram.unbind();
 
     m_context->swapBuffers();
 }
 
 ImageFormat GLSwapchain::getSurfaceFormat() const {
-    return queryDefaultFramebufferImageFormat();
+    return m_presentationTexture.getFormat();
 }
 
 Vector2D<uint32_t> GLSwapchain::getSize() const {
     return m_size;
+}
+
+bool GLSwapchain::initializePresentationProgram() {
+    const GLShader presentVertexShader{{ShaderType::VERTEX}};
+    NOX_ENSURE_RETURN_FALSE(presentVertexShader.compile(presentVertexShaderSource));
+
+    const GLShader presentFragmentShader{{ShaderType::FRAGMENT}};
+    NOX_ENSURE_RETURN_FALSE(presentFragmentShader.compile(presentFragmentShaderSource));
+
+    m_presentationProgram.attachShader(presentVertexShader.getHandle());
+    m_presentationProgram.attachShader(presentFragmentShader.getHandle());
+    NOX_ENSURE_RETURN_FALSE(m_presentationProgram.link());
+
+    return true;
 }
 
 } // namespace nox

@@ -47,8 +47,9 @@ GLPipelineLayout::GLPipelineLayout(const PipelineLayoutDescriptor &descriptor) {
     }
 }
 
-GLTextureBinding::GLTextureBinding(const DescriptorSetLayoutBinding &binding) : GLResourceBinding{binding.bindingIndex},
-                                                                                m_textures(binding.textureResourceDescriptors.size()) {
+GLTextureBinding::GLTextureBinding(const DescriptorSetLayoutBinding &binding)
+    : GLResourceBinding{binding.bindingIndex},
+      m_textures(binding.textureResourceDescriptors.size()) {
     for (size_t i = 0u; i < m_textures.size(); i++) {
         const auto &resourceDescriptor = binding.textureResourceDescriptors[i];
         m_textures[i] = std::static_pointer_cast<GLTexture>(resourceDescriptor.texture);

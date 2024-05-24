@@ -28,7 +28,8 @@ struct RendererFactoryRegistry::Impl {
     RendererBackend rendererBackend{RendererBackend::NONE};
 };
 
-RendererFactoryRegistry::RendererFactoryRegistry() : m_impl{new Impl} {}
+RendererFactoryRegistry::RendererFactoryRegistry()
+    : m_impl{new Impl} {}
 
 RendererFactoryRegistry::~RendererFactoryRegistry() {
     delete m_impl;

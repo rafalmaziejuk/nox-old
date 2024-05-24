@@ -11,7 +11,8 @@ bool GLRenderPass::validateInput(const RenderPassDescriptor &descriptor) {
     return result;
 }
 
-GLRenderPass::GLRenderPass(const RenderPassDescriptor &descriptor) : m_attachmentDescriptors{descriptor.attachmentDescriptors},
-                                                                     m_subpassDescriptors{descriptor.subpassDescriptors} {}
+GLRenderPass::GLRenderPass(const RenderPassDescriptor &descriptor)
+    : m_attachmentDescriptors{descriptor.attachmentDescriptors},
+      m_subpassDescriptors{descriptor.subpassDescriptors} {}
 
 } // namespace nox

@@ -60,9 +60,10 @@ bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescripto
     return result;
 }
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) : m_pipelineLayout{descriptor.pipelineLayoutDescriptor},
-                                                                                                m_subpassIndex{descriptor.subpassIndex},
-                                                                                                m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
+GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor)
+    : m_pipelineLayout{descriptor.pipelineLayoutDescriptor},
+      m_subpassIndex{descriptor.subpassIndex},
+      m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
     glCreateProgramPipelines(1, &m_handle);
 }
 

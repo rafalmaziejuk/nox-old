@@ -11,9 +11,9 @@ class GLContext;
 
 class GLSwapchain final : public Swapchain {
   public:
-    [[nodiscard]] static bool validateInput(const SwapchainDescriptor &descriptor);
+    [[nodiscard]] static std::unique_ptr<GLSwapchain> create(const SwapchainDescriptor &descriptor, std::unique_ptr<GLContext> context);
 
-    GLSwapchain(const SwapchainDescriptor &descriptor, std::unique_ptr<GLContext> context);
+    GLSwapchain(std::unique_ptr<GLContext> context, Vector2D<uint32_t> size);
 
     Vector2D<uint32_t> getSize() const override;
     ImageFormat getSurfaceFormat() const override;
@@ -22,9 +22,12 @@ class GLSwapchain final : public Swapchain {
     void present() const override;
 
   private:
-    GLProgram m_presentProgram{};
+    [[nodiscard]] bool initializePresentationProgram();
+
+  private:
     std::unique_ptr<GLContext> m_context{nullptr};
-    GLTexture2D m_swapchainTexture;
+    GLProgram m_presentationProgram{};
+    GLTexture2D m_presentationTexture;
     Vector2D<uint32_t> m_size;
 };
 

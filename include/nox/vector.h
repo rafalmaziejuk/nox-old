@@ -13,32 +13,38 @@ struct Vector {
 
     constexpr Vector() = default;
 
-    constexpr Vector(Type x, Type y) : values{{x, y}} {
+    constexpr Vector(Type x, Type y)
+        : values{{x, y}} {
         static_assert(componentsCount == 2u);
     }
 
-    constexpr Vector(Type x, Type y, Type z) : values{{x, y, z}} {
+    constexpr Vector(Type x, Type y, Type z)
+        : values{{x, y, z}} {
         static_assert(componentsCount == 3u);
     }
 
-    constexpr Vector(Type x, Type y, Type z, Type w) : values{{x, y, z, w}} {
+    constexpr Vector(Type x, Type y, Type z, Type w)
+        : values{{x, y, z, w}} {
         static_assert(componentsCount == 4u);
     }
 
     template <typename U>
-    constexpr explicit Vector(const Vector<U, 2> &other) : values{{static_cast<Type>(other.x()),
-                                                                   static_cast<Type>(other.y())}} {}
+    constexpr explicit Vector(const Vector<U, 2> &other)
+        : values{{static_cast<Type>(other.x()),
+                  static_cast<Type>(other.y())}} {}
 
     template <typename U>
-    constexpr explicit Vector(const Vector<U, 3> &other) : values{{static_cast<Type>(other.x()),
-                                                                   static_cast<Type>(other.y()),
-                                                                   static_cast<Type>(other.z())}} {}
+    constexpr explicit Vector(const Vector<U, 3> &other)
+        : values{{static_cast<Type>(other.x()),
+                  static_cast<Type>(other.y()),
+                  static_cast<Type>(other.z())}} {}
 
     template <typename U>
-    constexpr explicit Vector(const Vector<U, 4> &other) : values{{static_cast<Type>(other.x()),
-                                                                   static_cast<Type>(other.y()),
-                                                                   static_cast<Type>(other.z()),
-                                                                   static_cast<Type>(other.w())}} {}
+    constexpr explicit Vector(const Vector<U, 4> &other)
+        : values{{static_cast<Type>(other.x()),
+                  static_cast<Type>(other.y()),
+                  static_cast<Type>(other.z()),
+                  static_cast<Type>(other.w())}} {}
 
     bool operator==(const Vector<Type, componentsCount> &other) const { return (values == other.values); }
     bool operator!=(const Vector<Type, componentsCount> &other) const { return (values != other.values); }
