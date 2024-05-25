@@ -52,10 +52,8 @@ std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const IndexBufferDescripto
 }
 
 std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descriptor, std::string_view source) {
-    NOX_ASSERT(GLShader::validateInput(descriptor, source));
-
-    auto shader = std::make_unique<GLShader>(descriptor);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(shader->compile(source.data()), "Couldn't compile shader");
+    auto shader = GLShader::create(descriptor, source);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(shader != nullptr, "Couldn't create shader");
 
     return shader;
 }

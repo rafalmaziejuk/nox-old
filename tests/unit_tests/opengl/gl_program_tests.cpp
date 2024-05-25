@@ -35,7 +35,7 @@ TEST_F(GLProgramFixture, WhenCreatingProgramThenProgramIsSuccessfullyCreated) {
     EXPECT_NE(0u, program.getHandle());
 }
 
-TEST_F(GLProgramFixture, GivenCorrectShadersWhenLinkingProgramThenTrueIsReturned) {
+TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkProgramThenTrueIsReturned) {
     constexpr auto vertexShaderSource = R"(
             #version 460 core
 
@@ -57,19 +57,20 @@ TEST_F(GLProgramFixture, GivenCorrectShadersWhenLinkingProgramThenTrueIsReturned
             }
         )";
 
-    GLProgram program{};
-    const GLShader vertexShader{{ShaderType::VERTEX}};
-    const GLShader fragmentShader{{ShaderType::FRAGMENT}};
+    const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    ASSERT_NE(nullptr, vertexShader);
 
-    vertexShader.compile(vertexShaderSource);
-    fragmentShader.compile(fragmentShaderSource);
-    program.attachShader(vertexShader.getHandle());
-    program.attachShader(fragmentShader.getHandle());
+    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT}, fragmentShaderSource);
+    ASSERT_NE(nullptr, fragmentShader);
+
+    GLProgram program{};
+    program.attachShader(vertexShader->getHandle());
+    program.attachShader(fragmentShader->getHandle());
 
     EXPECT_TRUE(program.link());
 }
 
-TEST_F(GLProgramFixture, GivenIncorrectShadersWhenLinkingProgramThenFalseIsReturned) {
+TEST_F(GLProgramFixture, GivenIncorrectShadersWhenCallingLinkProgramThenFalseIsReturned) {
     constexpr auto vertexShaderSource = R"(
             #version 460 core
 
@@ -82,14 +83,64 @@ TEST_F(GLProgramFixture, GivenIncorrectShadersWhenLinkingProgramThenFalseIsRetur
 		    }
         )";
 
-    GLProgram program{};
-    const GLShader vertexShader1{{ShaderType::VERTEX}};
-    const GLShader vertexShader2{{ShaderType::VERTEX}};
+    const auto vertexShader1 = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    ASSERT_NE(nullptr, vertexShader1);
 
-    vertexShader1.compile(vertexShaderSource);
-    vertexShader2.compile(vertexShaderSource);
-    program.attachShader(vertexShader1.getHandle());
-    program.attachShader(vertexShader2.getHandle());
+    const auto vertexShader2 = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    ASSERT_NE(nullptr, vertexShader2);
+
+    GLProgram program{};
+    program.attachShader(vertexShader1->getHandle());
+    program.attachShader(vertexShader2->getHandle());
 
     EXPECT_FALSE(program.link());
+}
+
+TEST_F(GLProgramFixture, WhenCallingBindProgramThenCorrectProgramIsBound) {
+    constexpr auto vertexShaderSource = R"(
+            #version 460 core
+
+            out gl_PerVertex {
+	            vec4 gl_Position;
+            };
+
+		    void main() {
+			    gl_Position = vec4(1.0); 
+		    }
+        )";
+    constexpr auto fragmentShaderSource = R"(
+            #version 460 core
+
+            out vec4 fragmentColor;
+
+            void main() {
+                fragmentColor = vec4(1.0);
+            }
+        )";
+
+    const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    ASSERT_NE(nullptr, vertexShader);
+
+    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT}, fragmentShaderSource);
+    ASSERT_NE(nullptr, fragmentShader);
+
+    GLProgram program{};
+    program.attachShader(vertexShader->getHandle());
+    program.attachShader(fragmentShader->getHandle());
+    ASSERT_TRUE(program.link());
+
+    const auto handle = program.getHandle();
+    EXPECT_NE(0u, handle);
+
+    program.bind();
+
+    GLint currentlyBoundProgramHandle = GL_NONE;
+    glGetIntegerv(GL_CURRENT_PROGRAM, &currentlyBoundProgramHandle);
+
+    EXPECT_EQ(handle, currentlyBoundProgramHandle);
+
+    program.unbind();
+    glGetIntegerv(GL_CURRENT_PROGRAM, &currentlyBoundProgramHandle);
+
+    EXPECT_EQ(0u, currentlyBoundProgramHandle);
 }
