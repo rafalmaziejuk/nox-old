@@ -34,7 +34,7 @@ struct VertexAttributeFormatDescriptor {
     bool isNormalized{false};
 };
 
-NOX_EXPORT [[nodiscard]] ImageFormatDescriptor getImageFormatDescriptor(ImageFormat format);
-NOX_EXPORT [[nodiscard]] VertexAttributeFormatDescriptor getVertexAttributeFormatDescriptor(VertexAttributeFormat format);
+[[nodiscard]] ImageFormatDescriptor NOX_EXPORT getImageFormatDescriptor(ImageFormat format);
+[[nodiscard]] VertexAttributeFormatDescriptor NOX_EXPORT getVertexAttributeFormatDescriptor(VertexAttributeFormat format);
 
 } // namespace nox
