@@ -28,9 +28,6 @@ TEST_F(GLContextFixture, GivenValidSurfaceDescriptorWhenCallingCreateContextThen
 }
 
 TEST_F(GLContextFixture, GivenInvalidSurfaceBackendDescriptorWhenCallingCreateContextThenNullptrIsReturned) {
-    tests::VariableBackup<bool> assertDisabledBackup{&assertDisabled};
-    assertDisabled = true;
-
     auto getInvalidSurfaceBackendDescriptor = []() {
 #if defined(WIN32)
         return X11SurfaceBackendDescriptor{};
@@ -48,9 +45,6 @@ TEST_F(GLContextFixture, GivenInvalidSurfaceBackendDescriptorWhenCallingCreateCo
 }
 
 TEST_F(GLContextFixture, GivenInvalidSurfaceAttributesDescriptorWhenCallingCreateContextThenNullptrIsReturned) {
-    tests::VariableBackup<bool> assertDisabledBackup{&assertDisabled};
-    assertDisabled = true;
-
     OpenGLSurfaceAttributesDescriptor invalidSurfaceAttributesDescriptor;
     invalidSurfaceAttributesDescriptor.pixelFormatDescriptor.redBits = 64u;
     invalidSurfaceAttributesDescriptor.pixelFormatDescriptor.depthBits = 64u;

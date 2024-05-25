@@ -32,8 +32,16 @@ endif()
 target_precompile_headers(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
+    <array>
+    <algorithm>
+    <cstdint>
+    <memory>
+    <string>
+    <string_view>
+    <unordered_map>
+    <utility>
+    <vector>
     [["tests/config.h"]]
-    [["tests/variable_backup.h"]]
 )
 
 gtest_discover_tests(${NOX_UNIT_TESTS_EXE_NAME})

@@ -21,27 +21,27 @@ inline bool assertDisabled = false;
 
 #define NOX_ASSERT_MSG(condition, message) NOX_ASSERT((condition) && (message))
 
-#define NOX_ENSURE_RETURN_FALSE(condition) \
-    if (!(condition)) {                    \
-        NOX_ASSERT(condition);             \
-        return false;                      \
+#define NOX_ENSURE_RETURN_FALSE(condition)          \
+    if (const auto result = (condition); !result) { \
+        NOX_ASSERT(result);                         \
+        return false;                               \
     }
 
 #define NOX_ENSURE_RETURN_FALSE_MSG(condition, message) \
-    if (!(condition)) {                                 \
-        NOX_ASSERT_MSG(condition, message);             \
+    if (const auto result = (condition); !result) {     \
+        NOX_ASSERT_MSG(result, message);                \
         return false;                                   \
     }
 
-#define NOX_ENSURE_RETURN_NULLPTR(condition) \
-    if (!(condition)) {                      \
-        NOX_ASSERT(condition);               \
-        return nullptr;                      \
+#define NOX_ENSURE_RETURN_NULLPTR(condition)        \
+    if (const auto result = (condition); !result) { \
+        NOX_ASSERT(result);                         \
+        return nullptr;                             \
     }
 
 #define NOX_ENSURE_RETURN_NULLPTR_MSG(condition, message) \
-    if (!(condition)) {                                   \
-        NOX_ASSERT_MSG(condition, message);               \
+    if (const auto result = (condition); !result) {       \
+        NOX_ASSERT_MSG(result, message);                  \
         return nullptr;                                   \
     }
 
