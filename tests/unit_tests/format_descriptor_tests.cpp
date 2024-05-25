@@ -2,9 +2,12 @@
 
 #include <gtest/gtest.h>
 
+#include <array>
+
 using namespace nox;
 
 TEST(FormatDescriptorTests, WhenGetImageFormatDescriptorIsCalledThenCorrectImageFormatDescriptorIsReturned) {
+    using ImageFormatDescriptors = std::array<ImageFormatDescriptor, static_cast<size_t>(ImageFormat::MAX)>;
     constexpr ImageFormatDescriptors expectedImageFormatDescriptors{{
         {false, false, false, false}, // NONE
         {true, false, false, false},  // R8UI
@@ -83,70 +86,71 @@ TEST(FormatDescriptorTests, WhenGetImageFormatDescriptorIsCalledThenCorrectImage
 }
 
 TEST(FormatDescriptorTests, WhenGetVertexAttributeFormatDescriptorIsCalledThenCorrectVertexAttributeFormatDescriptorIsReturned) {
+    using VertexAttributeFormatDescriptors = std::array<VertexAttributeFormatDescriptor, static_cast<size_t>(VertexAttributeFormat::MAX)>;
     constexpr VertexAttributeFormatDescriptors expectedVertexAttributeFormatDescriptors{{
-        {VertexAttributeDataType::NONE, 0u, 0u, false},                // NONE
-        {VertexAttributeDataType::UNSIGNED_BYTE, 1u, 1u * 1u, false},  // R8UI
-        {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, false}, // R16UI
-        {VertexAttributeDataType::UNSIGNED_INT, 1u, 1u * 4u, false},   // R32UI
-        {VertexAttributeDataType::UNSIGNED_BYTE, 2u, 2u * 1u, false},  // RG8UI
-        {VertexAttributeDataType::UNSIGNED_SHORT, 2u, 2u * 2u, false}, // RG16UI
-        {VertexAttributeDataType::UNSIGNED_INT, 2u, 2u * 4u, false},   // RG32UI
-        {VertexAttributeDataType::UNSIGNED_BYTE, 3u, 3u * 1u, false},  // RGB8UI
-        {VertexAttributeDataType::UNSIGNED_SHORT, 3u, 3u * 2u, false}, // RGB16UI
-        {VertexAttributeDataType::UNSIGNED_INT, 3u, 3u * 4u, false},   // RGB32UI
-        {VertexAttributeDataType::UNSIGNED_BYTE, 4u, 4u * 1u, false},  // RGBA8UI
-        {VertexAttributeDataType::UNSIGNED_SHORT, 4u, 4u * 2u, false}, // RGBA16UI
-        {VertexAttributeDataType::UNSIGNED_INT, 4u, 4u * 4u, false},   // RGBA32UI
-        {VertexAttributeDataType::BYTE, 1u, 1u * 1u, false},           // R8I
-        {VertexAttributeDataType::SHORT, 1u, 1u * 2u, false},          // R16I
-        {VertexAttributeDataType::INT, 1u, 1u * 4u, false},            // R32I
-        {VertexAttributeDataType::BYTE, 2u, 2u * 1u, false},           // RG8I
-        {VertexAttributeDataType::SHORT, 2u, 2u * 2u, false},          // RG16I
-        {VertexAttributeDataType::INT, 2u, 2u * 4u, false},            // RG32I
-        {VertexAttributeDataType::BYTE, 3u, 3u * 1u, false},           // RGB8I
-        {VertexAttributeDataType::SHORT, 3u, 3u * 2u, false},          // RGB16I
-        {VertexAttributeDataType::INT, 3u, 3u * 4u, false},            // RGB32I
-        {VertexAttributeDataType::BYTE, 4u, 4u * 1u, false},           // RGBA8I
-        {VertexAttributeDataType::SHORT, 4u, 4u * 2u, false},          // RGBA16I
-        {VertexAttributeDataType::INT, 4u, 4u * 4u, false},            // RGBA32I
-        {VertexAttributeDataType::UNSIGNED_BYTE, 1u, 1u * 1u, true},   // R8_UNORM
-        {VertexAttributeDataType::UNSIGNED_SHORT, 1u, 1u * 2u, true},  // R16_UNORM
-        {VertexAttributeDataType::UNSIGNED_INT, 1u, 1u * 4u, true},    // R32_UNORM
-        {VertexAttributeDataType::UNSIGNED_BYTE, 2u, 2u * 1u, true},   // RG8_UNORM
-        {VertexAttributeDataType::UNSIGNED_SHORT, 2u, 2u * 2u, true},  // RG16_UNORM
-        {VertexAttributeDataType::UNSIGNED_INT, 2u, 2u * 4u, true},    // RG32_UNORM
-        {VertexAttributeDataType::UNSIGNED_BYTE, 3u, 3u * 1u, true},   // RGB8_UNORM
-        {VertexAttributeDataType::UNSIGNED_SHORT, 3u, 3u * 2u, true},  // RGB16_UNORM
-        {VertexAttributeDataType::UNSIGNED_INT, 3u, 3u * 4u, true},    // RGB32_UNORM
-        {VertexAttributeDataType::UNSIGNED_BYTE, 4u, 4u * 1u, true},   // RGBA8_UNORM
-        {VertexAttributeDataType::UNSIGNED_SHORT, 4u, 4u * 2u, true},  // RGBA16_UNORM
-        {VertexAttributeDataType::UNSIGNED_INT, 4u, 4u * 4u, true},    // RGBA32_UNORM
-        {VertexAttributeDataType::BYTE, 1u, 1u * 1u, true},            // R8_SNORM
-        {VertexAttributeDataType::SHORT, 1u, 1u * 2u, true},           // R16_SNORM
-        {VertexAttributeDataType::INT, 1u, 1u * 4u, true},             // R32_SNORM
-        {VertexAttributeDataType::BYTE, 2u, 2u * 1u, true},            // RG8_SNORM
-        {VertexAttributeDataType::SHORT, 2u, 2u * 2u, true},           // RG16_SNORM
-        {VertexAttributeDataType::INT, 2u, 2u * 4u, true},             // RG32_SNORM
-        {VertexAttributeDataType::BYTE, 3u, 3u * 1u, true},            // RGB8_SNORM
-        {VertexAttributeDataType::SHORT, 3u, 3u * 2u, true},           // RGB16_SNORM
-        {VertexAttributeDataType::INT, 3u, 3u * 4u, true},             // RGB32_SNORM
-        {VertexAttributeDataType::BYTE, 4u, 4u * 1u, true},            // RGBA8_SNORM
-        {VertexAttributeDataType::SHORT, 4u, 4u * 2u, true},           // RGBA16_SNORM
-        {VertexAttributeDataType::INT, 4u, 4u * 4u, true},             // RGBA32_SNORM
-        {VertexAttributeDataType::HALF_FLOAT, 1u, 1u * 2u, false},     // R16F
-        {VertexAttributeDataType::FLOAT, 1u, 1u * 4u, false},          // R32F
-        {VertexAttributeDataType::HALF_FLOAT, 2u, 2u * 2u, false},     // RG16F
-        {VertexAttributeDataType::FLOAT, 2u, 2u * 4u, false},          // RG32F
-        {VertexAttributeDataType::HALF_FLOAT, 3u, 3u * 2u, false},     // RGB16F
-        {VertexAttributeDataType::FLOAT, 3u, 3u * 4u, false},          // RGB32F
-        {VertexAttributeDataType::HALF_FLOAT, 4u, 4u * 2u, false},     // RGBA16F
-        {VertexAttributeDataType::FLOAT, 4u, 4u * 4u, false}           // RGBA32F
+        {VertexAttributeType::NONE, 0u, 0u, false},                // NONE
+        {VertexAttributeType::UNSIGNED_BYTE, 1u, 1u * 1u, false},  // R8UI
+        {VertexAttributeType::UNSIGNED_SHORT, 1u, 1u * 2u, false}, // R16UI
+        {VertexAttributeType::UNSIGNED_INT, 1u, 1u * 4u, false},   // R32UI
+        {VertexAttributeType::UNSIGNED_BYTE, 2u, 2u * 1u, false},  // RG8UI
+        {VertexAttributeType::UNSIGNED_SHORT, 2u, 2u * 2u, false}, // RG16UI
+        {VertexAttributeType::UNSIGNED_INT, 2u, 2u * 4u, false},   // RG32UI
+        {VertexAttributeType::UNSIGNED_BYTE, 3u, 3u * 1u, false},  // RGB8UI
+        {VertexAttributeType::UNSIGNED_SHORT, 3u, 3u * 2u, false}, // RGB16UI
+        {VertexAttributeType::UNSIGNED_INT, 3u, 3u * 4u, false},   // RGB32UI
+        {VertexAttributeType::UNSIGNED_BYTE, 4u, 4u * 1u, false},  // RGBA8UI
+        {VertexAttributeType::UNSIGNED_SHORT, 4u, 4u * 2u, false}, // RGBA16UI
+        {VertexAttributeType::UNSIGNED_INT, 4u, 4u * 4u, false},   // RGBA32UI
+        {VertexAttributeType::BYTE, 1u, 1u * 1u, false},           // R8I
+        {VertexAttributeType::SHORT, 1u, 1u * 2u, false},          // R16I
+        {VertexAttributeType::INT, 1u, 1u * 4u, false},            // R32I
+        {VertexAttributeType::BYTE, 2u, 2u * 1u, false},           // RG8I
+        {VertexAttributeType::SHORT, 2u, 2u * 2u, false},          // RG16I
+        {VertexAttributeType::INT, 2u, 2u * 4u, false},            // RG32I
+        {VertexAttributeType::BYTE, 3u, 3u * 1u, false},           // RGB8I
+        {VertexAttributeType::SHORT, 3u, 3u * 2u, false},          // RGB16I
+        {VertexAttributeType::INT, 3u, 3u * 4u, false},            // RGB32I
+        {VertexAttributeType::BYTE, 4u, 4u * 1u, false},           // RGBA8I
+        {VertexAttributeType::SHORT, 4u, 4u * 2u, false},          // RGBA16I
+        {VertexAttributeType::INT, 4u, 4u * 4u, false},            // RGBA32I
+        {VertexAttributeType::UNSIGNED_BYTE, 1u, 1u * 1u, true},   // R8_UNORM
+        {VertexAttributeType::UNSIGNED_SHORT, 1u, 1u * 2u, true},  // R16_UNORM
+        {VertexAttributeType::UNSIGNED_INT, 1u, 1u * 4u, true},    // R32_UNORM
+        {VertexAttributeType::UNSIGNED_BYTE, 2u, 2u * 1u, true},   // RG8_UNORM
+        {VertexAttributeType::UNSIGNED_SHORT, 2u, 2u * 2u, true},  // RG16_UNORM
+        {VertexAttributeType::UNSIGNED_INT, 2u, 2u * 4u, true},    // RG32_UNORM
+        {VertexAttributeType::UNSIGNED_BYTE, 3u, 3u * 1u, true},   // RGB8_UNORM
+        {VertexAttributeType::UNSIGNED_SHORT, 3u, 3u * 2u, true},  // RGB16_UNORM
+        {VertexAttributeType::UNSIGNED_INT, 3u, 3u * 4u, true},    // RGB32_UNORM
+        {VertexAttributeType::UNSIGNED_BYTE, 4u, 4u * 1u, true},   // RGBA8_UNORM
+        {VertexAttributeType::UNSIGNED_SHORT, 4u, 4u * 2u, true},  // RGBA16_UNORM
+        {VertexAttributeType::UNSIGNED_INT, 4u, 4u * 4u, true},    // RGBA32_UNORM
+        {VertexAttributeType::BYTE, 1u, 1u * 1u, true},            // R8_SNORM
+        {VertexAttributeType::SHORT, 1u, 1u * 2u, true},           // R16_SNORM
+        {VertexAttributeType::INT, 1u, 1u * 4u, true},             // R32_SNORM
+        {VertexAttributeType::BYTE, 2u, 2u * 1u, true},            // RG8_SNORM
+        {VertexAttributeType::SHORT, 2u, 2u * 2u, true},           // RG16_SNORM
+        {VertexAttributeType::INT, 2u, 2u * 4u, true},             // RG32_SNORM
+        {VertexAttributeType::BYTE, 3u, 3u * 1u, true},            // RGB8_SNORM
+        {VertexAttributeType::SHORT, 3u, 3u * 2u, true},           // RGB16_SNORM
+        {VertexAttributeType::INT, 3u, 3u * 4u, true},             // RGB32_SNORM
+        {VertexAttributeType::BYTE, 4u, 4u * 1u, true},            // RGBA8_SNORM
+        {VertexAttributeType::SHORT, 4u, 4u * 2u, true},           // RGBA16_SNORM
+        {VertexAttributeType::INT, 4u, 4u * 4u, true},             // RGBA32_SNORM
+        {VertexAttributeType::HALF_FLOAT, 1u, 1u * 2u, false},     // R16F
+        {VertexAttributeType::FLOAT, 1u, 1u * 4u, false},          // R32F
+        {VertexAttributeType::HALF_FLOAT, 2u, 2u * 2u, false},     // RG16F
+        {VertexAttributeType::FLOAT, 2u, 2u * 4u, false},          // RG32F
+        {VertexAttributeType::HALF_FLOAT, 3u, 3u * 2u, false},     // RGB16F
+        {VertexAttributeType::FLOAT, 3u, 3u * 4u, false},          // RGB32F
+        {VertexAttributeType::HALF_FLOAT, 4u, 4u * 2u, false},     // RGBA16F
+        {VertexAttributeType::FLOAT, 4u, 4u * 4u, false}           // RGBA32F
     }};
 
     for (size_t i = static_cast<size_t>(VertexAttributeFormat::NONE); i < static_cast<size_t>(VertexAttributeFormat::MAX); i++) {
         const auto vertexAttributeFormatDescriptor = getVertexAttributeFormatDescriptor(static_cast<VertexAttributeFormat>(i));
         const auto &expectedVertexAttributeFormatDescriptor = expectedVertexAttributeFormatDescriptors.at(i);
-        EXPECT_EQ(expectedVertexAttributeFormatDescriptor.vertexAttributeDataType, vertexAttributeFormatDescriptor.vertexAttributeDataType);
+        EXPECT_EQ(expectedVertexAttributeFormatDescriptor.vertexAttributeType, vertexAttributeFormatDescriptor.vertexAttributeType);
         EXPECT_EQ(expectedVertexAttributeFormatDescriptor.componentsCount, vertexAttributeFormatDescriptor.componentsCount);
         EXPECT_EQ(expectedVertexAttributeFormatDescriptor.stride, vertexAttributeFormatDescriptor.stride);
         EXPECT_EQ(expectedVertexAttributeFormatDescriptor.isNormalized, vertexAttributeFormatDescriptor.isNormalized);

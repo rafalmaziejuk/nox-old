@@ -8,16 +8,16 @@ namespace nox {
 
 namespace {
 
-GLenum mapVertexAttributeDataTypeToEnum(VertexAttributeDataType type) {
+GLenum mapVertexAttributeTypeToEnum(VertexAttributeType type) {
     switch (type) {
-    case VertexAttributeDataType::UNSIGNED_BYTE: return GL_UNSIGNED_BYTE;
-    case VertexAttributeDataType::UNSIGNED_SHORT: return GL_UNSIGNED_SHORT;
-    case VertexAttributeDataType::UNSIGNED_INT: return GL_UNSIGNED_INT;
-    case VertexAttributeDataType::BYTE: return GL_BYTE;
-    case VertexAttributeDataType::SHORT: return GL_SHORT;
-    case VertexAttributeDataType::INT: return GL_INT;
-    case VertexAttributeDataType::HALF_FLOAT: return GL_HALF_FLOAT;
-    case VertexAttributeDataType::FLOAT: return GL_FLOAT;
+    case VertexAttributeType::UNSIGNED_BYTE: return GL_UNSIGNED_BYTE;
+    case VertexAttributeType::UNSIGNED_SHORT: return GL_UNSIGNED_SHORT;
+    case VertexAttributeType::UNSIGNED_INT: return GL_UNSIGNED_INT;
+    case VertexAttributeType::BYTE: return GL_BYTE;
+    case VertexAttributeType::SHORT: return GL_SHORT;
+    case VertexAttributeType::INT: return GL_INT;
+    case VertexAttributeType::HALF_FLOAT: return GL_HALF_FLOAT;
+    case VertexAttributeType::FLOAT: return GL_FLOAT;
     default: break;
     }
 
@@ -36,7 +36,7 @@ GLVertexArray::GLVertexArray(VertexAttributes vertexAttributes)
         auto descriptor = getVertexAttributeFormatDescriptor(vertexAttribute);
         auto index = static_cast<GLuint>(i);
         auto componentsCount = static_cast<GLint>(descriptor.componentsCount);
-        auto dataType = mapVertexAttributeDataTypeToEnum(descriptor.vertexAttributeDataType);
+        auto dataType = mapVertexAttributeTypeToEnum(descriptor.vertexAttributeType);
         auto normalized = static_cast<GLboolean>(descriptor.isNormalized);
         auto offset = m_stride;
 
