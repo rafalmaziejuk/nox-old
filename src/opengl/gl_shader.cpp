@@ -19,19 +19,17 @@ GLenum mapShaderTypeToEnum(ShaderType type) {
     default: break;
     }
 
-    NOX_ASSERT(false);
     return GL_NONE;
 }
 
 } // namespace
 
-bool GLShader::validateInput(const ShaderDescriptor &descriptor, std::string_view source) {
-    bool result = true;
+std::unique_ptr<GLShader> GLShader::create(const ShaderDescriptor &descriptor, std::string_view source) {
+    auto shader = std::make_unique<GLShader>(descriptor);
+    NOX_ENSURE_RETURN_NULLPTR(shader->getHandle() != 0u);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(shader->compile(source.data()), "Couldn't compile shader");
 
-    result &= (!source.empty());
-    result &= (mapShaderTypeToEnum(descriptor.type) != GL_NONE);
-
-    return result;
+    return shader;
 }
 
 GLShader::GLShader(const ShaderDescriptor &descriptor)
