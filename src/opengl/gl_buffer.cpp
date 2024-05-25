@@ -24,11 +24,11 @@ GLbitfield mapBufferUsageToBitfield(uint32_t usage) {
     return flags;
 }
 
-GLenum mapVertexAttributeDataTypeToEnum(VertexAttributeDataType type) {
+GLenum mapVertexAttributeTypeToEnum(VertexAttributeType type) {
     switch (type) {
-    case VertexAttributeDataType::UNSIGNED_BYTE: return GL_UNSIGNED_BYTE;
-    case VertexAttributeDataType::UNSIGNED_SHORT: return GL_UNSIGNED_SHORT;
-    case VertexAttributeDataType::UNSIGNED_INT: return GL_UNSIGNED_INT;
+    case VertexAttributeType::UNSIGNED_BYTE: return GL_UNSIGNED_BYTE;
+    case VertexAttributeType::UNSIGNED_SHORT: return GL_UNSIGNED_SHORT;
+    case VertexAttributeType::UNSIGNED_INT: return GL_UNSIGNED_INT;
     default: break;
     }
 
@@ -85,7 +85,7 @@ bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
 
 void GLIndexBuffer::setIndexType(VertexAttributeFormat format) {
     auto descriptor = getVertexAttributeFormatDescriptor(format);
-    m_indexType = mapVertexAttributeDataTypeToEnum(descriptor.vertexAttributeDataType);
+    m_indexType = mapVertexAttributeTypeToEnum(descriptor.vertexAttributeType);
 }
 
 } // namespace nox
