@@ -3,13 +3,12 @@
 #include <nox/shader.h>
 
 #include <memory>
-#include <string_view>
 
 namespace nox {
 
 class GLShader final : public Shader {
   public:
-    [[nodiscard]] static std::unique_ptr<GLShader> create(const ShaderDescriptor &descriptor, std::string_view source);
+    [[nodiscard]] static std::unique_ptr<GLShader> create(const ShaderDescriptor &descriptor);
 
     explicit GLShader(const ShaderDescriptor &descriptor);
     ~GLShader() override;
@@ -18,7 +17,6 @@ class GLShader final : public Shader {
 
     [[nodiscard]] uint32_t getHandle() const { return m_handle; }
 
-  private:
     [[nodiscard]] bool compile(const char *source) const;
 
   private:

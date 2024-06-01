@@ -105,11 +105,13 @@ Vector2D<uint32_t> GLSwapchain::getSize() const {
 }
 
 bool GLSwapchain::initializePresentationProgram() {
-    const auto presentVertexShader = GLShader::create({ShaderType::VERTEX}, presentVertexShaderSource);
+    const auto presentVertexShader = GLShader::create({ShaderType::VERTEX});
     NOX_ENSURE_RETURN_FALSE(presentVertexShader != nullptr);
+    NOX_ENSURE_RETURN_FALSE(presentVertexShader->compile(presentVertexShaderSource));
 
-    const auto presentFragmentShader = GLShader::create({ShaderType::FRAGMENT}, presentFragmentShaderSource);
+    const auto presentFragmentShader = GLShader::create({ShaderType::FRAGMENT});
     NOX_ENSURE_RETURN_FALSE(presentFragmentShader != nullptr);
+    NOX_ENSURE_RETURN_FALSE(presentFragmentShader->compile(presentFragmentShaderSource));
 
     m_presentationProgram.attachShader(presentVertexShader->getHandle());
     m_presentationProgram.attachShader(presentFragmentShader->getHandle());
