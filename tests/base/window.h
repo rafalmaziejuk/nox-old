@@ -7,9 +7,9 @@ struct GLFWwindow;
 
 namespace nox::tests {
 
-struct WindowFixture {
-    void setUp();
-    void tearDown();
+struct Window {
+    Window();
+    ~Window();
 
     GLFWwindow *windowHandle{nullptr};
     Vector2D<uint32_t> windowSize{800u, 600u};

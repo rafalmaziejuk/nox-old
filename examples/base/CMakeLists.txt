@@ -1,6 +1,3 @@
-set(NOX_EXAMPLES_BASE_LIB_NAME "base")
-set(NOX_EXAMPLES_BASE_FOLDER_NAME "${NOX_EXAMPLES_FOLDER_NAME}/base")
-
 # --------------------------------------------------
 # Create target
 # --------------------------------------------------
@@ -24,7 +21,7 @@ target_compile_features(${NOX_EXAMPLES_BASE_LIB_NAME} PRIVATE cxx_std_17)
 set_target_properties(
     ${NOX_EXAMPLES_BASE_LIB_NAME}
     PROPERTIES
-    FOLDER "${NOX_EXAMPLES_BASE_FOLDER_NAME}"
+    FOLDER "${NOX_EXAMPLES_FOLDER_NAME}"
 )
 
 # --------------------------------------------------

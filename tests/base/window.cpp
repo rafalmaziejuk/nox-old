@@ -1,4 +1,4 @@
-#include "tests/fixtures/window_fixture.h"
+#include "tests/base/window.h"
 
 #include <GLFW/glfw3.h>
 
@@ -28,7 +28,7 @@ SurfaceBackendDescriptor createSurfaceBackendDescriptor(GLFWwindow *windowHandle
 
 } // namespace
 
-void WindowFixture::setUp() {
+Window::Window() {
     glfwInit();
 
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
@@ -37,7 +37,7 @@ void WindowFixture::setUp() {
     surfaceBackendDescriptor = createSurfaceBackendDescriptor(windowHandle);
 }
 
-void WindowFixture::tearDown() {
+Window::~Window() {
     glfwDestroyWindow(windowHandle);
     glfwTerminate();
     windowHandle = nullptr;

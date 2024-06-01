@@ -1,29 +1,22 @@
 #include "src/opengl/gl_context.h"
 #include "src/opengl/gl_swapchain.h"
 
-#include "tests/fixtures/window_fixture.h"
+#include "tests/base/window.h"
 
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-struct GLSwapchainFixture : public tests::WindowFixture,
-                            public ::testing::Test {
-    void SetUp() override {
-        tests::WindowFixture::setUp();
-    }
-
-    void TearDown() override {
-        tests::WindowFixture::tearDown();
-    }
-
+struct GLSwapchainFixture : public ::testing::Test {
     SurfaceDescriptor createSurfaceDescriptor(const OpenGLSurfaceAttributesDescriptor &surfaceAttributesDescriptor) {
         SurfaceDescriptor surfaceDescriptor{};
-        surfaceDescriptor.surfaceBackendDescriptor = surfaceBackendDescriptor;
+        surfaceDescriptor.surfaceBackendDescriptor = window.surfaceBackendDescriptor;
         surfaceDescriptor.surfaceAttributesDescriptor = surfaceAttributesDescriptor;
 
         return surfaceDescriptor;
     }
+
+    tests::Window window{};
 };
 
 TEST_F(GLSwapchainFixture, GivenValidSwapchainDescriptorAndContextWhenCallingCreateSwapchainThenSwapchainIsSuccessfullyCreated) {
@@ -34,12 +27,12 @@ TEST_F(GLSwapchainFixture, GivenValidSwapchainDescriptorAndContextWhenCallingCre
     SwapchainDescriptor swapchainDescriptor{};
     swapchainDescriptor.surfaceDescriptor = surfaceDescriptor;
     swapchainDescriptor.presentMode = OpenGLPresentMode{};
-    swapchainDescriptor.size = windowSize;
+    swapchainDescriptor.size = window.windowSize;
 
     const auto swapchain = GLSwapchain::create(swapchainDescriptor, std::move(context));
     ASSERT_NE(nullptr, swapchain);
 
-    EXPECT_EQ(windowSize, swapchain->getSize());
+    EXPECT_EQ(window.windowSize, swapchain->getSize());
     EXPECT_EQ(1u, swapchain->getSwapchainTextures().size());
 }
 
@@ -54,7 +47,7 @@ TEST_F(GLSwapchainFixture, GivenPixelFormatDescriptorWith0AlphaBitsWhenCallingCr
     SwapchainDescriptor swapchainDescriptor{};
     swapchainDescriptor.surfaceDescriptor = surfaceDescriptor;
     swapchainDescriptor.presentMode = OpenGLPresentMode{};
-    swapchainDescriptor.size = windowSize;
+    swapchainDescriptor.size = window.windowSize;
 
     const auto swapchain = GLSwapchain::create(swapchainDescriptor, std::move(context));
     ASSERT_NE(nullptr, swapchain);
@@ -77,7 +70,7 @@ TEST_F(GLSwapchainFixture, GivenPixelFormatDescriptorWith8AlphaBitsWhenCallingCr
     SwapchainDescriptor swapchainDescriptor{};
     swapchainDescriptor.surfaceDescriptor = surfaceDescriptor;
     swapchainDescriptor.presentMode = OpenGLPresentMode{};
-    swapchainDescriptor.size = windowSize;
+    swapchainDescriptor.size = window.windowSize;
 
     const auto swapchain = GLSwapchain::create(swapchainDescriptor, std::move(context));
     ASSERT_NE(nullptr, swapchain);
