@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-
 namespace nox {
 
 enum class ImageFormat {
