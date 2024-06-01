@@ -2,6 +2,7 @@
 
 #include "tests/base/window.h"
 
+#include <glad/gl.h>
 #include <gtest/gtest.h>
 
 using namespace nox;
@@ -17,6 +18,16 @@ TEST_F(GLContextFixture, GivenValidSurfaceDescriptorWhenCallingCreateContextThen
 
     const auto context = GLContext::create(surfaceDescriptor);
     ASSERT_NE(nullptr, context);
+
+    constexpr GLint expectedMajorVersion = 4;
+    constexpr GLint expectedMinorVersion = 6;
+    GLint majorVersion = 0;
+    GLint minorVersion = 0;
+    glGetIntegerv(GL_MAJOR_VERSION, &majorVersion);
+    glGetIntegerv(GL_MINOR_VERSION, &minorVersion);
+
+    EXPECT_EQ(expectedMajorVersion, majorVersion);
+    EXPECT_EQ(expectedMinorVersion, minorVersion);
 }
 
 TEST_F(GLContextFixture, GivenInvalidSurfaceBackendDescriptorWhenCallingCreateContextThenNullptrIsReturned) {

@@ -14,13 +14,15 @@ class GLContext : public Surface {
     virtual void setSwapInterval(bool interval) const = 0;
 
   public:
-    GLContext() = default;
+    GLContext();
     GLContext(const GLContext &) = delete;
     GLContext &operator=(const GLContext &) = delete;
     GLContext(GLContext &&) = delete;
     GLContext &operator=(GLContext &&) = delete;
+    ~GLContext() override;
 
   protected:
+    static uint8_t m_sContextCounter;
     static constexpr auto glMajorVersion = 4u;
     static constexpr auto glMinorVersion = 6u;
 };
