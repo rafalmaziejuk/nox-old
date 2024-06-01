@@ -35,8 +35,9 @@ TEST_F(GLShaderFixture, GivenValidShaderDescriptorAndSourceWhenCallingCreateShad
         ShaderDescriptor shaderDescriptor{};
         shaderDescriptor.type = shaderType;
 
-        const auto shader = GLShader::create(shaderDescriptor, validShaderSource);
+        const auto shader = GLShader::create(shaderDescriptor);
         ASSERT_NE(nullptr, shader);
+        ASSERT_TRUE(shader->compile(validShaderSource));
 
         GLint glShaderType = GL_NONE;
         glGetShaderiv(shader->getHandle(), GL_SHADER_TYPE, &glShaderType);
@@ -47,18 +48,42 @@ TEST_F(GLShaderFixture, GivenValidShaderDescriptorAndSourceWhenCallingCreateShad
     }
 }
 
+TEST_F(GLShaderFixture, WhenDestroyingShaderThenShaderIsCorrectlyDestroyed) {
+    ShaderDescriptor shaderDescriptor{};
+    shaderDescriptor.type = ShaderType::VERTEX;
+
+    uint32_t handle = 0u;
+    {
+        const auto shader = GLShader::create(shaderDescriptor);
+        handle = shader->getHandle();
+    }
+
+    EXPECT_FALSE(glIsShader(handle));
+}
+
 TEST_F(GLShaderFixture, GivenInvalidShaderDescriptorWhenCallingCreateShaderThenNullptrIsReturned) {
     ShaderDescriptor shaderDescriptor{};
     shaderDescriptor.type = ShaderType::NONE;
 
-    const auto shader = GLShader::create(shaderDescriptor, validShaderSource);
+    const auto shader = GLShader::create(shaderDescriptor);
     EXPECT_EQ(nullptr, shader);
 }
 
-TEST_F(GLShaderFixture, GivenInvalidShaderSourceWhenCallingCreateShaderThenNullptrIsReturned) {
+TEST_F(GLShaderFixture, GivenValidShaderSourceWhenCallingCompileThenTrueIsReturned) {
     ShaderDescriptor shaderDescriptor{};
     shaderDescriptor.type = ShaderType::VERTEX;
 
-    const auto shader = GLShader::create(shaderDescriptor, invalidShaderSource);
-    EXPECT_EQ(nullptr, shader);
+    const auto shader = GLShader::create(shaderDescriptor);
+    EXPECT_TRUE(shader->compile(validShaderSource));
+}
+
+TEST_F(GLShaderFixture, GivenInvalidShaderSourceWhenCallingCompileThenFalseIsReturnedAndShaderIsDeleted) {
+    ShaderDescriptor shaderDescriptor{};
+    shaderDescriptor.type = ShaderType::VERTEX;
+
+    const auto shader = GLShader::create(shaderDescriptor);
+    const auto handle = shader->getHandle();
+
+    EXPECT_FALSE(shader->compile(invalidShaderSource));
+    EXPECT_FALSE(glIsShader(handle));
 }

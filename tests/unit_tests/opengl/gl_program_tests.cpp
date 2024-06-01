@@ -50,11 +50,13 @@ TEST_F(GLProgramFixture, WhenDestroyingProgramThenProgramIsCorrectlyDestroyed) {
 }
 
 TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingAttachShaderThenShadersAreCorrectlyAttached) {
-    const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    const auto vertexShader = GLShader::create({ShaderType::VERTEX});
     ASSERT_NE(nullptr, vertexShader);
+    ASSERT_TRUE(vertexShader->compile(vertexShaderSource));
 
-    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT}, fragmentShaderSource);
+    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT});
     ASSERT_NE(nullptr, fragmentShader);
+    ASSERT_TRUE(fragmentShader->compile(fragmentShaderSource));
 
     GLProgram program{};
     const auto handle = program.getHandle();
@@ -74,11 +76,13 @@ TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingAttachShaderThenShadersAr
 }
 
 TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkThenTrueIsReturned) {
-    const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    const auto vertexShader = GLShader::create({ShaderType::VERTEX});
     ASSERT_NE(nullptr, vertexShader);
+    ASSERT_TRUE(vertexShader->compile(vertexShaderSource));
 
-    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT}, fragmentShaderSource);
+    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT});
     ASSERT_NE(nullptr, fragmentShader);
+    ASSERT_TRUE(fragmentShader->compile(fragmentShaderSource));
 
     GLProgram program{};
     program.attachShader(vertexShader->getHandle());
@@ -88,11 +92,13 @@ TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkThenTrueIsReturned) {
 }
 
 TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkThenShadersAreCorrectlyDetached) {
-    const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    const auto vertexShader = GLShader::create({ShaderType::VERTEX});
     ASSERT_NE(nullptr, vertexShader);
+    ASSERT_TRUE(vertexShader->compile(vertexShaderSource));
 
-    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT}, fragmentShaderSource);
+    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT});
     ASSERT_NE(nullptr, fragmentShader);
+    ASSERT_TRUE(fragmentShader->compile(fragmentShaderSource));
 
     GLProgram program{};
     const auto handle = program.getHandle();
@@ -112,11 +118,13 @@ TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkThenShadersAreCorrect
 }
 
 TEST_F(GLProgramFixture, GivenIncorrectShadersWhenCallingLinkThenFalseIsReturned) {
-    const auto vertexShader1 = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    const auto vertexShader1 = GLShader::create({ShaderType::VERTEX});
     ASSERT_NE(nullptr, vertexShader1);
+    ASSERT_TRUE(vertexShader1->compile(vertexShaderSource));
 
-    const auto vertexShader2 = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    const auto vertexShader2 = GLShader::create({ShaderType::VERTEX});
     ASSERT_NE(nullptr, vertexShader2);
+    ASSERT_TRUE(vertexShader2->compile(vertexShaderSource));
 
     GLProgram program{};
     program.attachShader(vertexShader1->getHandle());
@@ -126,11 +134,13 @@ TEST_F(GLProgramFixture, GivenIncorrectShadersWhenCallingLinkThenFalseIsReturned
 }
 
 TEST_F(GLProgramFixture, WhenCallingBindAndUnbindThenCorrectProgramIsBound) {
-    const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
+    const auto vertexShader = GLShader::create({ShaderType::VERTEX});
     ASSERT_NE(nullptr, vertexShader);
+    ASSERT_TRUE(vertexShader->compile(vertexShaderSource));
 
-    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT}, fragmentShaderSource);
+    const auto fragmentShader = GLShader::create({ShaderType::FRAGMENT});
     ASSERT_NE(nullptr, fragmentShader);
+    ASSERT_TRUE(fragmentShader->compile(fragmentShaderSource));
 
     GLProgram program{};
     program.attachShader(vertexShader->getHandle());
