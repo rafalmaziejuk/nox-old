@@ -1,27 +1,14 @@
-#include "src/opengl/gl_context.h"
 #include "src/opengl/gl_program.h"
 #include "src/opengl/gl_shader.h"
 
-#include "tests/base/window.h"
+#include "tests/base/opengl/gl_test_environment.h"
 
 #include <glad/gl.h>
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-struct GLProgramFixture : public ::testing::Test {
-    void SetUp() override {
-        SurfaceDescriptor surfaceDescriptor{};
-        surfaceDescriptor.surfaceBackendDescriptor = window.surfaceBackendDescriptor;
-        surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
-
-        context = GLContext::create(surfaceDescriptor);
-        ASSERT_NE(nullptr, context);
-    }
-
-    tests::Window window{};
-    std::unique_ptr<GLContext> context{nullptr};
-
+struct GLProgramFixture : public tests::GLTestFixture {
     static constexpr auto vertexShaderSource = R"(
             #version 460 core
 
@@ -86,7 +73,7 @@ TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingAttachShaderThenShadersAr
     EXPECT_EQ(fragmentShader->getHandle(), handles[1]);
 }
 
-TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkProgramThenTrueIsReturned) {
+TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkThenTrueIsReturned) {
     const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
     ASSERT_NE(nullptr, vertexShader);
 
@@ -100,7 +87,7 @@ TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkProgramThenTrueIsRetu
     EXPECT_TRUE(program.link());
 }
 
-TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkProgramThenShadersAreCorrectlyDetached) {
+TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkThenShadersAreCorrectlyDetached) {
     const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
     ASSERT_NE(nullptr, vertexShader);
 
@@ -124,7 +111,7 @@ TEST_F(GLProgramFixture, GivenCorrectShadersWhenCallingLinkProgramThenShadersAre
     EXPECT_EQ(0, attachedShadersCount);
 }
 
-TEST_F(GLProgramFixture, GivenIncorrectShadersWhenCallingLinkProgramThenFalseIsReturned) {
+TEST_F(GLProgramFixture, GivenIncorrectShadersWhenCallingLinkThenFalseIsReturned) {
     const auto vertexShader1 = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
     ASSERT_NE(nullptr, vertexShader1);
 
@@ -138,7 +125,7 @@ TEST_F(GLProgramFixture, GivenIncorrectShadersWhenCallingLinkProgramThenFalseIsR
     EXPECT_FALSE(program.link());
 }
 
-TEST_F(GLProgramFixture, WhenCallingBindAndUnbindProgramThenCorrectProgramIsBound) {
+TEST_F(GLProgramFixture, WhenCallingBindAndUnbindThenCorrectProgramIsBound) {
     const auto vertexShader = GLShader::create({ShaderType::VERTEX}, vertexShaderSource);
     ASSERT_NE(nullptr, vertexShader);
 

@@ -1,25 +1,23 @@
-#include "src/opengl/gl_context.h"
 #include "src/opengl/gl_shader.h"
 
-#include "tests/base/window.h"
+#include "tests/base/opengl/gl_test_environment.h"
 
 #include <glad/gl.h>
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-struct GLShaderFixture : public ::testing::Test {
-    void SetUp() override {
-        SurfaceDescriptor surfaceDescriptor{};
-        surfaceDescriptor.surfaceBackendDescriptor = window.surfaceBackendDescriptor;
-        surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
+struct GLShaderFixture : public tests::GLTestFixture {
+    static constexpr auto validShaderSource = R"(
+            #version 460 core
 
-        context = GLContext::create(surfaceDescriptor);
-        ASSERT_NE(nullptr, context);
-    }
+            void main() {}
+        )";
+    static constexpr auto invalidShaderSource = R"(
+            #version 460 core
 
-    tests::Window window{};
-    std::unique_ptr<GLContext> context{nullptr};
+            main() {}
+        )";
 };
 
 TEST_F(GLShaderFixture, GivenValidShaderDescriptorAndSourceWhenCallingCreateShaderThenShaderIsSuccessfullyCreated) {
@@ -32,17 +30,12 @@ TEST_F(GLShaderFixture, GivenValidShaderDescriptorAndSourceWhenCallingCreateShad
         {ShaderType::GEOMETRY, GL_GEOMETRY_SHADER},
         {ShaderType::COMPUTE, GL_COMPUTE_SHADER},
     }};
-    constexpr auto shaderSource = R"(
-            #version 460 core
-
-		    void main() {}
-        )";
 
     for (const auto &[shaderType, expectedShaderType] : testParams) {
         ShaderDescriptor shaderDescriptor{};
         shaderDescriptor.type = shaderType;
 
-        const auto shader = GLShader::create(shaderDescriptor, shaderSource);
+        const auto shader = GLShader::create(shaderDescriptor, validShaderSource);
         ASSERT_NE(nullptr, shader);
 
         GLint glShaderType = GL_NONE;
@@ -55,29 +48,17 @@ TEST_F(GLShaderFixture, GivenValidShaderDescriptorAndSourceWhenCallingCreateShad
 }
 
 TEST_F(GLShaderFixture, GivenInvalidShaderDescriptorWhenCallingCreateShaderThenNullptrIsReturned) {
-    constexpr auto shaderSource = R"(
-            #version 460 core
-
-            void main() {}
-        )";
-
     ShaderDescriptor shaderDescriptor{};
     shaderDescriptor.type = ShaderType::NONE;
 
-    const auto shader = GLShader::create(shaderDescriptor, shaderSource);
+    const auto shader = GLShader::create(shaderDescriptor, validShaderSource);
     EXPECT_EQ(nullptr, shader);
 }
 
 TEST_F(GLShaderFixture, GivenInvalidShaderSourceWhenCallingCreateShaderThenNullptrIsReturned) {
-    constexpr auto shaderSource = R"(
-            #version 460 core
-
-            main() {}
-        )";
-
     ShaderDescriptor shaderDescriptor{};
     shaderDescriptor.type = ShaderType::VERTEX;
 
-    const auto shader = GLShader::create(shaderDescriptor, shaderSource);
+    const auto shader = GLShader::create(shaderDescriptor, invalidShaderSource);
     EXPECT_EQ(nullptr, shader);
 }
