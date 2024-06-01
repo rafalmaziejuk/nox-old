@@ -38,4 +38,9 @@ set(NOX_TESTS_BASE_SOURCES
 
 target_sources(${NOX_TESTS_BASE_LIB_NAME} PRIVATE ${NOX_TESTS_BASE_SOURCES})
 
+# --------------------------------------------------
+# Add subdirectories
+# --------------------------------------------------
+add_subdirectory(opengl)
+
 nox_create_project_source_tree(${NOX_TESTS_BASE_LIB_NAME})

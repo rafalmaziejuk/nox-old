@@ -1,0 +1,7 @@
+set(NOX_TESTS_BASE_OPENGL_SOURCES
+    ${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists.txt
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_test_environment.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/gl_test_environment.h
+)
+
+target_sources(${NOX_TESTS_BASE_LIB_NAME} PRIVATE ${NOX_TESTS_BASE_OPENGL_SOURCES})
