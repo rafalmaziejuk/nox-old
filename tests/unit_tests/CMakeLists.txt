@@ -58,7 +58,7 @@ target_link_libraries(
     ${NOX_UNIT_TESTS_EXE_NAME}
     PRIVATE
     ${NOX_LIB_NAME}
-    ${NOX_TESTS_FIXTURES_LIB_NAME}
+    ${NOX_TESTS_BASE_LIB_NAME}
     GTest::gtest_main
 )
 
@@ -84,7 +84,7 @@ endif()
 nox_create_project_source_tree(${NOX_UNIT_TESTS_EXE_NAME})
 
 # --------------------------------------------------
-# Create custom for running unit tests
+# Create custom target for running unit tests
 # --------------------------------------------------
 add_custom_target(
     run-${NOX_UNIT_TESTS_EXE_NAME}

@@ -2,30 +2,24 @@
 #include "src/opengl/gl_program.h"
 #include "src/opengl/gl_shader.h"
 
-#include "tests/fixtures/window_fixture.h"
+#include "tests/base/window.h"
 
 #include <glad/gl.h>
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-struct GLProgramFixture : public tests::WindowFixture,
-                          public ::testing::Test {
+struct GLProgramFixture : public ::testing::Test {
     void SetUp() override {
-        tests::WindowFixture::setUp();
-
         SurfaceDescriptor surfaceDescriptor{};
-        surfaceDescriptor.surfaceBackendDescriptor = surfaceBackendDescriptor;
+        surfaceDescriptor.surfaceBackendDescriptor = window.surfaceBackendDescriptor;
         surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
 
         context = GLContext::create(surfaceDescriptor);
         ASSERT_NE(nullptr, context);
     }
 
-    void TearDown() override {
-        tests::WindowFixture::tearDown();
-    }
-
+    tests::Window window{};
     std::unique_ptr<GLContext> context{nullptr};
 
     static constexpr auto vertexShaderSource = R"(

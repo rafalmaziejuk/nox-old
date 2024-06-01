@@ -1,7 +1,7 @@
 # --------------------------------------------------
 # Set auxiliary variables
 # --------------------------------------------------
-set(NOX_TESTS_FIXTURES_LIB_NAME "fixtures")
+set(NOX_TESTS_BASE_LIB_NAME "tests-base")
 set(NOX_UNIT_TESTS_EXE_NAME "unit-tests")
 set(NOX_TESTS_FOLDER_NAME "${NOX_FOLDER_NAME}/tests")
 
@@ -32,5 +32,5 @@ configure_file(config.h.in "${CMAKE_CURRENT_SOURCE_DIR}/config.h")
 # --------------------------------------------------
 # Add subdirectories
 # --------------------------------------------------
-add_subdirectory(fixtures)
+add_subdirectory(base)
 add_subdirectory(unit_tests)

@@ -2,6 +2,7 @@
 # Set auxiliary variables
 # --------------------------------------------------
 set(NOX_EXAMPLES_FOLDER_NAME "${NOX_FOLDER_NAME}/examples")
+set(NOX_EXAMPLES_BASE_LIB_NAME "examples-base")
 
 macro(add_example_project NAME)
     # --------------------------------------------------
@@ -25,7 +26,7 @@ macro(add_example_project NAME)
     target_link_libraries(
         ${NAME}
         PRIVATE
-        base
+        ${NOX_EXAMPLES_BASE_LIB_NAME}
     )
 endmacro()
 

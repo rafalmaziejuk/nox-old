@@ -1,26 +1,18 @@
-#include "src/asserts.h"
 #include "src/opengl/gl_context.h"
 
-#include "tests/fixtures/window_fixture.h"
+#include "tests/base/window.h"
 
 #include <gtest/gtest.h>
 
 using namespace nox;
 
-struct GLContextFixture : public tests::WindowFixture,
-                          public ::testing::Test {
-    void SetUp() override {
-        tests::WindowFixture::setUp();
-    }
-
-    void TearDown() override {
-        tests::WindowFixture::tearDown();
-    }
+struct GLContextFixture : public ::testing::Test {
+    tests::Window window{};
 };
 
 TEST_F(GLContextFixture, GivenValidSurfaceDescriptorWhenCallingCreateContextThenContextIsSuccessfullyCreated) {
     SurfaceDescriptor surfaceDescriptor{};
-    surfaceDescriptor.surfaceBackendDescriptor = surfaceBackendDescriptor;
+    surfaceDescriptor.surfaceBackendDescriptor = window.surfaceBackendDescriptor;
     surfaceDescriptor.surfaceAttributesDescriptor = OpenGLSurfaceAttributesDescriptor{};
 
     const auto context = GLContext::create(surfaceDescriptor);
@@ -51,7 +43,7 @@ TEST_F(GLContextFixture, GivenInvalidSurfaceAttributesDescriptorWhenCallingCreat
     invalidSurfaceAttributesDescriptor.pixelFormatDescriptor.stencilBits = 64u;
 
     SurfaceDescriptor surfaceDescriptor{};
-    surfaceDescriptor.surfaceBackendDescriptor = surfaceBackendDescriptor;
+    surfaceDescriptor.surfaceBackendDescriptor = window.surfaceBackendDescriptor;
     surfaceDescriptor.surfaceAttributesDescriptor = invalidSurfaceAttributesDescriptor;
 
     const auto context = GLContext::create(surfaceDescriptor);
