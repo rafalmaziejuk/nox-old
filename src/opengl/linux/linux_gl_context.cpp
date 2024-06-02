@@ -43,8 +43,10 @@ LinuxGLContext::~LinuxGLContext() {
     m_handleSurface = nullptr;
     m_handleRenderingContext = nullptr;
 
-    gladLoaderUnloadEGL();
-    gladLoaderUnloadGL();
+    if (GLContext::m_sContextCounter == 1u) {
+        gladLoaderUnloadEGL();
+        gladLoaderUnloadGL();
+    }
 }
 
 bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
@@ -74,8 +76,8 @@ bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descrip
                     &framebufferConfigsCount);
     NOX_ENSURE_RETURN_FALSE_MSG(framebufferConfigsCount == 1, "Couldn't choose unique framebuffer config");
 
-    constexpr std::array<int32_t, 7> contextAttributes{EGL_CONTEXT_MAJOR_VERSION, glMajorVersion,
-                                                       EGL_CONTEXT_MINOR_VERSION, glMinorVersion,
+    constexpr std::array<int32_t, 7> contextAttributes{EGL_CONTEXT_MAJOR_VERSION, GLContext::glMajorVersion,
+                                                       EGL_CONTEXT_MINOR_VERSION, GLContext::glMinorVersion,
                                                        EGL_CONTEXT_OPENGL_PROFILE_MASK, EGL_CONTEXT_OPENGL_CORE_PROFILE_BIT,
                                                        EGL_NONE};
     m_handleRenderingContext = eglCreateContext(m_handleDisplay, framebufferConfig, EGL_NO_CONTEXT, contextAttributes.data());

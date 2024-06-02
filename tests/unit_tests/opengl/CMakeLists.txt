@@ -18,6 +18,7 @@ set(NOX_OPENGL_SOURCES
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_buffer.h
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_command_list.cpp
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_command_list.h
+    ${PROJECT_SOURCE_DIR}/src/opengl/gl_context.cpp
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_context.h
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_framebuffer.cpp
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_framebuffer.h

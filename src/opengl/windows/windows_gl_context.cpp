@@ -81,7 +81,9 @@ WindowsGLContext::~WindowsGLContext() {
     m_handleDeviceContext = nullptr;
     m_handleRenderingContext = nullptr;
 
-    gladLoaderUnloadGL();
+    if (GLContext::m_sContextCounter == 1u) {
+        gladLoaderUnloadGL();
+    }
 }
 
 bool WindowsGLContext::initialize(const SurfaceDescriptor &descriptor) {
@@ -125,8 +127,8 @@ bool WindowsGLContext::initialize(const SurfaceDescriptor &descriptor) {
     DescribePixelFormat(m_handleDeviceContext, pixelFormat, sizeof(pixelFormatDescriptor), &pixelFormatDescriptor);
     SetPixelFormat(m_handleDeviceContext, pixelFormat, &pixelFormatDescriptor);
 
-    constexpr std::array<int32_t, 7> contextAttributes{WGL_CONTEXT_MAJOR_VERSION_ARB, glMajorVersion,
-                                                       WGL_CONTEXT_MINOR_VERSION_ARB, glMinorVersion,
+    constexpr std::array<int32_t, 7> contextAttributes{WGL_CONTEXT_MAJOR_VERSION_ARB, GLContext::glMajorVersion,
+                                                       WGL_CONTEXT_MINOR_VERSION_ARB, GLContext::glMinorVersion,
                                                        WGL_CONTEXT_PROFILE_MASK_ARB, WGL_CONTEXT_CORE_PROFILE_BIT_ARB,
                                                        0};
     m_handleRenderingContext = wglCreateContextAttribsARB(m_handleDeviceContext, nullptr, contextAttributes.data());
