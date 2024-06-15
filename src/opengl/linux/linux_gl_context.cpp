@@ -43,19 +43,14 @@ LinuxGLContext::~LinuxGLContext() {
     m_handleSurface = nullptr;
     m_handleRenderingContext = nullptr;
 
-    if (GLContext::m_sContextCounter == 1u) {
+    if (GLContext::m_sInstanceCounter == 1u) {
         gladLoaderUnloadEGL();
         gladLoaderUnloadGL();
     }
 }
 
 bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descriptor) {
-    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadEGL(nullptr), "Couldn't preload EGL");
-    NOX_ENSURE_RETURN_FALSE_MSG(setDisplayHandle(), "Couldn't get EGL display");
-    NOX_ENSURE_RETURN_FALSE_MSG(eglInitialize(m_handleDisplay, nullptr, nullptr), "Couldn't initialize EGL");
-    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadEGL(m_handleDisplay), "Couldn't load EGL");
-
-    eglBindAPI(EGL_OPENGL_API);
+    NOX_ENSURE_RETURN_FALSE(preloadBackend());
 
     std::array<int32_t, 19> framebufferConfigAttributes{EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
                                                         EGL_RENDERABLE_TYPE, EGL_OPENGL_BIT,
@@ -82,13 +77,18 @@ bool LinuxGLContext::initialize(const OpenGLSurfaceAttributesDescriptor &descrip
                                                        EGL_NONE};
     m_handleRenderingContext = eglCreateContext(m_handleDisplay, framebufferConfig, EGL_NO_CONTEXT, contextAttributes.data());
     NOX_ENSURE_RETURN_FALSE_MSG(m_handleRenderingContext != nullptr, "Couldn't create OpenGL 4.6 context");
-
     NOX_ENSURE_RETURN_FALSE_MSG(setSurfaceHandle(framebufferConfig), "Couldn't create EGL window surface");
-    eglMakeCurrent(m_handleDisplay, m_handleSurface, m_handleSurface, m_handleRenderingContext);
 
+    makeCurrent();
     NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadGL(), "Couldn't load OpenGL");
 
     return true;
+}
+
+void LinuxGLContext::makeCurrent() const {
+    if (eglGetCurrentContext() != m_handleRenderingContext) {
+        eglMakeCurrent(m_handleDisplay, m_handleSurface, m_handleSurface, m_handleRenderingContext);
+    }
 }
 
 void LinuxGLContext::swapBuffers() const {
@@ -97,6 +97,17 @@ void LinuxGLContext::swapBuffers() const {
 
 void LinuxGLContext::setSwapInterval(bool interval) const {
     eglSwapInterval(m_handleDisplay, static_cast<EGLint>(interval));
+}
+
+bool LinuxGLContext::preloadBackend() {
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadEGL(nullptr), "Couldn't preload EGL");
+    NOX_ENSURE_RETURN_FALSE_MSG(setDisplayHandle(), "Couldn't get EGL display");
+    NOX_ENSURE_RETURN_FALSE_MSG(eglInitialize(m_handleDisplay, nullptr, nullptr), "Couldn't initialize EGL");
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadEGL(m_handleDisplay), "Couldn't load EGL");
+
+    eglBindAPI(EGL_OPENGL_API);
+
+    return true;
 }
 
 } // namespace nox

@@ -2,14 +2,14 @@
 
 namespace nox {
 
-uint8_t GLContext::m_sContextCounter = 0u;
+uint8_t GLContext::m_sInstanceCounter = 0u;
 
 GLContext::GLContext() {
-    m_sContextCounter++;
+    m_sInstanceCounter++;
 }
 
 GLContext::~GLContext() {
-    m_sContextCounter--;
+    m_sInstanceCounter--;
 }
 
 } // namespace nox

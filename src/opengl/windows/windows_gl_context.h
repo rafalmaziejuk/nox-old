@@ -10,8 +10,12 @@ class WindowsGLContext final : public GLContext {
 
     [[nodiscard]] bool initialize(const SurfaceDescriptor &descriptor);
 
+    void makeCurrent() const override;
     void swapBuffers() const override;
     void setSwapInterval(bool interval) const override;
+
+  private:
+    bool preloadBackend() override;
 
   private:
     HWND m_handleWindow{nullptr};

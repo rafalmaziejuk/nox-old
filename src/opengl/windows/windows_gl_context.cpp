@@ -7,64 +7,6 @@
 
 namespace nox {
 
-namespace {
-
-[[nodiscard]] bool loadOpenGL() {
-    constexpr auto dummyWindowName = "__NOX_DUMMY_WINDOW_CLASS__";
-
-    WNDCLASS attributes{};
-    attributes.style = CS_OWNDC;
-    attributes.hInstance = GetModuleHandle(nullptr);
-    attributes.lpfnWndProc = DefWindowProcA;
-    attributes.lpszClassName = TEXT(dummyWindowName);
-    RegisterClass(&attributes);
-
-    HWND dummyHWND = CreateWindow(attributes.lpszClassName,
-                                  TEXT(dummyWindowName),
-                                  0,
-                                  CW_USEDEFAULT,
-                                  CW_USEDEFAULT,
-                                  CW_USEDEFAULT,
-                                  CW_USEDEFAULT,
-                                  nullptr,
-                                  nullptr,
-                                  attributes.hInstance,
-                                  nullptr);
-    NOX_ENSURE_RETURN_FALSE_MSG(dummyHWND != nullptr, "Couldn't create dummy window");
-
-    HDC dummyDC = GetDC(dummyHWND);
-    PIXELFORMATDESCRIPTOR pixelFormatDescriptor{};
-    pixelFormatDescriptor.nSize = sizeof(pixelFormatDescriptor);
-    pixelFormatDescriptor.nVersion = 1u;
-    pixelFormatDescriptor.dwFlags = (PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_SWAP_EXCHANGE);
-    pixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
-    pixelFormatDescriptor.cColorBits = 32u;
-    pixelFormatDescriptor.cAlphaBits = 8u;
-    pixelFormatDescriptor.cDepthBits = 24u;
-    pixelFormatDescriptor.cStencilBits = 8u;
-
-    auto pixelFormat = ChoosePixelFormat(dummyDC, &pixelFormatDescriptor);
-    SetPixelFormat(dummyDC, pixelFormat, &pixelFormatDescriptor);
-
-    HGLRC dummyHGLRC = wglCreateContext(dummyDC);
-    NOX_ENSURE_RETURN_FALSE_MSG(dummyHGLRC != nullptr, "Couldn't create dummy OpenGL context");
-
-    wglMakeCurrent(dummyDC, dummyHGLRC);
-
-    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadWGL(dummyDC), "Couldn't load WGL");
-    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadGL(), "Couldn't load OpenGL");
-
-    wglMakeCurrent(dummyDC, nullptr);
-    wglDeleteContext(dummyHGLRC);
-    ReleaseDC(dummyHWND, dummyDC);
-    DestroyWindow(dummyHWND);
-    UnregisterClass(TEXT(dummyWindowName), GetModuleHandle(nullptr));
-
-    return true;
-}
-
-} // namespace
-
 std::unique_ptr<GLContext> GLContext::create(const SurfaceDescriptor &descriptor) {
     auto context = std::make_unique<WindowsGLContext>();
     NOX_ENSURE_RETURN_NULLPTR(context->initialize(descriptor));
@@ -81,13 +23,13 @@ WindowsGLContext::~WindowsGLContext() {
     m_handleDeviceContext = nullptr;
     m_handleRenderingContext = nullptr;
 
-    if (GLContext::m_sContextCounter == 1u) {
+    if (GLContext::m_sInstanceCounter == 1u) {
         gladLoaderUnloadGL();
     }
 }
 
 bool WindowsGLContext::initialize(const SurfaceDescriptor &descriptor) {
-    NOX_ENSURE_RETURN_FALSE_MSG(loadOpenGL(), "Couldn't preload WGL");
+    NOX_ENSURE_RETURN_FALSE(preloadBackend());
 
     const auto *surfaceBackendDescriptor = std::get_if<WindowsSurfaceBackendDescriptor>(&descriptor.surfaceBackendDescriptor);
     NOX_ENSURE_RETURN_FALSE(surfaceBackendDescriptor != nullptr);
@@ -134,9 +76,16 @@ bool WindowsGLContext::initialize(const SurfaceDescriptor &descriptor) {
     m_handleRenderingContext = wglCreateContextAttribsARB(m_handleDeviceContext, nullptr, contextAttributes.data());
     NOX_ENSURE_RETURN_FALSE_MSG(m_handleRenderingContext != nullptr, "Couldn't create OpenGL 4.6 context");
 
-    wglMakeCurrent(m_handleDeviceContext, m_handleRenderingContext);
+    makeCurrent();
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadGL(), "Couldn't load OpenGL");
 
     return true;
+}
+
+void WindowsGLContext::makeCurrent() const {
+    if (wglGetCurrentContext() != m_handleRenderingContext) {
+        wglMakeCurrent(m_handleDeviceContext, m_handleRenderingContext);
+    }
 }
 
 void WindowsGLContext::swapBuffers() const {
@@ -145,6 +94,62 @@ void WindowsGLContext::swapBuffers() const {
 
 void WindowsGLContext::setSwapInterval(bool interval) const {
     wglSwapIntervalEXT(static_cast<int32_t>(interval));
+}
+
+bool WindowsGLContext::preloadBackend() {
+    if (GLContext::m_sInstanceCounter > 1u) {
+        return true;
+    }
+
+    constexpr auto dummyWindowName = "__NOX_DUMMY_WINDOW_CLASS__";
+
+    WNDCLASS attributes{};
+    attributes.style = CS_OWNDC;
+    attributes.hInstance = GetModuleHandle(nullptr);
+    attributes.lpfnWndProc = DefWindowProcA;
+    attributes.lpszClassName = TEXT(dummyWindowName);
+    RegisterClass(&attributes);
+
+    HWND dummyHWND = CreateWindow(attributes.lpszClassName,
+                                  TEXT(dummyWindowName),
+                                  0,
+                                  CW_USEDEFAULT,
+                                  CW_USEDEFAULT,
+                                  CW_USEDEFAULT,
+                                  CW_USEDEFAULT,
+                                  nullptr,
+                                  nullptr,
+                                  attributes.hInstance,
+                                  nullptr);
+    NOX_ENSURE_RETURN_FALSE_MSG(dummyHWND != nullptr, "Couldn't create dummy window");
+
+    HDC dummyDC = GetDC(dummyHWND);
+    PIXELFORMATDESCRIPTOR pixelFormatDescriptor{};
+    pixelFormatDescriptor.nSize = sizeof(pixelFormatDescriptor);
+    pixelFormatDescriptor.nVersion = 1u;
+    pixelFormatDescriptor.dwFlags = (PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER | PFD_SWAP_EXCHANGE);
+    pixelFormatDescriptor.iPixelType = PFD_TYPE_RGBA;
+    pixelFormatDescriptor.cColorBits = 32u;
+    pixelFormatDescriptor.cAlphaBits = 8u;
+    pixelFormatDescriptor.cDepthBits = 24u;
+    pixelFormatDescriptor.cStencilBits = 8u;
+
+    auto pixelFormat = ChoosePixelFormat(dummyDC, &pixelFormatDescriptor);
+    SetPixelFormat(dummyDC, pixelFormat, &pixelFormatDescriptor);
+
+    HGLRC dummyHGLRC = wglCreateContext(dummyDC);
+    NOX_ENSURE_RETURN_FALSE_MSG(dummyHGLRC != nullptr, "Couldn't create dummy OpenGL context");
+
+    wglMakeCurrent(dummyDC, dummyHGLRC);
+    NOX_ENSURE_RETURN_FALSE_MSG(gladLoaderLoadWGL(dummyDC), "Couldn't load WGL");
+
+    wglMakeCurrent(nullptr, nullptr);
+    wglDeleteContext(dummyHGLRC);
+    ReleaseDC(dummyHWND, dummyDC);
+    DestroyWindow(dummyHWND);
+    UnregisterClass(TEXT(dummyWindowName), GetModuleHandle(nullptr));
+
+    return true;
 }
 
 } // namespace nox
