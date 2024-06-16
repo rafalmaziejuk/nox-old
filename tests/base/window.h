@@ -14,6 +14,7 @@ struct Window {
     GLFWwindow *windowHandle{nullptr};
     Vector2D<uint32_t> windowSize{800u, 600u};
     SurfaceBackendDescriptor surfaceBackendDescriptor;
+    static uint8_t m_sInstanceCounter;
 };
 
 } // namespace nox::tests

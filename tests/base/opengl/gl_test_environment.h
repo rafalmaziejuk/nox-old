@@ -27,6 +27,10 @@ struct GLTestEnvironment {
 };
 
 struct GLTestFixture : public ::testing::Test {
+    void SetUp() override {
+        environment.context->makeCurrent();
+    }
+    
     const tests::GLTestEnvironment &environment{GLTestEnvironment::instance()};
 };
 

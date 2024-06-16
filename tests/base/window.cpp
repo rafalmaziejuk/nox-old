@@ -28,8 +28,13 @@ SurfaceBackendDescriptor createSurfaceBackendDescriptor(GLFWwindow *windowHandle
 
 } // namespace
 
+uint8_t Window::m_sInstanceCounter = 0u;
+
 Window::Window() {
-    glfwInit();
+    if (m_sInstanceCounter == 0u) {
+        glfwInit();
+    }
+    m_sInstanceCounter++;
 
     glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
     glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
@@ -39,8 +44,12 @@ Window::Window() {
 
 Window::~Window() {
     glfwDestroyWindow(windowHandle);
-    glfwTerminate();
     windowHandle = nullptr;
+    
+    m_sInstanceCounter--;
+    if (m_sInstanceCounter == 0u) {
+        glfwTerminate();
+    }
 }
 
 } // namespace nox::tests
