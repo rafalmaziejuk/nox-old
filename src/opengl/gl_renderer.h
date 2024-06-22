@@ -4,9 +4,11 @@
 
 namespace nox {
 
+class GLVertexArrayRegistry;
+
 class GLRenderer final : public Renderer {
   public:
-    GLRenderer() = default;
+    GLRenderer();
 
     RendererBackend getRendererBackend() const override;
 
@@ -27,6 +29,9 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) override;
 
     std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescriptor &descriptor) override;
+
+  private:
+    std::shared_ptr<GLVertexArrayRegistry> m_vertexArrayRegistry{nullptr};
 };
 
 } // namespace nox

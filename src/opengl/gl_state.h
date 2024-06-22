@@ -1,7 +1,5 @@
 #pragma once
 
-#include "opengl/gl_vertex_array.h"
-
 namespace nox {
 
 class GLFramebuffer;

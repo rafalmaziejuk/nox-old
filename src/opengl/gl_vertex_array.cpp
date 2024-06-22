@@ -27,12 +27,11 @@ GLenum mapVertexAttributeTypeToEnum(VertexAttributeType type) {
 
 } // namespace
 
-GLVertexArray::GLVertexArray(VertexAttributes vertexAttributes)
-    : m_vertexAttributes{std::move(vertexAttributes)} {
+GLVertexArray::GLVertexArray(const VertexAttributes &vertexAttributes) {
     glCreateVertexArrays(1, &m_handle);
 
-    for (size_t i = 0u; i < m_vertexAttributes.size(); i++) {
-        const auto &vertexAttribute = m_vertexAttributes[i];
+    for (size_t i = 0u; i < vertexAttributes.size(); i++) {
+        const auto &vertexAttribute = vertexAttributes[i];
         auto descriptor = getVertexAttributeFormatDescriptor(vertexAttribute);
         auto index = static_cast<GLuint>(i);
         auto componentsCount = static_cast<GLint>(descriptor.componentsCount);
@@ -46,6 +45,10 @@ GLVertexArray::GLVertexArray(VertexAttributes vertexAttributes)
 
         m_stride += static_cast<GLuint>(descriptor.stride);
     }
+}
+
+GLVertexArray::~GLVertexArray() {
+    glDeleteVertexArrays(1, &m_handle);
 }
 
 void GLVertexArray::setVertexBuffer(uint32_t vertexBufferHandle) {
@@ -66,86 +69,38 @@ void GLVertexArray::bind() const {
     glBindVertexArray(m_handle);
 }
 
-GLVertexArrayRegistry &GLVertexArrayRegistry::instance() {
-    static GLVertexArrayRegistry registry{};
-    return registry;
+std::shared_ptr<GLVertexArrayRegistry> GLVertexArrayRegistry::create() {
+    return std::make_shared<GLVertexArrayRegistry>();
 }
 
-GLVertexArrayRegistry::GLVertexArrayRegistry() {
-    m_vertexArrays.emplace_back(GLVertexArray({}), 0u);
-}
-
-GLVertexArrayRegistry::~GLVertexArrayRegistry() {
-    NOX_ASSERT(m_vertexArrays.size() == 1u);
-
-    erase(0u);
-}
-
-uint32_t GLVertexArrayRegistry::registerVertexArray(const VertexAttributes &vertexAttributes) {
+std::shared_ptr<GLVertexArray> GLVertexArrayRegistry::registerVertexArray(const VertexAttributes &vertexAttributes) {
     if (!contains(vertexAttributes)) {
-        m_vertexArrays.emplace_back(vertexAttributes, 0u);
+        auto vertexArray = std::make_shared<GLVertexArray>(vertexAttributes);
+        m_vertexArrays.emplace(vertexAttributes, std::move(vertexArray));
     }
 
-    auto index = find(vertexAttributes);
-    auto &[vertexArray, references] = m_vertexArrays[index];
-    references++;
-
-    return index;
+    return m_vertexArrays[vertexAttributes];
 }
 
-void GLVertexArrayRegistry::unregisterVertexArray(uint32_t index) {
-    NOX_ASSERT(index < static_cast<uint32_t>(m_vertexArrays.size()));
+void GLVertexArrayRegistry::unregisterVertexArray(const VertexAttributes &vertexAttributes) {
+    NOX_ASSERT(contains(vertexAttributes));
 
-    auto &[vertexArray, references] = m_vertexArrays[index];
-    references--;
-    if (references == 0u) {
-        erase(index);
-    }
+    m_vertexArrays.erase(vertexAttributes);
 }
 
-void GLVertexArrayRegistry::setBoundVertexArrayIndex(uint32_t index) {
-    m_boundVertexArrayIndex = index;
+void GLVertexArrayRegistry::setBoundVertexArray(const VertexAttributes &vertexAttributes) {
+    m_boundVertexArrayKey = vertexAttributes;
 }
 
-uint32_t GLVertexArrayRegistry::getBoundVertexArrayIndex() const {
-    return m_boundVertexArrayIndex;
-}
+std::shared_ptr<GLVertexArray> GLVertexArrayRegistry::getBoundVertexArray() const {
+    NOX_ASSERT(contains(m_boundVertexArrayKey));
 
-GLVertexArray &GLVertexArrayRegistry::getVertexArray(uint32_t index) {
-    NOX_ASSERT(index < static_cast<uint32_t>(m_vertexArrays.size()));
-
-    auto &[vertexArray, references] = m_vertexArrays[index];
-    return vertexArray;
-}
-
-const GLVertexArray &GLVertexArrayRegistry::getVertexArray(uint32_t index) const {
-    NOX_ASSERT(index < static_cast<uint32_t>(m_vertexArrays.size()));
-
-    const auto &[vertexArray, references] = m_vertexArrays[index];
-    return vertexArray;
+    return m_vertexArrays.at(m_boundVertexArrayKey);
 }
 
 bool GLVertexArrayRegistry::contains(const VertexAttributes &vertexAttributes) const {
-    return (find(vertexAttributes) < static_cast<uint32_t>(m_vertexArrays.size()));
-}
-
-uint32_t GLVertexArrayRegistry::find(const VertexAttributes &vertexAttributes) const {
-    for (size_t i = 0u; i < m_vertexArrays.size(); i++) {
-        const auto &[vertexArray, references] = m_vertexArrays[i];
-        if (vertexArray.getVertexAttributes() == vertexAttributes) {
-            return (static_cast<uint32_t>(i));
-        }
-    }
-
-    return (static_cast<uint32_t>(m_vertexArrays.size()));
-}
-
-void GLVertexArrayRegistry::erase(uint32_t index) {
-    const auto &[vertexArray, references] = m_vertexArrays[index];
-    m_vertexArrays.erase(m_vertexArrays.begin() + index);
-
-    auto handle = vertexArray.getHandle();
-    glDeleteVertexArrays(1, &handle);
+    auto it = m_vertexArrays.find(vertexAttributes);
+    return (it != m_vertexArrays.end());
 }
 
 } // namespace nox

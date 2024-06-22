@@ -2,18 +2,15 @@
 
 #include <nox/buffer.h>
 
+#include <map>
 #include <memory>
-#include <vector>
 
 namespace nox {
 
 class GLVertexArray final {
   public:
-    explicit GLVertexArray(VertexAttributes vertexAttributes);
-
-    [[nodiscard]] const VertexAttributes &getVertexAttributes() const {
-        return m_vertexAttributes;
-    }
+    explicit GLVertexArray(const VertexAttributes &vertexAttributes);
+    ~GLVertexArray();
 
     [[nodiscard]] uint32_t getHandle() const {
         return m_handle;
@@ -25,7 +22,6 @@ class GLVertexArray final {
     void bind() const;
 
   private:
-    VertexAttributes m_vertexAttributes;
     uint32_t m_currentBindingIndex{0u};
     uint32_t m_stride{0u};
     uint32_t m_handle{0u};
@@ -33,34 +29,27 @@ class GLVertexArray final {
 
 class GLVertexArrayRegistry final {
   public:
-    [[nodiscard]] static GLVertexArrayRegistry &instance();
+    [[nodiscard]] static std::shared_ptr<GLVertexArrayRegistry> create();
 
-    [[nodiscard]] uint32_t registerVertexArray(const VertexAttributes &vertexAttributes);
-    void unregisterVertexArray(uint32_t index);
+    [[nodiscard]] std::shared_ptr<GLVertexArray> registerVertexArray(const VertexAttributes &vertexAttributes);
+    void unregisterVertexArray(const VertexAttributes &vertexAttributes);
 
-    void setBoundVertexArrayIndex(uint32_t index);
-    [[nodiscard]] uint32_t getBoundVertexArrayIndex() const;
-
-    [[nodiscard]] GLVertexArray &getVertexArray(uint32_t index);
-    [[nodiscard]] const GLVertexArray &getVertexArray(uint32_t index) const;
+    void setBoundVertexArray(const VertexAttributes &vertexAttributes);
+    [[nodiscard]] std::shared_ptr<GLVertexArray> getBoundVertexArray() const;
 
   private:
     [[nodiscard]] bool contains(const VertexAttributes &vertexAttributes) const;
-    [[nodiscard]] uint32_t find(const VertexAttributes &vertexAttributes) const;
-    void erase(uint32_t index);
 
   public:
-    GLVertexArrayRegistry();
+    GLVertexArrayRegistry() = default;
     GLVertexArrayRegistry(const GLVertexArrayRegistry &) = delete;
     GLVertexArrayRegistry &operator=(const GLVertexArrayRegistry &) = delete;
     GLVertexArrayRegistry(GLVertexArrayRegistry &&) = delete;
     GLVertexArrayRegistry &operator=(GLVertexArrayRegistry &&) = delete;
-    ~GLVertexArrayRegistry();
 
   private:
-    using VertexArray = std::pair<GLVertexArray, uint32_t>;
-    std::vector<VertexArray> m_vertexArrays;
-    uint32_t m_boundVertexArrayIndex{0u};
+    std::map<VertexAttributes, std::shared_ptr<GLVertexArray>> m_vertexArrays;
+    VertexAttributes m_boundVertexArrayKey;
 };
 
 } // namespace nox
