@@ -5,8 +5,6 @@
 
 #include <glad/gl.h>
 
-#include <algorithm>
-
 namespace nox {
 
 namespace {
@@ -32,60 +30,74 @@ GLenum mapVertexAttributeTypeToEnum(VertexAttributeType type) {
     default: break;
     }
 
-    NOX_ASSERT(false);
     return GL_NONE;
 }
 
 } // namespace
 
-bool GLBuffer::validateInput(const BufferDescriptor &descriptor) {
-    bool result = true;
-
-    result &= (descriptor.size > 0u);
-    result &= (descriptor.data != nullptr);
-
-    return result;
-}
-
 GLBuffer::GLBuffer(const BufferDescriptor &descriptor) {
     auto flags = mapBufferUsageToBitfield(descriptor.usage);
     glCreateBuffers(1, &m_handle);
-    glNamedBufferStorage(m_handle, descriptor.size, descriptor.data, flags);
+
+    constexpr auto immutableStorageBuffer = true;
+    if constexpr (immutableStorageBuffer) {
+        allocateImmutableStorage(descriptor.size, descriptor.data, flags);
+    }
 }
 
 GLBuffer::~GLBuffer() {
     glDeleteBuffers(1, &m_handle);
 }
 
-bool GLVertexBuffer::validateInput(const VertexBufferDescriptor &descriptor) {
-    bool result = true;
+void GLBuffer::allocateImmutableStorage(uint32_t size, const void *data, uint32_t flags) const {
+    glNamedBufferStorage(m_handle, size, data, flags);
+}
 
-    result &= GLBuffer::validateInput(descriptor);
-    result &= (!descriptor.vertexAttributes.empty());
+std::unique_ptr<GLVertexBuffer> GLVertexBuffer::create(const VertexBufferDescriptor &descriptor,
+                                                       std::shared_ptr<GLVertexArrayRegistry> registry) {
+    auto buffer = std::make_unique<GLVertexBuffer>(descriptor, std::move(registry));
+    NOX_ENSURE_RETURN_NULLPTR(buffer->getHandle() != 0u);
 
-    return result;
+    return buffer;
+}
+
+GLVertexBuffer::GLVertexBuffer(const VertexBufferDescriptor &descriptor,
+                               std::shared_ptr<GLVertexArrayRegistry> registry)
+    : GLBuffer{descriptor},
+      m_vertexArrayRegistry{std::move(registry)},
+      m_vertexAttributes{descriptor.vertexAttributes} {
+    m_vertexArray = m_vertexArrayRegistry->registerVertexArray(m_vertexAttributes);
+    m_vertexArray->setVertexBuffer(getHandle());
 }
 
 GLVertexBuffer::~GLVertexBuffer() {
-    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
-    vertexArrayRegistry.unregisterVertexArray(m_vertexArrayIndex);
+    m_vertexArrayRegistry->unregisterVertexArray(m_vertexAttributes);
 }
 
-void GLVertexBuffer::setVertexArrayIndex(uint32_t index) {
-    m_vertexArrayIndex = index;
+void GLVertexBuffer::bind() const {
+    m_vertexArray->bind();
+    m_vertexArrayRegistry->setBoundVertexArray(m_vertexAttributes);
 }
 
-bool GLIndexBuffer::validateInput(const IndexBufferDescriptor &descriptor) {
-    bool result = true;
+std::unique_ptr<GLIndexBuffer> GLIndexBuffer::create(const IndexBufferDescriptor &descriptor,
+                                                     std::shared_ptr<GLVertexArrayRegistry> registry) {
+    auto buffer = std::make_unique<GLIndexBuffer>(descriptor, std::move(registry));
+    NOX_ENSURE_RETURN_NULLPTR(buffer->getHandle() != 0u);
 
-    result &= GLBuffer::validateInput(descriptor);
-
-    return result;
+    return buffer;
 }
 
-void GLIndexBuffer::setIndexType(VertexAttributeFormat format) {
-    auto descriptor = getVertexAttributeFormatDescriptor(format);
-    m_indexType = mapVertexAttributeTypeToEnum(descriptor.vertexAttributeType);
+GLIndexBuffer::GLIndexBuffer(const IndexBufferDescriptor &descriptor,
+                             std::shared_ptr<GLVertexArrayRegistry> registry)
+    : GLBuffer{descriptor},
+      m_vertexArrayRegistry{std::move(registry)} {
+    auto formatDescriptor = getVertexAttributeFormatDescriptor(descriptor.format);
+    m_indexType = mapVertexAttributeTypeToEnum(formatDescriptor.vertexAttributeType);
+}
+
+void GLIndexBuffer::bind() const {
+    auto vertexArray = m_vertexArrayRegistry->getBoundVertexArray();
+    vertexArray->setIndexBuffer(getHandle());
 }
 
 } // namespace nox

@@ -78,24 +78,15 @@ void GLCommandList::bindGraphicsPipelineState(const GraphicsPipelineState &pipel
 
 void GLCommandList::bindVertexBuffer(const Buffer &buffer) {
     const auto *vertexBuffer = static_cast<const GLVertexBuffer *>(&buffer);
-    auto vertexArrayIndex = vertexBuffer->getVertexArrayIndex();
 
-    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
-    vertexArrayRegistry.setBoundVertexArrayIndex(vertexArrayIndex);
-
-    const auto &vertexArray = vertexArrayRegistry.getVertexArray(vertexArrayIndex);
-    vertexArray.bind();
+    vertexBuffer->bind();
 }
 
 void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
     const auto *indexBuffer = static_cast<const GLIndexBuffer *>(&buffer);
+
+    indexBuffer->bind();
     m_state.indexType = indexBuffer->getIndexType();
-
-    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
-    auto vertexArrayIndex = vertexArrayRegistry.getBoundVertexArrayIndex();
-
-    auto &vertexArray = vertexArrayRegistry.getVertexArray(vertexArrayIndex);
-    vertexArray.setIndexBuffer(indexBuffer->getHandle());
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {

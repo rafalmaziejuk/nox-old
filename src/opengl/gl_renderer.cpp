@@ -14,6 +14,9 @@
 
 namespace nox {
 
+GLRenderer::GLRenderer()
+    : m_vertexArrayRegistry{GLVertexArrayRegistry::create()} {}
+
 RendererBackend GLRenderer::getRendererBackend() const {
     return RendererBackend::OPENGL;
 }
@@ -22,31 +25,22 @@ std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor
     auto context = GLContext::create(descriptor.surfaceDescriptor);
     NOX_ENSURE_RETURN_NULLPTR_MSG(context != nullptr, "Couldn't create context");
 
-    auto swapchain = GLSwapchain::create(descriptor, std::move(context));
+    auto swapchain = GLSwapchain::create(descriptor, std::move(context), m_vertexArrayRegistry);
     NOX_ENSURE_RETURN_NULLPTR_MSG(swapchain != nullptr, "Couldn't create swapchain");
 
     return swapchain;
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescriptor &descriptor) {
-    NOX_ASSERT(GLVertexBuffer::validateInput(descriptor));
-
-    auto &vertexArrayRegistry = GLVertexArrayRegistry::instance();
-    auto vertexArrayIndex = vertexArrayRegistry.registerVertexArray(descriptor.vertexAttributes);
-    auto &vertexArray = vertexArrayRegistry.getVertexArray(vertexArrayIndex);
-
-    auto buffer = std::make_unique<GLVertexBuffer>(descriptor);
-    buffer->setVertexArrayIndex(vertexArrayIndex);
-    vertexArray.setVertexBuffer(buffer->getHandle());
+    auto buffer = GLVertexBuffer::create(descriptor, m_vertexArrayRegistry);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(buffer != nullptr, "Couldn't create vertex buffer");
 
     return buffer;
 }
 
 std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const IndexBufferDescriptor &descriptor) {
-    NOX_ASSERT(GLIndexBuffer::validateInput(descriptor));
-
-    auto buffer = std::make_unique<GLIndexBuffer>(descriptor);
-    buffer->setIndexType(descriptor.format);
+    auto buffer = GLIndexBuffer::create(descriptor, m_vertexArrayRegistry);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(buffer != nullptr, "Couldn't create index buffer");
 
     return buffer;
 }

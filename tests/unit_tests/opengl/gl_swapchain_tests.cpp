@@ -1,5 +1,6 @@
 #include "src/opengl/gl_context.h"
 #include "src/opengl/gl_swapchain.h"
+#include "src/opengl/gl_vertex_array.h"
 
 #include "tests/base/window.h"
 
@@ -29,7 +30,9 @@ TEST_F(GLSwapchainFixture, GivenValidSwapchainDescriptorAndContextWhenCallingCre
     swapchainDescriptor.presentMode = OpenGLPresentMode{};
     swapchainDescriptor.size = window.windowSize;
 
-    const auto swapchain = GLSwapchain::create(swapchainDescriptor, std::move(context));
+    const auto swapchain = GLSwapchain::create(swapchainDescriptor,
+                                               std::move(context),
+                                               GLVertexArrayRegistry::create());
     ASSERT_NE(nullptr, swapchain);
 
     EXPECT_EQ(window.windowSize, swapchain->getSize());
@@ -49,7 +52,9 @@ TEST_F(GLSwapchainFixture, GivenPixelFormatDescriptorWith0AlphaBitsWhenCallingCr
     swapchainDescriptor.presentMode = OpenGLPresentMode{};
     swapchainDescriptor.size = window.windowSize;
 
-    const auto swapchain = GLSwapchain::create(swapchainDescriptor, std::move(context));
+    const auto swapchain = GLSwapchain::create(swapchainDescriptor,
+                                               std::move(context),
+                                               GLVertexArrayRegistry::create());
     ASSERT_NE(nullptr, swapchain);
 
     constexpr auto expectedSurfaceFormat = ImageFormat::RGB8_UNORM;
@@ -72,7 +77,9 @@ TEST_F(GLSwapchainFixture, GivenPixelFormatDescriptorWith8AlphaBitsWhenCallingCr
     swapchainDescriptor.presentMode = OpenGLPresentMode{};
     swapchainDescriptor.size = window.windowSize;
 
-    const auto swapchain = GLSwapchain::create(swapchainDescriptor, std::move(context));
+    const auto swapchain = GLSwapchain::create(swapchainDescriptor,
+                                               std::move(context),
+                                               GLVertexArrayRegistry::create());
     ASSERT_NE(nullptr, swapchain);
 
     constexpr auto expectedSurfaceFormat = ImageFormat::RGBA8_UNORM;
