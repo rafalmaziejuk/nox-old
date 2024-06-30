@@ -25,7 +25,7 @@ std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor
     auto context = GLContext::create(descriptor.surfaceDescriptor);
     NOX_ENSURE_RETURN_NULLPTR_MSG(context != nullptr, "Couldn't create context");
 
-    auto swapchain = GLSwapchain::create(descriptor, std::move(context), m_vertexArrayRegistry);
+    auto swapchain = GLSwapchain::create(descriptor, std::move(context));
     NOX_ENSURE_RETURN_NULLPTR_MSG(swapchain != nullptr, "Couldn't create swapchain");
 
     return swapchain;
@@ -80,10 +80,8 @@ std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescrip
 }
 
 std::unique_ptr<Framebuffer> GLRenderer::createFramebuffer(const FramebufferDescriptor &descriptor) {
-    NOX_ASSERT(GLFramebuffer::validateInput(descriptor));
-
-    auto framebuffer = std::make_unique<GLFramebuffer>(descriptor);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer->validate(), "Framebuffer isn't valid");
+    auto framebuffer = GLFramebuffer::create(descriptor);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer != nullptr, "Couldn't create framebuffer");
 
     return framebuffer;
 }

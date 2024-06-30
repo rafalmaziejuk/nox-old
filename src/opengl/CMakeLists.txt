@@ -90,7 +90,6 @@ set(NOX_OPENGL_SOURCES
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_renderer.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_shader.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_shader.h
-    ${CMAKE_CURRENT_SOURCE_DIR}/gl_state.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swapchain.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_swapchain.h
     ${CMAKE_CURRENT_SOURCE_DIR}/gl_texture.cpp

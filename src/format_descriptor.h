@@ -7,6 +7,15 @@
 
 namespace nox {
 
+enum class ImageFormatType : uint8_t {
+    NONE,
+    COLOR,
+    DEPTH,
+    STENCIL,
+    DEPTH_STENCIL,
+    MAX
+};
+
 enum class VertexAttributeType : uint8_t {
     NONE,
     UNSIGNED_BYTE,
@@ -20,13 +29,6 @@ enum class VertexAttributeType : uint8_t {
     MAX
 };
 
-struct ImageFormatDescriptor {
-    bool isColor{false};
-    bool isDepth{false};
-    bool isStencil{false};
-    bool isDepthStencil{false};
-};
-
 struct VertexAttributeFormatDescriptor {
     VertexAttributeType vertexAttributeType{VertexAttributeType::NONE};
     uint8_t componentsCount{0u};
@@ -34,7 +36,7 @@ struct VertexAttributeFormatDescriptor {
     bool isNormalized{false};
 };
 
-[[nodiscard]] ImageFormatDescriptor NOX_EXPORT getImageFormatDescriptor(ImageFormat format);
+[[nodiscard]] ImageFormatType NOX_EXPORT getImageFormatType(ImageFormat format);
 [[nodiscard]] VertexAttributeFormatDescriptor NOX_EXPORT getVertexAttributeFormatDescriptor(VertexAttributeFormat format);
 
 } // namespace nox

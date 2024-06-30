@@ -1,7 +1,6 @@
 #include "asserts.h"
 #include "format_descriptor.h"
 #include "opengl/gl_framebuffer.h"
-#include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_render_pass.h"
 #include "opengl/gl_texture.h"
 
@@ -9,34 +8,45 @@
 
 namespace nox {
 
-bool GLFramebuffer::validateInput(const FramebufferDescriptor &descriptor) {
-    bool result = true;
+namespace {
 
-    auto validateAttachments = [&descriptor]() {
-        if (descriptor.renderPass == nullptr) {
-            return false;
-        }
+[[nodiscard]] ImageFormatType getAttachmentType(AttachmentPoint attachmentPoint) {
+    switch (attachmentPoint) {
+    case GL_DEPTH_ATTACHMENT: return ImageFormatType::DEPTH;
+    case GL_STENCIL_ATTACHMENT: return ImageFormatType::STENCIL;
+    case GL_DEPTH_STENCIL_ATTACHMENT: return ImageFormatType::DEPTH_STENCIL;
+    default: return ImageFormatType::COLOR;
+    }
+}
 
-        const auto *glRenderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
-        const auto &attachmentDescriptors = glRenderPass->getAttachmentDescriptors();
+} // namespace
 
-        for (size_t i = 0u; i < descriptor.attachments.size(); i++) {
-            const auto &attachment = *descriptor.attachments[i];
-            const auto &attachmentDescriptor = attachmentDescriptors[i];
+std::unique_ptr<GLFramebuffer> GLFramebuffer::create(const FramebufferDescriptor &descriptor) {
+    std::unique_ptr<GLFramebuffer> framebuffer{nullptr};
+    if (descriptor.attachments.empty()) {
+        framebuffer = std::make_unique<GLFramebuffer>();
+    } else {
+        framebuffer = std::make_unique<GLFramebuffer>(descriptor);
+        NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer->attachAttachments(descriptor.attachments),
+                                      "Couldn't attach attachments successfully");
+    }
+    NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer->isComplete(), "Framebuffer isn't complete");
 
-            if (attachment.getFormat() != attachmentDescriptor.format) {
-                return false;
-            }
-        }
+    const auto *glRenderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
+    NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer->isCompatible(glRenderPass), "Framebuffer isn't compatible with given render pass")
 
-        return true;
-    };
+    return framebuffer;
+}
 
-    result &= validateAttachments();
-    result &= (descriptor.size.x() > 0u);
-    result &= (descriptor.size.y() > 0u);
+GLFramebuffer::GLFramebuffer() {
+    m_attachmentPoints.reserve(1u);
+    m_attachmentPoints.push_back(GL_BACK_LEFT);
+}
 
-    return result;
+GLFramebuffer::GLFramebuffer(const FramebufferDescriptor &descriptor) {
+    glCreateFramebuffers(1, &m_handle);
+
+    m_attachmentPoints.reserve(descriptor.attachments.size());
 }
 
 GLFramebuffer::~GLFramebuffer() {
@@ -45,81 +55,37 @@ GLFramebuffer::~GLFramebuffer() {
     glDeleteFramebuffers(1, &m_handle);
 }
 
-bool GLFramebuffer::validate() const {
-    return (glCheckNamedFramebufferStatus(m_handle, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
-}
-
 void GLFramebuffer::bind() const {
     glBindFramebuffer(GL_FRAMEBUFFER, m_handle);
 }
 
-void GLFramebuffer::unbind() const { // NOLINT(readability-convert-member-functions-to-static)
-    glBindFramebuffer(GL_FRAMEBUFFER, 0u);
-}
-
-void GLFramebuffer::clearAttachments(const ClearValues &values, const AttachmentDescriptors &attachmentDescriptors) const {
-    NOX_ASSERT(values.size() == attachmentDescriptors.size());
-    NOX_ASSERT(values.size() == m_attachmentPoints.size());
-
+void GLFramebuffer::clearAttachments(const ClearValues &values, const AttachmentDescriptors &descriptors) const {
     for (size_t i = 0u; i < m_attachmentPoints.size(); i++) {
-        const auto &attachmentDescriptor = attachmentDescriptors[i];
-
-        if (attachmentDescriptor.loadOp == AttachmentLoadOp::CLEAR) {
-            const auto attachmentFormatDescriptor = getImageFormatDescriptor(attachmentDescriptor.format);
+        if (descriptors[i].loadOp == AttachmentLoadOp::CLEAR) {
+            const auto attachmentType = getAttachmentType(m_attachmentPoints[i]);
             const auto *clearColorValue = std::get_if<ClearColorValue>(&values[i]);
             const auto *clearDepthStencilValue = std::get_if<ClearDepthStencilValue>(&values[i]);
 
-            if (attachmentFormatDescriptor.isColor) {
+            if (attachmentType == ImageFormatType::COLOR) {
                 clearColorAttachment(clearColorValue, static_cast<int32_t>(i));
-            }
-
-            if (attachmentFormatDescriptor.isDepth) {
+            } else if (attachmentType == ImageFormatType::DEPTH) {
                 clearDepthAttachment(clearDepthStencilValue);
-            }
-
-            if (attachmentFormatDescriptor.isStencil) {
+            } else if (attachmentType == ImageFormatType::STENCIL) {
                 clearStencilAttachment(clearDepthStencilValue);
-            }
-
-            if (attachmentFormatDescriptor.isDepthStencil) {
+            } else if (attachmentType == ImageFormatType::DEPTH_STENCIL) {
                 clearDepthStencilAttachment(clearDepthStencilValue);
             }
         }
     }
 }
 
-void GLFramebuffer::bindColorAttachments(const ColorAttachmentReferences &attachmentReferences) const {
+void GLFramebuffer::invalidateAttachments(const AttachmentDescriptors &descriptors) const {
     AttachmentPoints attachmentPoints;
-    for (const auto &attachmentReference : attachmentReferences) {
-        attachmentPoints.push_back(GL_COLOR_ATTACHMENT0 + attachmentReference.index);
-    }
-    glNamedFramebufferDrawBuffers(m_handle,
-                                  static_cast<GLsizei>(attachmentPoints.size()),
-                                  attachmentPoints.data());
-}
+    attachmentPoints.reserve(descriptors.size());
 
-void GLFramebuffer::invalidateAttachments(const AttachmentDescriptors &attachmentDescriptors) const {
-    AttachmentPoints attachmentPoints;
     for (size_t i = 0u; i < m_attachmentPoints.size(); i++) {
-        const auto &attachmentDescriptor = attachmentDescriptors[i];
-        const auto attachmentFormatDescriptor = getImageFormatDescriptor(attachmentDescriptor.format);
-
-        if (attachmentDescriptor.storeOp == AttachmentStoreOp::DONT_CARE) {
-            if (attachmentFormatDescriptor.isColor) {
-                attachmentPoints.push_back(GL_COLOR_ATTACHMENT0 + static_cast<uint32_t>(i));
-            }
-
-            if (attachmentFormatDescriptor.isDepth) {
-                attachmentPoints.push_back(GL_DEPTH_ATTACHMENT);
-            }
-
-            if (attachmentFormatDescriptor.isStencil) {
-                attachmentPoints.push_back(GL_STENCIL_ATTACHMENT);
-            }
-
-            if (attachmentFormatDescriptor.isDepthStencil) {
-                attachmentPoints.push_back(GL_DEPTH_STENCIL_ATTACHMENT);
-            }
+        if (descriptors[i].storeOp == AttachmentStoreOp::DONT_CARE) {
+            attachmentPoints.push_back(m_attachmentPoints[i]);
         }
     }
 
@@ -127,9 +93,60 @@ void GLFramebuffer::invalidateAttachments(const AttachmentDescriptors &attachmen
     glInvalidateNamedFramebufferData(m_handle, attachmentPointsCount, attachmentPoints.data());
 }
 
-void GLFramebuffer::clearColorAttachment(const ClearColorValue *value, int32_t index) const {
-    NOX_ASSERT(value != nullptr);
+void GLFramebuffer::bindColorAttachments(const ColorAttachmentReferences &references) const {
+    AttachmentPoints attachmentPoints;
+    attachmentPoints.reserve(references.size());
 
+    for (const auto &attachmentReference : references) {
+        attachmentPoints.push_back(m_attachmentPoints[attachmentReference.index]);
+    }
+    glNamedFramebufferDrawBuffers(m_handle,
+                                  static_cast<GLsizei>(attachmentPoints.size()),
+                                  attachmentPoints.data());
+}
+
+bool GLFramebuffer::isComplete() const {
+    return (glCheckNamedFramebufferStatus(m_handle, GL_FRAMEBUFFER) == GL_FRAMEBUFFER_COMPLETE);
+}
+
+bool GLFramebuffer::isCompatible(const GLRenderPass *renderPass) const {
+    bool result = true;
+
+    result &= (m_attachmentPoints.size() == renderPass->getAttachmentDescriptors().size());
+
+    return result;
+}
+
+bool GLFramebuffer::attachAttachments(const Attachments &attachments) {
+    for (const auto *attachment : attachments) {
+        const auto attachmentFormat = attachment->getFormat();
+        const auto attachmentType = getImageFormatType(attachmentFormat);
+        AttachmentPoint attachmentPoint = GL_NONE;
+
+        if (attachmentType == ImageFormatType::COLOR) {
+            attachmentPoint = GL_COLOR_ATTACHMENT0 + static_cast<uint32_t>(m_attachmentPoints.size());
+        } else if (attachmentType == ImageFormatType::DEPTH) {
+            attachmentPoint = GL_DEPTH_ATTACHMENT;
+        } else if (attachmentType == ImageFormatType::STENCIL) {
+            attachmentPoint = GL_STENCIL_ATTACHMENT;
+        } else if (attachmentType == ImageFormatType::DEPTH_STENCIL) {
+            attachmentPoint = GL_DEPTH_STENCIL_ATTACHMENT;
+        }
+        NOX_ENSURE_RETURN_FALSE(attachmentPoint != GL_NONE);
+
+        attachAttachment(attachment, attachmentPoint);
+    }
+
+    return true;
+}
+
+void GLFramebuffer::attachAttachment(const Texture *attachment, AttachmentPoint attachmentPoint) {
+    const auto *glTexture = static_cast<const GLTexture *>(attachment);
+    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture->getHandle(), 0);
+    m_attachmentPoints.push_back(attachmentPoint);
+}
+
+void GLFramebuffer::clearColorAttachment(const ClearColorValue *value, int32_t index) const {
     if (const auto *colorF = std::get_if<Vector4D<float>>(value)) {
         glClearNamedFramebufferfv(m_handle, GL_COLOR, index, colorF->values.data());
     } else if (const auto *colorI = std::get_if<Vector4D<int32_t>>(value)) {
@@ -140,66 +157,15 @@ void GLFramebuffer::clearColorAttachment(const ClearColorValue *value, int32_t i
 }
 
 void GLFramebuffer::clearDepthAttachment(const ClearDepthStencilValue *value) const {
-    NOX_ASSERT(value != nullptr);
-
     glClearNamedFramebufferfv(m_handle, GL_DEPTH, 0, &value->depth);
 }
 
 void GLFramebuffer::clearStencilAttachment(const ClearDepthStencilValue *value) const {
-    NOX_ASSERT(value != nullptr);
-
     glClearNamedFramebufferuiv(m_handle, GL_STENCIL, 0, &value->stencil);
 }
 
 void GLFramebuffer::clearDepthStencilAttachment(const ClearDepthStencilValue *value) const {
-    NOX_ASSERT(value != nullptr);
-
     glClearNamedFramebufferfi(m_handle, GL_DEPTH_STENCIL, 0, value->depth, static_cast<GLint>(value->stencil));
-}
-
-GLFramebuffer::GLFramebuffer(const FramebufferDescriptor &descriptor) {
-    glCreateFramebuffers(1, &m_handle);
-
-    m_attachmentPoints.reserve(descriptor.attachments.size());
-
-    attachColorAttachments(descriptor.attachments);
-    attachDepthStencilAttachments(descriptor.attachments);
-}
-
-void GLFramebuffer::attachColorAttachments(const Attachments &attachments) {
-    for (const auto *attachment : attachments) {
-        const auto descriptor = getImageFormatDescriptor(attachment->getFormat());
-
-        if (descriptor.isColor) {
-            auto attachmentPoint = GL_COLOR_ATTACHMENT0 + static_cast<uint32_t>(m_attachmentPoints.size());
-            attachAttachment(attachment, attachmentPoint);
-        }
-    }
-}
-
-void GLFramebuffer::attachDepthStencilAttachments(const Attachments &attachments) {
-    for (const auto *attachment : attachments) {
-        const auto descriptor = getImageFormatDescriptor(attachment->getFormat());
-        AttachmentPoint attachmentPoint = GL_NONE;
-
-        if (descriptor.isDepth) {
-            attachmentPoint = GL_DEPTH_ATTACHMENT;
-        } else if (descriptor.isStencil) {
-            attachmentPoint = GL_STENCIL_ATTACHMENT;
-        } else if (descriptor.isDepthStencil) {
-            attachmentPoint = GL_DEPTH_STENCIL_ATTACHMENT;
-        }
-
-        if (attachmentPoint != GL_NONE) {
-            attachAttachment(attachment, attachmentPoint);
-        }
-    }
-}
-
-void GLFramebuffer::attachAttachment(const Texture *attachment, AttachmentPoint attachmentPoint) {
-    const auto *glTexture = static_cast<const GLTexture *>(attachment);
-    glNamedFramebufferTexture(m_handle, attachmentPoint, glTexture->getHandle(), 0);
-    m_attachmentPoints.push_back(attachmentPoint);
 }
 
 } // namespace nox

@@ -34,7 +34,6 @@ set(NOX_OPENGL_SOURCES
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_renderer.h
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_shader.cpp
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_shader.h
-    ${PROJECT_SOURCE_DIR}/src/opengl/gl_state.h
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_swapchain.cpp
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_swapchain.h
     ${PROJECT_SOURCE_DIR}/src/opengl/gl_texture.cpp

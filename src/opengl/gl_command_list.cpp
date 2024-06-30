@@ -1,4 +1,3 @@
-#include "asserts.h"
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_command_list.h"
 #include "opengl/gl_framebuffer.h"
@@ -8,16 +7,6 @@
 #include <glad/gl.h>
 
 namespace nox {
-
-bool GLCommandList::validateInput(const RenderPassBeginDescriptor &descriptor) {
-    bool result = true;
-
-    result &= (descriptor.framebuffer != nullptr);
-    result &= (descriptor.renderPass != nullptr);
-    result &= (!descriptor.clearValues.empty());
-
-    return result;
-}
 
 GLCommandList::GLCommandList(const CommandListDescriptor & /*descriptor*/) {}
 
@@ -31,47 +20,43 @@ void GLCommandList::setViewport(const Viewport &viewport) {
 }
 
 void GLCommandList::beginRenderPass(const RenderPassBeginDescriptor &descriptor) {
-    NOX_ASSERT(validateInput(descriptor));
-
-    const auto *glFramebuffer = static_cast<const GLFramebuffer *>(descriptor.framebuffer);
-    const auto *glRenderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
-    m_state.currentFramebuffer = glFramebuffer;
-    m_state.currentRenderPass = glRenderPass;
-
-    const auto &attachmentDescriptors = glRenderPass->getAttachmentDescriptors();
-    glFramebuffer->bind();
-    glFramebuffer->clearAttachments(descriptor.clearValues, attachmentDescriptors);
-    glFramebuffer->invalidateAttachments(attachmentDescriptors);
+    m_framebuffer = static_cast<const GLFramebuffer *>(descriptor.framebuffer);
+    m_renderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
+    if (m_framebuffer->isCompatible(m_renderPass)) {
+        const auto &attachmentDescriptors = m_renderPass->getAttachmentDescriptors();
+        m_framebuffer->bind();
+        m_framebuffer->clearAttachments(descriptor.clearValues, attachmentDescriptors);
+        m_framebuffer->invalidateAttachments(attachmentDescriptors);
+    }
 }
 
 void GLCommandList::endRenderPass() {
-    m_state.currentFramebuffer->unbind();
-
-    m_state.currentFramebuffer = nullptr;
-    m_state.currentRenderPass = nullptr;
+    m_framebuffer = nullptr;
+    m_renderPass = nullptr;
+    m_indexType = 0u;
+    m_primitiveTopology = 0u;
 }
 
 void GLCommandList::bindGraphicsPipelineState(const GraphicsPipelineState &pipelineState) {
     const auto *pipeline = static_cast<const GLGraphicsPipelineState *>(&pipelineState);
-    const auto *currentRenderPass = m_state.currentRenderPass;
-    const auto *currentFramebuffer = m_state.currentFramebuffer;
-
     const auto &pipelineLayout = pipeline->getPipelineLayout();
-    const auto &subpassDescriptor = currentRenderPass->getSubpassDescriptor(pipeline->getSubpassIndex());
+    const auto &subpassDescriptor = m_renderPass->getSubpassDescriptor(pipeline->getSubpassIndex());
     const auto &inputAttachmentBindings = pipelineLayout.getInputAttachmentBindings();
+
     for (const auto &reference : subpassDescriptor.inputAttachmentReferences) {
         if (reference.index != AttachmentReference::attachmentUnused) {
             inputAttachmentBindings[reference.index].bind();
         }
     }
-    currentFramebuffer->bindColorAttachments(subpassDescriptor.colorAttachmentReferences);
+
+    m_framebuffer->bindColorAttachments(subpassDescriptor.colorAttachmentReferences);
 
     const auto &textureBindings = pipelineLayout.getTextureBindings();
     for (const auto &binding : textureBindings) {
         binding.bind();
     }
 
-    m_state.primitiveTopology = pipeline->getPrimitiveTopology();
+    m_primitiveTopology = pipeline->getPrimitiveTopology();
 
     pipeline->bind();
 }
@@ -86,19 +71,19 @@ void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
     const auto *indexBuffer = static_cast<const GLIndexBuffer *>(&buffer);
 
     indexBuffer->bind();
-    m_state.indexType = indexBuffer->getIndexType();
+    m_indexType = indexBuffer->getIndexType();
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {
-    glDrawArrays(m_state.primitiveTopology,
+    glDrawArrays(m_primitiveTopology,
                  static_cast<GLint>(firstVertexIndex),
                  static_cast<GLsizei>(vertexCount));
 }
 
 void GLCommandList::drawIndexed(uint32_t /*firstVertexIndex*/, uint32_t vertexCount) {
-    glDrawElements(m_state.primitiveTopology,
+    glDrawElements(m_primitiveTopology,
                    static_cast<GLsizei>(vertexCount),
-                   m_state.indexType,
+                   m_indexType,
                    nullptr);
 }
 
