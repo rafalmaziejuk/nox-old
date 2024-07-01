@@ -4,6 +4,7 @@
 #include <nox/format.h>
 
 #include <cstdint>
+#include <vector>
 
 namespace nox {
 
