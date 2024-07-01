@@ -6,28 +6,29 @@
 
 namespace nox {
 
+class GLRenderPass;
+
 using AttachmentPoint = uint32_t;
 using AttachmentPoints = std::vector<AttachmentPoint>;
 
 class GLFramebuffer final : public Framebuffer {
   public:
-    [[nodiscard]] static bool validateInput(const FramebufferDescriptor &descriptor);
+    [[nodiscard]] static std::unique_ptr<GLFramebuffer> create(const FramebufferDescriptor &descriptor);
 
+    GLFramebuffer();
     explicit GLFramebuffer(const FramebufferDescriptor &descriptor);
     ~GLFramebuffer() override;
 
-    [[nodiscard]] bool validate() const;
     void bind() const;
-    void unbind() const;
+    void clearAttachments(const ClearValues &values, const AttachmentDescriptors &descriptors) const;
+    void invalidateAttachments(const AttachmentDescriptors &descriptors) const;
+    void bindColorAttachments(const ColorAttachmentReferences &references) const;
 
-    void clearAttachments(const ClearValues &values, const AttachmentDescriptors &attachmentDescriptors) const;
-    void bindColorAttachments(const ColorAttachmentReferences &attachmentReferences) const;
-
-    void invalidateAttachments(const AttachmentDescriptors &attachmentDescriptors) const;
+    [[nodiscard]] bool isComplete() const;
+    [[nodiscard]] bool isCompatible(const GLRenderPass *renderPass) const;
+    [[nodiscard]] bool attachAttachments(const Attachments &attachments);
 
   private:
-    void attachColorAttachments(const Attachments &attachments);
-    void attachDepthStencilAttachments(const Attachments &attachments);
     void attachAttachment(const Texture *attachment, AttachmentPoint attachmentPoint);
 
     void clearColorAttachment(const ClearColorValue *value, int32_t index) const;

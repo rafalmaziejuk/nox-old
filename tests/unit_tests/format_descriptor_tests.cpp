@@ -7,81 +7,78 @@
 using namespace nox;
 
 TEST(FormatDescriptorTests, WhenGetImageFormatDescriptorIsCalledThenCorrectImageFormatDescriptorIsReturned) {
-    using ImageFormatDescriptors = std::array<ImageFormatDescriptor, static_cast<size_t>(ImageFormat::MAX)>;
-    constexpr ImageFormatDescriptors expectedImageFormatDescriptors{{
-        {false, false, false, false}, // NONE
-        {true, false, false, false},  // R8UI
-        {true, false, false, false},  // R16UI
-        {true, false, false, false},  // R32UI
-        {true, false, false, false},  // RG8UI
-        {true, false, false, false},  // RG16UI
-        {true, false, false, false},  // RG32UI
-        {true, false, false, false},  // RGB8UI
-        {true, false, false, false},  // RGB16UI
-        {true, false, false, false},  // RGB32UI
-        {true, false, false, false},  // RGBA8UI
-        {true, false, false, false},  // RGBA16UI
-        {true, false, false, false},  // RGBA32UI
-        {true, false, false, false},  // R8I
-        {true, false, false, false},  // R16I
-        {true, false, false, false},  // R32I
-        {true, false, false, false},  // RG8I
-        {true, false, false, false},  // RG16I
-        {true, false, false, false},  // RG32I
-        {true, false, false, false},  // RGB8I
-        {true, false, false, false},  // RGB16I
-        {true, false, false, false},  // RGB32I
-        {true, false, false, false},  // RGBA8I
-        {true, false, false, false},  // RGBA16I
-        {true, false, false, false},  // RGBA32I
-        {true, false, false, false},  // R8_UNORM
-        {true, false, false, false},  // R16_UNORM
-        {true, false, false, false},  // R32_UNORM
-        {true, false, false, false},  // RG8_UNORM
-        {true, false, false, false},  // RG16_UNORM
-        {true, false, false, false},  // RG32_UNORM
-        {true, false, false, false},  // RGB8_UNORM
-        {true, false, false, false},  // RGB16_UNORM
-        {true, false, false, false},  // RGB32_UNORM
-        {true, false, false, false},  // RGBA8_UNORM
-        {true, false, false, false},  // RGBA16_UNORM
-        {true, false, false, false},  // RGBA32_UNORM
-        {true, false, false, false},  // R8_SNORM
-        {true, false, false, false},  // R16_SNORM
-        {true, false, false, false},  // R32_SNORM
-        {true, false, false, false},  // RG8_SNORM
-        {true, false, false, false},  // RG16_SNORM
-        {true, false, false, false},  // RG32_SNORM
-        {true, false, false, false},  // RGB8_SNORM
-        {true, false, false, false},  // RGB16_SNORM
-        {true, false, false, false},  // RGB32_SNORM
-        {true, false, false, false},  // RGBA8_SNORM
-        {true, false, false, false},  // RGBA16_SNORM
-        {true, false, false, false},  // RGBA32_SNORM
-        {true, false, false, false},  // R16F
-        {true, false, false, false},  // R32F
-        {true, false, false, false},  // RG16F
-        {true, false, false, false},  // RG32F
-        {true, false, false, false},  // RGB16F
-        {true, false, false, false},  // RGB32F
-        {true, false, false, false},  // RGBA16F
-        {true, false, false, false},  // RGBA32F
-        {false, true, false, false},  // DEPTH16
-        {false, true, false, false},  // DEPTH24
-        {false, true, false, false},  // DEPTH32
-        {false, true, false, false},  // DEPTH32F
-        {false, false, true, false},  // STENCIL8
-        {false, false, false, true},  // DEPTH24_STENCIL8
-        {false, false, false, true}   // DEPTH32F_STENCIL8
+    using ImageFormatTypes = std::array<ImageFormatType, static_cast<size_t>(ImageFormat::MAX)>;
+    constexpr ImageFormatTypes expectedImageFormatTypes{{
+        ImageFormatType::NONE,          // NONE
+        ImageFormatType::COLOR,         // R8UI
+        ImageFormatType::COLOR,         // R16UI
+        ImageFormatType::COLOR,         // R32UI
+        ImageFormatType::COLOR,         // RG8UI
+        ImageFormatType::COLOR,         // RG16UI
+        ImageFormatType::COLOR,         // RG32UI
+        ImageFormatType::COLOR,         // RGB8UI
+        ImageFormatType::COLOR,         // RGB16UI
+        ImageFormatType::COLOR,         // RGB32UI
+        ImageFormatType::COLOR,         // RGBA8UI
+        ImageFormatType::COLOR,         // RGBA16UI
+        ImageFormatType::COLOR,         // RGBA32UI
+        ImageFormatType::COLOR,         // R8I
+        ImageFormatType::COLOR,         // R16I
+        ImageFormatType::COLOR,         // R32I
+        ImageFormatType::COLOR,         // RG8I
+        ImageFormatType::COLOR,         // RG16I
+        ImageFormatType::COLOR,         // RG32I
+        ImageFormatType::COLOR,         // RGB8I
+        ImageFormatType::COLOR,         // RGB16I
+        ImageFormatType::COLOR,         // RGB32I
+        ImageFormatType::COLOR,         // RGBA8I
+        ImageFormatType::COLOR,         // RGBA16I
+        ImageFormatType::COLOR,         // RGBA32I
+        ImageFormatType::COLOR,         // R8_UNORM
+        ImageFormatType::COLOR,         // R16_UNORM
+        ImageFormatType::COLOR,         // R32_UNORM
+        ImageFormatType::COLOR,         // RG8_UNORM
+        ImageFormatType::COLOR,         // RG16_UNORM
+        ImageFormatType::COLOR,         // RG32_UNORM
+        ImageFormatType::COLOR,         // RGB8_UNORM
+        ImageFormatType::COLOR,         // RGB16_UNORM
+        ImageFormatType::COLOR,         // RGB32_UNORM
+        ImageFormatType::COLOR,         // RGBA8_UNORM
+        ImageFormatType::COLOR,         // RGBA16_UNORM
+        ImageFormatType::COLOR,         // RGBA32_UNORM
+        ImageFormatType::COLOR,         // R8_SNORM
+        ImageFormatType::COLOR,         // R16_SNORM
+        ImageFormatType::COLOR,         // R32_SNORM
+        ImageFormatType::COLOR,         // RG8_SNORM
+        ImageFormatType::COLOR,         // RG16_SNORM
+        ImageFormatType::COLOR,         // RG32_SNORM
+        ImageFormatType::COLOR,         // RGB8_SNORM
+        ImageFormatType::COLOR,         // RGB16_SNORM
+        ImageFormatType::COLOR,         // RGB32_SNORM
+        ImageFormatType::COLOR,         // RGBA8_SNORM
+        ImageFormatType::COLOR,         // RGBA16_SNORM
+        ImageFormatType::COLOR,         // RGBA32_SNORM
+        ImageFormatType::COLOR,         // R16F
+        ImageFormatType::COLOR,         // R32F
+        ImageFormatType::COLOR,         // RG16F
+        ImageFormatType::COLOR,         // RG32F
+        ImageFormatType::COLOR,         // RGB16F
+        ImageFormatType::COLOR,         // RGB32F
+        ImageFormatType::COLOR,         // RGBA16F
+        ImageFormatType::COLOR,         // RGBA32F
+        ImageFormatType::DEPTH,         // DEPTH16
+        ImageFormatType::DEPTH,         // DEPTH24
+        ImageFormatType::DEPTH,         // DEPTH32
+        ImageFormatType::DEPTH,         // DEPTH32F
+        ImageFormatType::STENCIL,       // STENCIL8
+        ImageFormatType::DEPTH_STENCIL, // DEPTH24_STENCIL8
+        ImageFormatType::DEPTH_STENCIL  // DEPTH32F_STENCIL8
     }};
 
     for (size_t i = static_cast<size_t>(ImageFormat::NONE); i < static_cast<size_t>(ImageFormat::MAX); i++) {
-        const auto imageFormatDescriptor = getImageFormatDescriptor(static_cast<ImageFormat>(i));
-        const auto &expectedImageFormatDescriptor = expectedImageFormatDescriptors.at(i);
-        EXPECT_EQ(expectedImageFormatDescriptor.isColor, imageFormatDescriptor.isColor);
-        EXPECT_EQ(expectedImageFormatDescriptor.isDepth, imageFormatDescriptor.isDepth);
-        EXPECT_EQ(expectedImageFormatDescriptor.isStencil, imageFormatDescriptor.isStencil);
-        EXPECT_EQ(expectedImageFormatDescriptor.isDepthStencil, imageFormatDescriptor.isDepthStencil);
+        const auto expectedImageFormatType = expectedImageFormatTypes.at(i);
+        const auto imageFormatType = getImageFormatType(static_cast<ImageFormat>(i));
+        EXPECT_EQ(expectedImageFormatType, imageFormatType);
     }
 }
 

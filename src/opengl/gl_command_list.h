@@ -1,15 +1,14 @@
 #pragma once
 
-#include "opengl/gl_state.h"
-
 #include <nox/command_list.h>
 
 namespace nox {
 
+class GLFramebuffer;
+class GLRenderPass;
+
 class GLCommandList final : public CommandList {
   public:
-    [[nodiscard]] static bool validateInput(const RenderPassBeginDescriptor &descriptor);
-
     explicit GLCommandList(const CommandListDescriptor &descriptor);
 
     void setViewport(const Viewport &viewport) override;
@@ -25,7 +24,10 @@ class GLCommandList final : public CommandList {
     void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) override;
 
   private:
-    GLState m_state;
+    const GLFramebuffer *m_framebuffer{nullptr};
+    const GLRenderPass *m_renderPass{nullptr};
+    uint32_t m_indexType{0u};
+    uint32_t m_primitiveTopology{0u};
 };
 
 } // namespace nox
