@@ -6,6 +6,8 @@ namespace nox {
 
 std::unique_ptr<GLSwapchain> GLSwapchain::create(const SwapchainDescriptor &descriptor,
                                                  std::unique_ptr<GLContext> context) {
+    NOX_ENSURE_RETURN_NULLPTR(context != nullptr);
+
     const auto *presentMode = std::get_if<OpenGLPresentMode>(&descriptor.presentMode);
     NOX_ENSURE_RETURN_NULLPTR(presentMode != nullptr);
     context->setSwapInterval(presentMode->vSync);
@@ -16,8 +18,7 @@ std::unique_ptr<GLSwapchain> GLSwapchain::create(const SwapchainDescriptor &desc
 GLSwapchain::GLSwapchain(const SwapchainDescriptor &descriptor,
                          std::unique_ptr<GLContext> context)
     : m_context{std::move(context)},
-      m_size{descriptor.size} {
-}
+      m_size{descriptor.size} {}
 
 Vector2D<uint32_t> GLSwapchain::getSize() const {
     return m_size;

@@ -35,9 +35,8 @@ TEST_F(GLShaderFixture, GivenValidShaderDescriptorAndSourceWhenCallingCreateShad
         ShaderDescriptor shaderDescriptor{};
         shaderDescriptor.type = shaderType;
 
-        const auto shader = GLShader::create(shaderDescriptor);
+        const auto shader = GLShader::create(shaderDescriptor, validShaderSource);
         ASSERT_NE(nullptr, shader);
-        ASSERT_TRUE(shader->compile(validShaderSource));
 
         GLint glShaderType = GL_NONE;
         glGetShaderiv(shader->getHandle(), GL_SHADER_TYPE, &glShaderType);
@@ -54,7 +53,7 @@ TEST_F(GLShaderFixture, WhenDestroyingShaderThenShaderIsCorrectlyDestroyed) {
 
     uint32_t handle = 0u;
     {
-        const auto shader = GLShader::create(shaderDescriptor);
+        const auto shader = GLShader::create(shaderDescriptor, validShaderSource);
         handle = shader->getHandle();
     }
 
@@ -65,25 +64,14 @@ TEST_F(GLShaderFixture, GivenInvalidShaderDescriptorWhenCallingCreateShaderThenN
     ShaderDescriptor shaderDescriptor{};
     shaderDescriptor.type = ShaderType::NONE;
 
-    const auto shader = GLShader::create(shaderDescriptor);
+    const auto shader = GLShader::create(shaderDescriptor, validShaderSource);
     EXPECT_EQ(nullptr, shader);
-}
-
-TEST_F(GLShaderFixture, GivenValidShaderSourceWhenCallingCompileThenTrueIsReturned) {
-    ShaderDescriptor shaderDescriptor{};
-    shaderDescriptor.type = ShaderType::VERTEX;
-
-    const auto shader = GLShader::create(shaderDescriptor);
-    EXPECT_TRUE(shader->compile(validShaderSource));
 }
 
 TEST_F(GLShaderFixture, GivenInvalidShaderSourceWhenCallingCompileThenFalseIsReturnedAndShaderIsDeleted) {
     ShaderDescriptor shaderDescriptor{};
     shaderDescriptor.type = ShaderType::VERTEX;
 
-    const auto shader = GLShader::create(shaderDescriptor);
-    const auto handle = shader->getHandle();
-
-    EXPECT_FALSE(shader->compile(invalidShaderSource));
-    EXPECT_FALSE(glIsShader(handle));
+    const auto shader = GLShader::create(shaderDescriptor, invalidShaderSource);
+    EXPECT_EQ(nullptr, shader);
 }

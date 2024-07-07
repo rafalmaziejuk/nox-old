@@ -1,7 +1,9 @@
+#include "asserts.h"
 #include "opengl/gl_buffer.h"
 #include "opengl/gl_command_list.h"
 #include "opengl/gl_framebuffer.h"
 #include "opengl/gl_graphics_pipeline_state.h"
+#include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_render_pass.h"
 
 #include <glad/gl.h>
@@ -22,12 +24,12 @@ void GLCommandList::setViewport(const Viewport &viewport) {
 void GLCommandList::beginRenderPass(const RenderPassBeginDescriptor &descriptor) {
     m_framebuffer = static_cast<const GLFramebuffer *>(descriptor.framebuffer);
     m_renderPass = static_cast<const GLRenderPass *>(descriptor.renderPass);
-    if (m_framebuffer->isCompatible(m_renderPass)) {
-        const auto &attachmentDescriptors = m_renderPass->getAttachmentDescriptors();
-        m_framebuffer->bind();
-        m_framebuffer->clearAttachments(descriptor.clearValues, attachmentDescriptors);
-        m_framebuffer->invalidateAttachments(attachmentDescriptors);
-    }
+    NOX_ASSERT_MSG(m_framebuffer->isCompatible(m_renderPass), "Framebuffer and render pass aren't compatible");
+
+    const auto &attachmentDescriptors = m_renderPass->getAttachmentDescriptors();
+    m_framebuffer->bind();
+    m_framebuffer->clearAttachments(descriptor.clearValues, attachmentDescriptors);
+    m_framebuffer->invalidateAttachments(attachmentDescriptors);
 }
 
 void GLCommandList::endRenderPass() {
@@ -39,25 +41,10 @@ void GLCommandList::endRenderPass() {
 
 void GLCommandList::bindGraphicsPipelineState(const GraphicsPipelineState &pipelineState) {
     const auto *pipeline = static_cast<const GLGraphicsPipelineState *>(&pipelineState);
-    const auto &pipelineLayout = pipeline->getPipelineLayout();
     const auto &subpassDescriptor = m_renderPass->getSubpassDescriptor(pipeline->getSubpassIndex());
-    const auto &inputAttachmentBindings = pipelineLayout.getInputAttachmentBindings();
-
-    for (const auto &reference : subpassDescriptor.inputAttachmentReferences) {
-        if (reference.index != AttachmentReference::attachmentUnused) {
-            inputAttachmentBindings[reference.index].bind();
-        }
-    }
 
     m_framebuffer->bindColorAttachments(subpassDescriptor.colorAttachmentReferences);
-
-    const auto &textureBindings = pipelineLayout.getTextureBindings();
-    for (const auto &binding : textureBindings) {
-        binding.bind();
-    }
-
     m_primitiveTopology = pipeline->getPrimitiveTopology();
-
     pipeline->bind();
 }
 
@@ -72,6 +59,14 @@ void GLCommandList::bindIndexBuffer(const Buffer &buffer) {
 
     indexBuffer->bind();
     m_indexType = indexBuffer->getIndexType();
+}
+
+void GLCommandList::bindDescriptorSets(const PipelineLayout &pipelineLayout, uint32_t firstSetIndex, uint32_t setCount) {
+    const auto *layout = static_cast<const GLPipelineLayout *>(&pipelineLayout);
+    const auto &descriptorSets = layout->getDescriptorSets();
+    for (uint32_t i = firstSetIndex; i < setCount; i++) {
+        descriptorSets[i].bind();
+    }
 }
 
 void GLCommandList::draw(uint32_t firstVertexIndex, uint32_t vertexCount) {

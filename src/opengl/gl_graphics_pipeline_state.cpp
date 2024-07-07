@@ -1,12 +1,8 @@
 #include "asserts.h"
-#include "opengl/gl_framebuffer.h"
 #include "opengl/gl_graphics_pipeline_state.h"
-#include "opengl/gl_render_pass.h"
 #include "opengl/gl_shader.h"
 
 #include <glad/gl.h>
-
-#include <algorithm>
 
 namespace nox {
 
@@ -24,7 +20,6 @@ GLbitfield mapShaderTypeToBitfield(ShaderType type) {
     default: break;
     }
 
-    NOX_ASSERT(false);
     return GL_NONE;
 }
 
@@ -35,34 +30,21 @@ GLenum mapPrimitiveTopologyToEnum(PrimitiveTopology topology) {
     default: break;
     }
 
-    NOX_ASSERT(false);
     return GL_NONE;
 }
 
 } // namespace
 
-bool GLGraphicsPipelineState::validateInput(const GraphicsPipelineStateDescriptor &descriptor) {
-    auto validateShader = [](const Shader *shader) -> bool {
-        if (shader == nullptr) {
-            return false;
-        }
+std::unique_ptr<GLGraphicsPipelineState> GLGraphicsPipelineState::create(const GraphicsPipelineStateDescriptor &descriptor) {
+    auto pipeline = std::unique_ptr<GLGraphicsPipelineState>(new GLGraphicsPipelineState{descriptor});
+    NOX_ENSURE_RETURN_NULLPTR_MSG(pipeline->bindShaderStages(descriptor.shaderStages),
+                                  "Couldn't bind graphics pipeline shader stages");
 
-        const auto &glShader = static_cast<const GLShader *>(shader);
-        return (mapShaderTypeToBitfield(glShader->getType()) != GL_NONE);
-    };
-    bool result = true;
-
-    result &= (GLPipelineLayout::validateInput(descriptor.pipelineLayoutDescriptor));
-    result &= (descriptor.renderPass != nullptr);
-    result &= (std::all_of(descriptor.shaderStages.begin(), descriptor.shaderStages.end(), validateShader));
-    result &= (mapPrimitiveTopologyToEnum(descriptor.primitiveTopology) != GL_NONE);
-
-    return result;
+    return pipeline;
 }
 
-GLGraphicsPipelineState::GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor)
-    : m_pipelineLayout{descriptor.pipelineLayoutDescriptor},
-      m_subpassIndex{descriptor.subpassIndex},
+GLGraphicsPipelineState::GLGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor)
+    : m_subpassIndex{descriptor.subpassIndex},
       m_primitiveTopology{mapPrimitiveTopologyToEnum(descriptor.primitiveTopology)} {
     glCreateProgramPipelines(1, &m_handle);
 }

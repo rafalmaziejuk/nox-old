@@ -1,59 +1,24 @@
 #pragma once
 
+#include "opengl/gl_descriptor_set.h"
+
 #include <nox/pipeline_layout.h>
 
 namespace nox {
 
-class GLTexture;
-
-class GLResourceBinding {
+class GLPipelineLayout final : public PipelineLayout {
   public:
-    explicit GLResourceBinding(uint32_t index)
-        : m_bindingIndex{index} {}
+    [[nodiscard]] static std::unique_ptr<GLPipelineLayout> create(const PipelineLayoutDescriptor &descriptor);
 
-    virtual ~GLResourceBinding() = default;
-
-    virtual void bind() const = 0;
-
-  protected:
-    uint32_t m_bindingIndex;
-};
-
-class GLTextureBinding : public GLResourceBinding {
-  public:
-    GLTextureBinding(const DescriptorSetLayoutBinding &binding);
-
-    void bind() const override;
-
-  protected:
-    std::vector<std::shared_ptr<GLTexture>> m_textures;
-};
-
-class GLInputAttachmentBinding final : public GLTextureBinding {
-  public:
-    using GLTextureBinding::GLTextureBinding;
-};
-
-using GLTextureBindings = std::vector<GLTextureBinding>;
-using GLInputAttachmentBindings = std::vector<GLInputAttachmentBinding>;
-
-class GLPipelineLayout final {
-  public:
-    [[nodiscard]] static bool validateInput(const PipelineLayoutDescriptor &descriptor);
-
-    explicit GLPipelineLayout(const PipelineLayoutDescriptor &descriptor);
-
-    [[nodiscard]] const GLTextureBindings &getTextureBindings() const {
-        return m_textureBindings;
-    }
-
-    [[nodiscard]] const GLInputAttachmentBindings &getInputAttachmentBindings() const {
-        return m_inputAttachmentBindings;
+    [[nodiscard]] const std::vector<GLDescriptorSet> &getDescriptorSets() const {
+        return m_descriptorSets;
     }
 
   private:
-    GLTextureBindings m_textureBindings;
-    GLInputAttachmentBindings m_inputAttachmentBindings;
+    explicit GLPipelineLayout(const PipelineLayoutDescriptor &descriptor);
+
+  private:
+    std::vector<GLDescriptorSet> m_descriptorSets;
 };
 
 } // namespace nox

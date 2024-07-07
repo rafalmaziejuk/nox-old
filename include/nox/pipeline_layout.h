@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nox/export.h>
-#include <nox/buffer.h>
 #include <nox/texture.h>
 
 #include <cstdint>
@@ -10,32 +9,43 @@
 
 namespace nox {
 
-enum class ResourceType {
+enum class DescriptorType {
     NONE,
     TEXTURE,
-    INPUT_ATTACHMENT,
     MAX
 };
 
-struct TextureResourceDescriptor {
+struct TextureBindingDescriptor {
     std::shared_ptr<Texture> texture;
 };
-using TextureResourceDescriptors = std::vector<TextureResourceDescriptor>;
+using TextureBindingDescriptors = std::vector<TextureBindingDescriptor>;
 
-struct DescriptorSetLayoutBinding {
+struct DescriptorSetLayoutBindingDescriptor {
     uint32_t bindingIndex;
-    ResourceType resourceType;
-    TextureResourceDescriptors textureResourceDescriptors;
+    DescriptorType descriptorType;
+    TextureBindingDescriptors textureBindingDescriptors;
 };
-using DescriptorSetLayoutBindings = std::vector<DescriptorSetLayoutBinding>;
+using DescriptorSetLayoutBindingDescriptors = std::vector<DescriptorSetLayoutBindingDescriptor>;
 
-struct DescriptorSetLayout {
-    DescriptorSetLayoutBindings bindings;
+struct DescriptorSetLayoutDescriptor {
+    DescriptorSetLayoutBindingDescriptors bindingDescriptors;
 };
-using DescriptorSetLayouts = std::vector<DescriptorSetLayout>;
+using DescriptorSetLayoutDescriptors = std::vector<DescriptorSetLayoutDescriptor>;
 
 struct PipelineLayoutDescriptor {
-    DescriptorSetLayouts setLayouts;
+    DescriptorSetLayoutDescriptors setLayoutDescriptors;
+};
+
+class NOX_EXPORT PipelineLayout {
+  public:
+    PipelineLayout(const PipelineLayout &) = delete;
+    PipelineLayout &operator=(const PipelineLayout &) = delete;
+    PipelineLayout(PipelineLayout &&) = delete;
+    PipelineLayout &operator=(PipelineLayout &&) = delete;
+    virtual ~PipelineLayout() = default;
+
+  protected:
+    PipelineLayout() = default;
 };
 
 } // namespace nox

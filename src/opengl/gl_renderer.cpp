@@ -23,43 +23,27 @@ RendererBackend GLRenderer::getRendererBackend() const {
 
 std::unique_ptr<Swapchain> GLRenderer::createSwapchain(const SwapchainDescriptor &descriptor) {
     auto context = GLContext::create(descriptor.surfaceDescriptor);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(context != nullptr, "Couldn't create context");
-
     auto swapchain = GLSwapchain::create(descriptor, std::move(context));
-    NOX_ENSURE_RETURN_NULLPTR_MSG(swapchain != nullptr, "Couldn't create swapchain");
-
     return swapchain;
 }
 
 std::unique_ptr<Buffer> GLRenderer::createVertexBuffer(const VertexBufferDescriptor &descriptor) {
     auto buffer = GLVertexBuffer::create(descriptor, m_vertexArrayRegistry);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(buffer != nullptr, "Couldn't create vertex buffer");
-
     return buffer;
 }
 
 std::unique_ptr<Buffer> GLRenderer::createIndexBuffer(const IndexBufferDescriptor &descriptor) {
     auto buffer = GLIndexBuffer::create(descriptor, m_vertexArrayRegistry);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(buffer != nullptr, "Couldn't create index buffer");
-
     return buffer;
 }
 
 std::unique_ptr<Shader> GLRenderer::createShader(const ShaderDescriptor &descriptor, std::string_view source) {
-    auto shader = GLShader::create(descriptor);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(shader != nullptr, "Couldn't create shader");
-    NOX_ENSURE_RETURN_NULLPTR_MSG(shader->compile(source.data()), "Couldn't compile shader");
-
+    auto shader = GLShader::create(descriptor, source.data());
     return shader;
 }
 
-std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) {
-    NOX_ASSERT(GLGraphicsPipelineState::validateInput(descriptor));
-
-    auto pipeline = std::make_unique<GLGraphicsPipelineState>(descriptor);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(pipeline->bindShaderStages(descriptor.shaderStages),
-                                  "Couldn't bind graphics pipeline shader stages");
-
+std::unique_ptr<GraphicsPipelineState> GLRenderer::createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) {
+    auto pipeline = GLGraphicsPipelineState::create(descriptor);
     return pipeline;
 }
 
@@ -81,9 +65,12 @@ std::unique_ptr<RenderPass> GLRenderer::createRenderPass(const RenderPassDescrip
 
 std::unique_ptr<Framebuffer> GLRenderer::createFramebuffer(const FramebufferDescriptor &descriptor) {
     auto framebuffer = GLFramebuffer::create(descriptor);
-    NOX_ENSURE_RETURN_NULLPTR_MSG(framebuffer != nullptr, "Couldn't create framebuffer");
-
     return framebuffer;
+}
+
+std::unique_ptr<PipelineLayout> GLRenderer::createPipelineLayout(const PipelineLayoutDescriptor &descriptor) {
+    auto layout = GLPipelineLayout::create(descriptor);
+    return layout;
 }
 
 } // namespace nox

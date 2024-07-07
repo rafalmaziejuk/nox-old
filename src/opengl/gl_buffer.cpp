@@ -27,6 +27,7 @@ GLenum mapVertexAttributeTypeToEnum(VertexAttributeType type) {
     case VertexAttributeType::UNSIGNED_BYTE: return GL_UNSIGNED_BYTE;
     case VertexAttributeType::UNSIGNED_SHORT: return GL_UNSIGNED_SHORT;
     case VertexAttributeType::UNSIGNED_INT: return GL_UNSIGNED_INT;
+
     default: break;
     }
 

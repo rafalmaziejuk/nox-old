@@ -80,6 +80,7 @@ void SandboxExample::initialize() {
     createTexture();
     createRenderPass();
     createFramebuffer();
+    createPipelineLayout();
     createGraphicsPipelineState();
 }
 
@@ -98,6 +99,8 @@ void SandboxExample::onUpdate() {
 
         m_commandList->bindVertexBuffer(*m_vertexBuffer);
         m_commandList->bindIndexBuffer(*m_indexBuffer);
+
+        m_commandList->bindDescriptorSets(*m_pipelineLayout, 0u, 1u);
 
         m_commandList->drawIndexed(0u, 6u);
     }
@@ -172,9 +175,28 @@ void SandboxExample::createFramebuffer() {
     m_framebuffer = m_renderer->createFramebuffer(framebufferDescriptor);
 }
 
+void SandboxExample::createPipelineLayout() {
+    DescriptorSetLayoutBindingDescriptor textureBindingDescriptor{};
+    textureBindingDescriptor.bindingIndex = 0u;
+    textureBindingDescriptor.descriptorType = DescriptorType::TEXTURE;
+    textureBindingDescriptor.textureBindingDescriptors = {
+        {m_texture},
+    };
+
+    DescriptorSetLayoutDescriptor descriptorSetLayoutDescriptor{};
+    descriptorSetLayoutDescriptor.bindingDescriptors = {
+        textureBindingDescriptor,
+    };
+
+    PipelineLayoutDescriptor pipelineLayoutDescriptor{};
+    pipelineLayoutDescriptor.setLayoutDescriptors = {
+        descriptorSetLayoutDescriptor,
+    };
+    m_pipelineLayout = m_renderer->createPipelineLayout(pipelineLayoutDescriptor);
+}
+
 void SandboxExample::createGraphicsPipelineState() {
     GraphicsPipelineStateDescriptor graphicsPipelineStateDescriptor{};
-    graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
 
     ShaderDescriptor vertexShaderDescriptor{};
     vertexShaderDescriptor.type = ShaderType::VERTEX;
@@ -189,23 +211,7 @@ void SandboxExample::createGraphicsPipelineState() {
         fragmentShader.get(),
     };
 
-    DescriptorSetLayoutBinding descriptorSetLayoutBinding{};
-    descriptorSetLayoutBinding.bindingIndex = 0u;
-    descriptorSetLayoutBinding.resourceType = ResourceType::TEXTURE;
-    descriptorSetLayoutBinding.textureResourceDescriptors = {
-        {m_texture},
-    };
-
-    DescriptorSetLayout descriptorSetLayout{};
-    descriptorSetLayout.bindings = {
-        descriptorSetLayoutBinding,
-    };
-
-    graphicsPipelineStateDescriptor.pipelineLayoutDescriptor.setLayouts = {
-        descriptorSetLayout,
-    };
-
-    graphicsPipelineStateDescriptor.renderPass = m_renderPass.get();
+    graphicsPipelineStateDescriptor.primitiveTopology = PrimitiveTopology::TRIANGLE_LIST;
     graphicsPipelineStateDescriptor.subpassIndex = 0u;
 
     m_graphicsPipelineState = m_renderer->createGraphicsPipelineState(graphicsPipelineStateDescriptor);
