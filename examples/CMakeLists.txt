@@ -31,4 +31,5 @@ macro(add_example_project NAME)
 endmacro()
 
 add_subdirectory(base)
+add_subdirectory(hello_triangle)
 add_subdirectory(sandbox)
