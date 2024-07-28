@@ -20,7 +20,7 @@ class GLRenderer final : public Renderer {
 
     std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) override;
 
-    std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) override;
+    std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) override;
 
     std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) override;
 
@@ -29,6 +29,8 @@ class GLRenderer final : public Renderer {
     std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) override;
 
     std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescriptor &descriptor) override;
+
+    std::unique_ptr<PipelineLayout> createPipelineLayout(const PipelineLayoutDescriptor &descriptor) override;
 
   private:
     std::shared_ptr<GLVertexArrayRegistry> m_vertexArrayRegistry{nullptr};

@@ -141,6 +141,7 @@ GLenum mapPixelDataFormat(ImageFormat format) {
     case ImageFormat::STENCIL8: return GL_STENCIL_INDEX;
     case ImageFormat::DEPTH24_STENCIL8:
     case ImageFormat::DEPTH32F_STENCIL8: return GL_DEPTH_STENCIL;
+
     default: break;
     }
 

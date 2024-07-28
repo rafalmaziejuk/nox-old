@@ -18,6 +18,7 @@ GLenum mapVertexAttributeTypeToEnum(VertexAttributeType type) {
     case VertexAttributeType::INT: return GL_INT;
     case VertexAttributeType::HALF_FLOAT: return GL_HALF_FLOAT;
     case VertexAttributeType::FLOAT: return GL_FLOAT;
+
     default: break;
     }
 

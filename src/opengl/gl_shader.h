@@ -8,14 +8,16 @@ namespace nox {
 
 class GLShader final : public Shader {
   public:
-    [[nodiscard]] static std::unique_ptr<GLShader> create(const ShaderDescriptor &descriptor);
+    [[nodiscard]] static std::unique_ptr<GLShader> create(const ShaderDescriptor &descriptor, const char *source);
 
-    explicit GLShader(const ShaderDescriptor &descriptor);
     ~GLShader() override;
 
     ShaderType getType() const override { return m_type; }
 
     [[nodiscard]] uint32_t getHandle() const { return m_handle; }
+
+  private:
+    explicit GLShader(const ShaderDescriptor &descriptor);
 
     [[nodiscard]] bool compile(const char *source) const;
 

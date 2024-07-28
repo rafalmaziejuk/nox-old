@@ -1,22 +1,18 @@
 #pragma once
 
-#include "opengl/gl_pipeline_layout.h"
 #include "opengl/gl_program.h"
 
 #include <nox/graphics_pipeline_state.h>
+
+#include <memory>
 
 namespace nox {
 
 class GLGraphicsPipelineState final : public GraphicsPipelineState {
   public:
-    [[nodiscard]] static bool validateInput(const GraphicsPipelineStateDescriptor &descriptor);
+    [[nodiscard]] static std::unique_ptr<GLGraphicsPipelineState> create(const GraphicsPipelineStateDescriptor &descriptor);
 
-    explicit GLGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor);
     ~GLGraphicsPipelineState() override;
-
-    [[nodiscard]] const GLPipelineLayout &getPipelineLayout() const {
-        return m_pipelineLayout;
-    }
 
     [[nodiscard]] uint32_t getSubpassIndex() const {
         return m_subpassIndex;
@@ -28,10 +24,12 @@ class GLGraphicsPipelineState final : public GraphicsPipelineState {
 
     void bind() const;
 
+  private:
+    explicit GLGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor);
+
     [[nodiscard]] bool bindShaderStages(const ShaderStages &shaderStages) const;
 
   private:
-    GLPipelineLayout m_pipelineLayout;
     GLProgram m_program{};
     uint32_t m_subpassIndex{0u};
     uint32_t m_primitiveTopology{0u};

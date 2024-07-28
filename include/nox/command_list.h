@@ -4,6 +4,7 @@
 #include <nox/export.h>
 #include <nox/framebuffer.h>
 #include <nox/graphics_pipeline_state.h>
+#include <nox/pipeline_layout.h>
 #include <nox/render_pass.h>
 #include <nox/vector.h>
 #include <nox/viewport.h>
@@ -40,6 +41,7 @@ class NOX_EXPORT CommandList {
     virtual void bindGraphicsPipelineState(const GraphicsPipelineState &pipelineState) = 0;
     virtual void bindVertexBuffer(const Buffer &buffer) = 0;
     virtual void bindIndexBuffer(const Buffer &buffer) = 0;
+    virtual void bindDescriptorSets(const PipelineLayout &pipelineLayout, uint32_t firstSetIndex, uint32_t setCount) = 0;
 
     virtual void draw(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;
     virtual void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) = 0;

@@ -40,7 +40,7 @@ class NOX_EXPORT Renderer {
 
     [[nodiscard]] virtual std::unique_ptr<Shader> createShader(const ShaderDescriptor &descriptor, std::string_view source) = 0;
 
-    [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(GraphicsPipelineStateDescriptor &descriptor) = 0;
+    [[nodiscard]] virtual std::unique_ptr<GraphicsPipelineState> createGraphicsPipelineState(const GraphicsPipelineStateDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<CommandList> createCommandList(const CommandListDescriptor &descriptor) = 0;
 
@@ -49,6 +49,8 @@ class NOX_EXPORT Renderer {
     [[nodiscard]] virtual std::unique_ptr<RenderPass> createRenderPass(const RenderPassDescriptor &descriptor) = 0;
 
     [[nodiscard]] virtual std::unique_ptr<Framebuffer> createFramebuffer(const FramebufferDescriptor &descriptor) = 0;
+
+    [[nodiscard]] virtual std::unique_ptr<PipelineLayout> createPipelineLayout(const PipelineLayoutDescriptor &descriptor) = 0;
 
   public:
     Renderer(const Renderer &) = delete;

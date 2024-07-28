@@ -15,6 +15,7 @@ namespace {
     case GL_DEPTH_ATTACHMENT: return ImageFormatType::DEPTH;
     case GL_STENCIL_ATTACHMENT: return ImageFormatType::STENCIL;
     case GL_DEPTH_STENCIL_ATTACHMENT: return ImageFormatType::DEPTH_STENCIL;
+
     default: return ImageFormatType::COLOR;
     }
 }

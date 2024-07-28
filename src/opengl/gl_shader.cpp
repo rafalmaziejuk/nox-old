@@ -24,9 +24,10 @@ GLenum mapShaderTypeToEnum(ShaderType type) {
 
 } // namespace
 
-std::unique_ptr<GLShader> GLShader::create(const ShaderDescriptor &descriptor) {
-    auto shader = std::make_unique<GLShader>(descriptor);
+std::unique_ptr<GLShader> GLShader::create(const ShaderDescriptor &descriptor, const char *source) {
+    auto shader = std::unique_ptr<GLShader>(new GLShader{descriptor});
     NOX_ENSURE_RETURN_NULLPTR(shader->getHandle() != 0u);
+    NOX_ENSURE_RETURN_NULLPTR(shader->compile(source));
 
     return shader;
 }

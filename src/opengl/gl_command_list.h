@@ -19,6 +19,7 @@ class GLCommandList final : public CommandList {
     void bindGraphicsPipelineState(const GraphicsPipelineState &pipelineState) override;
     void bindVertexBuffer(const Buffer &buffer) override;
     void bindIndexBuffer(const Buffer &buffer) override;
+    void bindDescriptorSets(const PipelineLayout &pipelineLayout, uint32_t firstSetIndex, uint32_t setCount) override;
 
     void draw(uint32_t firstVertexIndex, uint32_t vertexCount) override;
     void drawIndexed(uint32_t firstVertexIndex, uint32_t vertexCount) override;
